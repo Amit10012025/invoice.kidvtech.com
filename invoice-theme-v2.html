@@ -155,35 +155,33 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
     </div>
   </div>
 
-  <!-- PARTIES — 2 rows: Supplier+BillTo / ShipTo+Extra -->
-  <!-- Row 1: Supplier | Bill To -->
-  <div class="parties-section">
+  <!-- PARTIES: Customer Bill To | Customer Ship To -->
+  <div class="parties-section" id="partiesRow">
     <div class="party-block">
-      <div class="party-type">Bill From (Supplier)</div>
-      <div class="party-name" id="fromName">KIDV Tech</div>
-      <div class="party-detail" id="fromDetail">Ahmedabad, Gujarat</div>
-      <div class="party-gstin" id="fromGSTIN"></div>
-    </div>
-    <div class="party-block">
-      <div class="party-type">Bill To (Buyer)</div>
+      <div class="party-type">Customer (Bill To)</div>
       <div class="party-name" id="toName">—</div>
       <div class="party-detail" id="toDetail">—</div>
       <div class="party-gstin" id="toGSTIN"></div>
     </div>
-  </div>
-  <!-- Row 2: Ship To (conditionally shown) -->
-  <div class="parties-section" id="shipToRow" style="display:none;border-top:none;">
-    <div class="party-block" style="background:#f9fbff;">
-      <div class="party-type" style="background:#555;">Consignee (Ship To)</div>
+    <div class="party-block" id="shipToBlock">
+      <div class="party-type" style="background:#2563eb;">Customer (Ship To / Consignee)</div>
       <div class="party-name" id="shipName">—</div>
       <div class="party-detail" id="shipDetail">—</div>
       <div class="party-gstin" id="shipGSTIN"></div>
     </div>
-    <div class="party-block" style="background:#f9fbff;">
-      <div class="party-type" style="opacity:0">—</div>
-      <div style="font-size:9.5px;color:#777;font-style:italic;margin-top:4px">
-        Delivery at shipping address above.<br/>
-        Place of supply as per billing address.
+  </div>
+  <!-- Single column when no Ship To -->
+  <div class="parties-section" id="partiesRowSingle" style="display:none;">
+    <div class="party-block" style="border-right:none;">
+      <div class="party-type">Customer (Bill To)</div>
+      <div class="party-name" id="toNameSingle">—</div>
+      <div class="party-detail" id="toDetailSingle">—</div>
+      <div class="party-gstin" id="toGSTINSingle"></div>
+    </div>
+    <div class="party-block" style="background:#f8faff;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;color:#9ca3af;">
+        <div style="font-size:22px;margin-bottom:4px">📍</div>
+        <div style="font-size:10px;">Same billing &amp; shipping address</div>
       </div>
     </div>
   </div>
@@ -312,27 +310,39 @@ function renderInvoice(inv){
   set('hPos',(comp.city||'Gujarat')+' ('+(gstConf.statecode||'24')+')');
   set('hSupply',inv.supply==='inter'?'Inter-State (IGST)':'Intra-State (CGST+SGST)');
 
-  set('fromName',cname);
-  document.getElementById('fromDetail').innerHTML=[comp.address,comp.city].filter(Boolean).join(', ')||'Ahmedabad, Gujarat';
-  document.getElementById('fromGSTIN').textContent=gstin?'GSTIN/UIN: '+gstin:'';
+  // Bill To customer details
+  const billToDetail = [
+    inv.clientAddress||'',
+    inv.clientCity||'',
+    inv.clientState ? inv.clientState+(inv.clientStateCode?', State Code: '+inv.clientStateCode:'') : ''
+  ].filter(Boolean).join('<br/>');
 
-  set('toName',inv.clientName);
-  document.getElementById('toDetail').innerHTML=[inv.clientAddress,inv.clientState?inv.clientState+', State Code: '+(inv.clientStateCode||'24'):''].filter(Boolean).join('<br/>')||'—';
-  document.getElementById('toGSTIN').textContent=inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
+  const hasShipTo = !!(inv.shipName || inv.shipAddress);
 
-  // Ship To — show only if different from Bill To
-  const shipRow = document.getElementById('shipToRow');
-  if(inv.shipName || inv.shipAddress){
-    shipRow.style.display='';
-    set('shipName', inv.shipName || inv.clientName);
+  if(hasShipTo){
+    // Show 2-column: Bill To | Ship To
+    document.getElementById('partiesRow').style.display='';
+    document.getElementById('partiesRowSingle').style.display='none';
+
+    set('toName', inv.clientName);
+    document.getElementById('toDetail').innerHTML = billToDetail||'—';
+    document.getElementById('toGSTIN').textContent = inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
+
+    set('shipName', inv.shipName||inv.clientName);
     document.getElementById('shipDetail').innerHTML = [
-      inv.shipAddress||inv.clientAddress||'',
+      inv.shipAddress||'',
       inv.shipCity||'',
-      inv.shipState||inv.clientState||''
-    ].filter(Boolean).join('<br/>');
-    document.getElementById('shipGSTIN').textContent = inv.shipGSTIN ? 'GSTIN: '+inv.shipGSTIN : '';
+      inv.shipState||''
+    ].filter(Boolean).join('<br/>')||'—';
+    document.getElementById('shipGSTIN').textContent = inv.shipGSTIN?'GSTIN: '+inv.shipGSTIN:'';
   } else {
-    shipRow.style.display='none';
+    // Show single column Bill To + same address note
+    document.getElementById('partiesRow').style.display='none';
+    document.getElementById('partiesRowSingle').style.display='';
+
+    set('toNameSingle', inv.clientName);
+    document.getElementById('toDetailSingle').innerHTML = billToDetail||'—';
+    document.getElementById('toGSTINSingle').textContent = inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
   }
 
   const lines=inv.lines||[];
