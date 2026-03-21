@@ -150,7 +150,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 <script>
 let products=[], editIdx=-1, currentTab='all';
 async function loadProducts(){
-  products=await DB.list('products');
+  products=await KIDV.list('products');
   renderProducts();
 }
 document.addEventListener('kidv:db-ready',loadProducts);
@@ -208,11 +208,11 @@ async function saveProduct(){
   const price=document.getElementById('f-price').value;
   if(!name||!price){alert('Name and price are required');return;}
   const p={name,type:document.getElementById('f-type').value,desc:document.getElementById('f-desc').value,hsn:document.getElementById('f-hsn').value,gst:document.getElementById('f-gst').value,price:parseFloat(price),unit:document.getElementById('f-unit').value};
-  if(editIdx>=0){const id=products[editIdx]._id||editIdx;await DB.set('products',id,p);products[editIdx]={...p,_id:id};}
-  else{const id=await DB.add('products',p);products.push({...p,_id:id});}
+  if(editIdx>=0){const id=products[editIdx]._id||editIdx;await KIDV.set('products',id,p);products[editIdx]={...p,_id:id};}
+  else{const id=await KIDV.add('products',p);products.push({...p,_id:id});}
   closeModal();renderProducts();
 }
-async function deleteProduct(i){if(confirm('Delete?')){const id=products[i]._id||i;await DB.delete('products',id);products.splice(i,1);renderProducts();}}
+async function deleteProduct(i){if(confirm('Delete?')){const id=products[i]._id||i;await KIDV.delete('products',id);products.splice(i,1);renderProducts();}}
 function editProduct(i){openModal(i);}
 
 </script>
