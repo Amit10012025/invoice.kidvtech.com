@@ -155,7 +155,8 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
     </div>
   </div>
 
-  <!-- PARTIES -->
+  <!-- PARTIES — 2 rows: Supplier+BillTo / ShipTo+Extra -->
+  <!-- Row 1: Supplier | Bill To -->
   <div class="parties-section">
     <div class="party-block">
       <div class="party-type">Bill From (Supplier)</div>
@@ -168,6 +169,22 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
       <div class="party-name" id="toName">—</div>
       <div class="party-detail" id="toDetail">—</div>
       <div class="party-gstin" id="toGSTIN"></div>
+    </div>
+  </div>
+  <!-- Row 2: Ship To (conditionally shown) -->
+  <div class="parties-section" id="shipToRow" style="display:none;border-top:none;">
+    <div class="party-block" style="background:#f9fbff;">
+      <div class="party-type" style="background:#555;">Consignee (Ship To)</div>
+      <div class="party-name" id="shipName">—</div>
+      <div class="party-detail" id="shipDetail">—</div>
+      <div class="party-gstin" id="shipGSTIN"></div>
+    </div>
+    <div class="party-block" style="background:#f9fbff;">
+      <div class="party-type" style="opacity:0">—</div>
+      <div style="font-size:9.5px;color:#777;font-style:italic;margin-top:4px">
+        Delivery at shipping address above.<br/>
+        Place of supply as per billing address.
+      </div>
     </div>
   </div>
 
@@ -300,8 +317,23 @@ function renderInvoice(inv){
   document.getElementById('fromGSTIN').textContent=gstin?'GSTIN/UIN: '+gstin:'';
 
   set('toName',inv.clientName);
-  document.getElementById('toDetail').innerHTML=[inv.clientAddress,inv.clientState?'State Code: 24':''].filter(Boolean).join('<br/>')||'—';
+  document.getElementById('toDetail').innerHTML=[inv.clientAddress,inv.clientState?inv.clientState+', State Code: '+(inv.clientStateCode||'24'):''].filter(Boolean).join('<br/>')||'—';
   document.getElementById('toGSTIN').textContent=inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
+
+  // Ship To — show only if different from Bill To
+  const shipRow = document.getElementById('shipToRow');
+  if(inv.shipName || inv.shipAddress){
+    shipRow.style.display='';
+    set('shipName', inv.shipName || inv.clientName);
+    document.getElementById('shipDetail').innerHTML = [
+      inv.shipAddress||inv.clientAddress||'',
+      inv.shipCity||'',
+      inv.shipState||inv.clientState||''
+    ].filter(Boolean).join('<br/>');
+    document.getElementById('shipGSTIN').textContent = inv.shipGSTIN ? 'GSTIN: '+inv.shipGSTIN : '';
+  } else {
+    shipRow.style.display='none';
+  }
 
   const lines=inv.lines||[];
   let totalQty=0;
