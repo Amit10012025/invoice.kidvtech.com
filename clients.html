@@ -338,8 +338,15 @@ const ENTITY_MAP={
   'F':'Foreign Company','H':'HUF (old)','P':'Proprietorship (old)'
 };
 
-let clients=JSON.parse(localStorage.getItem('kidv-clients')||'[]');
+let clients=[];
 let editIdx=-1;
+
+// Load from Firestore
+async function loadClients(){
+  clients = await DB.list('clients');
+  renderClients(clients);
+}
+document.addEventListener('kidv:db-ready', loadClients);
 
 function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
 function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
@@ -543,7 +550,7 @@ function clearForm(){
 }
 
 // ── Save ──
-function saveClient(){
+async function saveClient(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('Client name is required');return;}
   const c={
@@ -558,12 +565,25 @@ function saveClient(){
     city:document.getElementById('f-city').value, pin:document.getElementById('f-pin').value,
     createdAt:new Date().toISOString()
   };
-  if(editIdx>=0) clients[editIdx]=c; else clients.push(c);
-  localStorage.setItem('kidv-clients',JSON.stringify(clients));
+  if(editIdx>=0){
+    const id=clients[editIdx]._id||editIdx;
+    await DB.set('clients',id,c);
+    clients[editIdx]={...c,_id:id};
+  } else {
+    const id=await DB.add('clients',c);
+    clients.push({...c,_id:id});
+  }
   closeModal(); renderClients(clients);
-  showToast(editIdx>=0?'Client updated!':'Client saved!');
+  showToast(editIdx>=0?'Client updated! ✅':'Client saved to Firebase! ✅');
 }
-function deleteClient(i){if(confirm('Delete?')){clients.splice(i,1);localStorage.setItem('kidv-clients',JSON.stringify(clients));renderClients(clients);}}
+async function deleteClient(i){
+  if(confirm('Delete?')){
+    const id=clients[i]._id||i;
+    await DB.delete('clients',id);
+    clients.splice(i,1);
+    renderClients(clients);
+  }
+}
 function editClient(i){openModal(i);}
 
 // ── Render table ──
@@ -604,7 +624,7 @@ function showToast(msg){
   t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2500);
 }
 
-renderClients(clients);
+// Data loads via kidv:db-ready event → loadClients()
 </script>
 </body>
 </html>
