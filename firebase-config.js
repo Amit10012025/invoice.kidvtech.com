@@ -41,20 +41,56 @@ window.KIDV = {
   async logout(){ await this._auth?.signOut(); location.href='login.html'; },
 
   async list(col){
+    const cacheKey = 'kidv-cache-'+col;
+    const cacheTimeKey = 'kidv-cache-ts-'+col;
+
+    // ── Step 1: Return cache INSTANTLY if available ──
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTs = parseInt(localStorage.getItem(cacheTimeKey)||'0');
+    const cacheAge = Date.now() - cacheTs; // ms
+
+    if(cached && cacheAge < 5*60*1000){ // < 5 min = use as-is
+      // If Firebase ready, refresh in background silently
+      if(this._ready && this._uid && cacheAge > 30000){
+        this._db.collection(this._col(col)).orderBy('createdAt','desc').get()
+          .then(snap=>{
+            const fresh=snap.docs.map(d=>({_id:d.id,...d.data()}));
+            localStorage.setItem(cacheKey, JSON.stringify(fresh));
+            localStorage.setItem(cacheTimeKey, Date.now().toString());
+            console.log('[KIDV] Background refresh: '+col);
+          }).catch(()=>{});
+      }
+      return JSON.parse(cached);
+    }
+
+    // ── Step 2: Load from Firestore ──
     if(this._ready&&this._uid){
       try{
         const snap=await this._db.collection(this._col(col)).orderBy('createdAt','desc').get();
-        return snap.docs.map(d=>({_id:d.id,...d.data()}));
-      }catch(e){console.warn('[KIDV] list error:',e);}
+        const data=snap.docs.map(d=>({_id:d.id,...d.data()}));
+        localStorage.setItem(cacheKey, JSON.stringify(data));
+        localStorage.setItem(cacheTimeKey, Date.now().toString());
+        return data;
+      }catch(e){
+        console.warn('[KIDV] list error, using cache:',e);
+        if(cached) return JSON.parse(cached);
+      }
     }
+
+    // ── Step 3: Fallback ──
+    if(cached) return JSON.parse(cached);
     return JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
   },
 
+  _clearCache(col){
+    localStorage.removeItem('kidv-cache-'+col);
+    localStorage.removeItem('kidv-cache-ts-'+col);
+  },
   async add(col,data){
     const clean={...data,createdAt:data.createdAt||new Date().toISOString()};
     delete clean._id;
     if(this._ready&&this._uid){
-      try{ const ref=await this._db.collection(this._col(col)).add(clean); return ref.id; }
+      try{ const ref=await this._db.collection(this._col(col)).add(clean); this._clearCache(col); return ref.id; }
       catch(e){console.warn('[KIDV] add error:',e);}
     }
     const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
@@ -67,7 +103,7 @@ window.KIDV = {
   async set(col,id,data){
     const clean={...data}; delete clean._id;
     if(this._ready&&this._uid){
-      try{ await this._db.collection(this._col(col)).doc(String(id)).set(clean,{merge:true}); return; }
+      try{ await this._db.collection(this._col(col)).doc(String(id)).set(clean,{merge:true}); this._clearCache(col); return; }
       catch(e){console.warn('[KIDV] set error:',e);}
     }
     const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
@@ -78,7 +114,7 @@ window.KIDV = {
 
   async delete(col,id){
     if(this._ready&&this._uid){
-      try{ await this._db.collection(this._col(col)).doc(String(id)).delete(); return; }
+      try{ await this._db.collection(this._col(col)).doc(String(id)).delete(); this._clearCache(col); return; }
       catch(e){console.warn('[KIDV] delete error:',e);}
     }
     const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
@@ -89,13 +125,22 @@ window.KIDV = {
     if(this._ready&&this._uid){
       try{
         const doc=await this._db.collection('users/'+this._uid+'/settings').doc(key).get();
-        return doc.exists?doc.data():{};
-      }catch(e){}
+        const data = doc.exists?doc.data():{};
+        // Cache for instant load
+        localStorage.setItem('kidv-cache-'+key, JSON.stringify(data));
+        return data;
+      }catch(e){
+        // Return cache on error
+        const cached = localStorage.getItem('kidv-cache-'+key);
+        if(cached) return JSON.parse(cached);
+      }
     }
-    return JSON.parse(localStorage.getItem('kidv-'+key)||'{}');
+    return JSON.parse(localStorage.getItem('kidv-cache-'+key)||localStorage.getItem('kidv-'+key)||'{}');
   },
 
   async saveSettings(key,data){
+    // Always update cache immediately
+    localStorage.setItem('kidv-cache-'+key, JSON.stringify(data));
     if(this._ready&&this._uid){
       try{ await this._db.collection('users/'+this._uid+'/settings').doc(key).set(data,{merge:true}); return; }
       catch(e){}
