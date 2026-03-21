@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+:root{--rail-w:68px;--flyout-w:240px;--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--surface3:#212a3a;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.14);--text:#e6edf3;--muted:#7d8590;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-invoice:#39d0d8;--c-clients:#3fb950;--c-products:#f0883e;--c-quote:#bc8cff;--c-payment:#58a6ff;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
+.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--muted);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:22px;}
+.rail-item:hover{background:rgba(255,255,255,0.06);color:var(--text);}
+.rail-item.active{background:rgba(125,133,144,0.15);color:var(--muted);border-color:rgba(125,133,144,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-size:22px;font-weight:600;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);}
+.btn .material-icons-round{font-size:18px;}
+.btn-danger{background:rgba(248,81,73,0.12);color:#f85149;border:1px solid rgba(248,81,73,0.2);}
+.btn-danger:hover{background:rgba(248,81,73,0.2);}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.settings-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+.settings-nav{background:#1a2233;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:8px;height:fit-content;}
+.snav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13.5px;color:var(--muted);cursor:pointer;transition:all .18s;border-left:3px solid transparent;}
+.snav-item .material-icons-round{font-size:18px;}
+.snav-item:hover{background:rgba(255,255,255,0.06);color:var(--text);}
+.snav-item.active{background:rgba(47,129,247,0.12);color:var(--text);border-left-color:var(--accent);}
+.settings-content{display:flex;flex-direction:column;gap:20px;}
+.settings-panel{display:none;}
+.settings-panel.active{display:flex;flex-direction:column;gap:20px;}
+.card{background:#1a2233;border:1px solid rgba(255,255,255,0.1);border-radius:16px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.08);}
+.card-title{font-size:15px;font-weight:600;}
+.card-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.card-body{padding:22px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:7px;}
+.form-group label{
+  font-size:11.5px;font-weight:600;
+  color:#8fa0b8;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.form-group input,.form-group select,.form-group textarea{
+  background:#212a3a;
+  border:1.5px solid rgba(255,255,255,0.18);
+  border-radius:10px;padding:11px 14px;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:13.5px;
+  outline:none;
+  transition:border-color .18s, background .18s, box-shadow .18s;
+}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#4a5568;}
+.form-group input:hover,.form-group select:hover,.form-group textarea:hover{border-color:rgba(255,255,255,0.28);background:#243040;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:var(--accent);
+  background:#1e2d44;
+  box-shadow:0 0 0 3px rgba(47,129,247,0.15);
+}
+.form-group textarea{resize:vertical;min-height:80px;}
+.form-group select option{background:#1c2230;}
+.save-row{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;}
+/* Firebase card */
+.fb-status{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;background:#212a3a;border:1.5px solid rgba(255,255,255,0.12);margin-bottom:20px;}
+.fb-dot{width:10px;height:10px;border-radius:50%;}
+.fb-dot.ok{background:#3fb950;box-shadow:0 0 8px #3fb950;}
+.fb-dot.err{background:#f85149;box-shadow:0 0 8px #f85149;}
+.fb-dot.pending{background:#f0883e;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.fb-label{font-size:13.5px;font-weight:500;}
+.fb-sub{font-size:12px;color:var(--muted);}
+/* Info box */
+.info-box{background:rgba(47,129,247,0.06);border:1px solid rgba(47,129,247,0.15);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.info-box a{color:var(--accent);}
+/* Danger zone */
+.danger-box{background:rgba(248,81,73,0.04);border:1px solid rgba(248,81,73,0.15);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.danger-label{font-size:14px;font-weight:500;}
+.danger-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px;}
+</style>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<nav class="rail">
+  <div class="rail-logo">KI</div>
+  <div class="rail-item" onclick="location.href='index.html'"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item" onclick="location.href='clients.html'"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
+  <div class="rail-item" onclick="location.href='products.html'"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item" onclick="location.href='invoices.html'"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-item" onclick="location.href='quotations.html'"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item active"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item"><span class="material-icons-round">account_circle</span><div class="rail-tooltip">Profile</div></div>
+</nav>
+
+<main class="main">
+  <div class="topbar">
+    <div><div class="page-title">Settings</div><div class="page-subtitle">Configure company, GST & Firebase</div></div>
+    <div class="topbar-right"><div class="avatar">A</div></div>
+  </div>
+
+  <div class="settings-layout">
+    <!-- Nav -->
+    <div class="settings-nav">
+      <div class="snav-item active" onclick="showPanel('company',this)"><span class="material-icons-round">store</span>Company Profile</div>
+      <div class="snav-item" onclick="showPanel('gst',this)"><span class="material-icons-round">badge</span>GST Settings</div>
+      <div class="snav-item" onclick="showPanel('bank',this)"><span class="material-icons-round">account_balance</span>Bank Details</div>
+      <div class="snav-item" onclick="showPanel('firebase',this)"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
+      <div class="snav-item" onclick="showPanel('invoice',this)"><span class="material-icons-round">palette</span>Invoice Settings</div>
+      <div class="snav-item" onclick="showPanel('danger',this)"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
+    </div>
+
+    <div class="settings-content">
+
+      <!-- Company -->
+      <div class="settings-panel active" id="panel-company">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Company Profile</div><div class="card-desc">Your business details shown on invoices</div></div></div>
+          <div class="card-body">
+            <div class="form-row"><div class="form-group"><label>Company Name *</label><input type="text" id="c-name" placeholder="KIDV Tech"/></div><div class="form-group"><label>Display Name</label><input type="text" id="c-display" placeholder="Short name on invoice header"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="info@kidvtech.com"/></div><div class="form-group"><label>Phone</label><input type="tel" id="c-phone" placeholder="+91 99999 99999"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Website</label><input type="text" id="c-web" placeholder="https://kidvtech.com"/></div><div class="form-group"><label>City</label><input type="text" id="c-city" placeholder="Ahmedabad"/></div></div>
+            <div class="form-row full"><div class="form-group"><label>Address</label><textarea id="c-address" placeholder="Full business address..."></textarea></div></div>
+            <div class="save-row"><button class="btn btn-primary" onclick="saveCompany()"><span class="material-icons-round">save</span>Save Company</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GST -->
+      <div class="settings-panel" id="panel-gst">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">GST Configuration</div><div class="card-desc">Tax registration details for invoices</div></div></div>
+          <div class="card-body">
+            <div class="form-row"><div class="form-group"><label>GSTIN *</label><input type="text" id="g-gstin" placeholder="24XXXXX0000X1ZX" maxlength="15" style="text-transform:uppercase;font-family:monospace"/></div><div class="form-group"><label>PAN</label><input type="text" id="g-pan" placeholder="XXXXX0000X" maxlength="10" style="text-transform:uppercase;font-family:monospace"/></div></div>
+            <div class="form-row three"><div class="form-group"><label>State</label><select id="g-state"><option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option><option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option><option>Other</option></select></div><div class="form-group"><label>State Code</label><input type="text" id="g-statecode" placeholder="24" maxlength="2"/></div><div class="form-group"><label>Default GST Type</label><select id="g-type"><option value="intra">Intra-State (CGST+SGST)</option><option value="inter">Inter-State (IGST)</option></select></div></div>
+            <div class="form-row"><div class="form-group"><label>Default GST Rate</label><select id="g-rate"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></div><div class="form-group"><label>Composition Dealer?</label><select id="g-comp"><option>No</option><option>Yes</option></select></div></div>
+            <div class="save-row"><button class="btn btn-primary" onclick="saveGST()"><span class="material-icons-round">save</span>Save GST Settings</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank -->
+      <div class="settings-panel" id="panel-bank">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Bank Account Details</div><div class="card-desc">Shown on invoice footer for payment</div></div></div>
+          <div class="card-body">
+            <div class="form-row"><div class="form-group"><label>Account Holder Name</label><input type="text" id="b-name" placeholder="Your full name or company name"/></div><div class="form-group"><label>Bank Name</label><input type="text" id="b-bank" placeholder="SBI / HDFC / ICICI..."/></div></div>
+            <div class="form-row"><div class="form-group"><label>Account Number</label><input type="text" id="b-acc" placeholder="XXXXXXXXXXXXXXXX"/></div><div class="form-group"><label>IFSC Code</label><input type="text" id="b-ifsc" placeholder="SBIN0001234" style="text-transform:uppercase"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Branch</label><input type="text" id="b-branch" placeholder="Branch name"/></div><div class="form-group"><label>UPI ID</label><input type="text" id="b-upi" placeholder="yourname@upi"/></div></div>
+            <div class="save-row"><button class="btn btn-primary" onclick="saveBank()"><span class="material-icons-round">save</span>Save Bank Details</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Firebase -->
+      <div class="settings-panel" id="panel-firebase">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Firebase Configuration</div><div class="card-desc">Connect Firestore for cloud data sync</div></div></div>
+          <div class="card-body">
+            <div class="fb-status" id="fbStatus">
+              <div class="fb-dot pending" id="fbDot"></div>
+              <div><div class="fb-label" id="fbLabel">Not Connected</div><div class="fb-sub" id="fbSub">Enter your Firebase config below</div></div>
+            </div>
+            <div class="info-box">
+              📌 <strong>How to get Firebase config:</strong><br/>
+              1. Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br/>
+              2. Create project → Add Web App<br/>
+              3. Copy the <code>firebaseConfig</code> object values below<br/>
+              4. Enable Firestore Database in the console
+            </div>
+            <div class="form-row"><div class="form-group"><label>API Key</label><input type="text" id="fb-apikey" placeholder="AIzaSy..."/></div><div class="form-group"><label>Auth Domain</label><input type="text" id="fb-auth" placeholder="yourapp.firebaseapp.com"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Project ID</label><input type="text" id="fb-proj" placeholder="your-project-id"/></div><div class="form-group"><label>Storage Bucket</label><input type="text" id="fb-storage" placeholder="yourapp.appspot.com"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Messaging Sender ID</label><input type="text" id="fb-sender" placeholder="123456789"/></div><div class="form-group"><label>App ID</label><input type="text" id="fb-appid" placeholder="1:123456789:web:abc..."/></div></div>
+            <div class="save-row">
+              <button class="btn btn-ghost" onclick="testFirebase()"><span class="material-icons-round">wifi</span>Test Connection</button>
+              <button class="btn btn-primary" onclick="saveFirebase()"><span class="material-icons-round">save</span>Save & Connect</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Settings -->
+      <div class="settings-panel" id="panel-invoice">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Invoice Settings</div><div class="card-desc">Defaults for new invoices</div></div></div>
+          <div class="card-body">
+            <div class="form-row"><div class="form-group"><label>Invoice Prefix</label><input type="text" id="i-prefix" placeholder="INV-"/></div><div class="form-group"><label>Starting Number</label><input type="number" id="i-start" placeholder="1" min="1"/></div></div>
+            <div class="form-row"><div class="form-group"><label>Default Payment Terms</label><select id="i-terms"><option>Due on Receipt</option><option>Net 15</option><option selected>Net 30</option><option>Net 45</option><option>Net 60</option></select></div><div class="form-group"><label>Currency</label><select id="i-curr"><option value="INR">₹ INR (Indian Rupee)</option><option value="USD">$ USD</option></select></div></div>
+            <div class="form-row full"><div class="form-group"><label>Default Invoice Note</label><textarea id="i-note" placeholder="Thank you for your business!"></textarea></div></div>
+            <div class="form-row full"><div class="form-group"><label>Footer Text (on print)</label><input type="text" id="i-footer" placeholder="Generated by KIDV Invoice · kidvtech.com"/></div></div>
+            <div class="save-row"><button class="btn btn-primary" onclick="saveInvoiceSettings()"><span class="material-icons-round">save</span>Save Settings</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="settings-panel" id="panel-danger">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Data Management</div><div class="card-desc">Export or reset application data</div></div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+            <div class="danger-box">
+              <div><div class="danger-label">Export All Data</div><div class="danger-sub">Download all invoices, clients & products as JSON</div></div>
+              <button class="btn btn-ghost" onclick="exportData()"><span class="material-icons-round">download</span>Export JSON</button>
+            </div>
+            <div class="danger-box">
+              <div><div class="danger-label" style="color:#f0883e">Clear Invoices</div><div class="danger-sub">Delete all invoices (clients & products kept)</div></div>
+              <button class="btn btn-danger" onclick="clearData('kidv-invoices','invoices')"><span class="material-icons-round">delete_sweep</span>Clear Invoices</button>
+            </div>
+            <div class="danger-box">
+              <div><div class="danger-label" style="color:#f85149">Reset All Data</div><div class="danger-sub">⚠️ Permanently deletes ALL data from this browser</div></div>
+              <button class="btn btn-danger" onclick="resetAll()"><span class="material-icons-round">restart_alt</span>Reset Everything</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+function showPanel(id, el){
+  document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.snav-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+async function loadAll(){
+  const comp=await DB.getSettings('company');
+  if(comp.name) document.getElementById('c-name').value=comp.name;
+  if(comp.display) document.getElementById('c-display').value=comp.display;
+  if(comp.email) document.getElementById('c-email').value=comp.email;
+  if(comp.phone) document.getElementById('c-phone').value=comp.phone;
+  if(comp.web) document.getElementById('c-web').value=comp.web;
+  if(comp.city) document.getElementById('c-city').value=comp.city;
+  if(comp.address) document.getElementById('c-address').value=comp.address;
+
+  const gst=await DB.getSettings('gst');
+  if(gst.gstin) document.getElementById('g-gstin').value=gst.gstin;
+  if(gst.pan) document.getElementById('g-pan').value=gst.pan;
+  if(gst.state) document.getElementById('g-state').value=gst.state;
+  if(gst.statecode) document.getElementById('g-statecode').value=gst.statecode;
+
+  const bank=await DB.getSettings('bank');
+  if(bank.name) document.getElementById('b-name').value=bank.name;
+  if(bank.bank) document.getElementById('b-bank').value=bank.bank;
+  if(bank.acc) document.getElementById('b-acc').value=bank.acc;
+  if(bank.ifsc) document.getElementById('b-ifsc').value=bank.ifsc;
+  if(bank.branch) document.getElementById('b-branch').value=bank.branch;
+  if(bank.upi) document.getElementById('b-upi').value=bank.upi;
+
+  const fb=JSON.parse(localStorage.getItem('kidv-firebase-config')||'{}'); // config stays local
+  if(fb.apiKey){
+    document.getElementById('fb-apikey').value=fb.apiKey;
+    document.getElementById('fb-auth').value=fb.authDomain||'';
+    document.getElementById('fb-proj').value=fb.projectId||'';
+    document.getElementById('fb-storage').value=fb.storageBucket||'';
+    document.getElementById('fb-sender').value=fb.messagingSenderId||'';
+    document.getElementById('fb-appid').value=fb.appId||'';
+    setFbStatus(true);
+  }
+}
+
+async function saveCompany(){
+  const c={name:document.getElementById('c-name').value,display:document.getElementById('c-display').value,email:document.getElementById('c-email').value,phone:document.getElementById('c-phone').value,web:document.getElementById('c-web').value,city:document.getElementById('c-city').value,address:document.getElementById('c-address').value};
+  await DB.saveSettings('company',c);
+  showToast('Company profile saved! ✅');
+}
+async function saveGST(){
+  const g={gstin:document.getElementById('g-gstin').value.toUpperCase(),pan:document.getElementById('g-pan').value.toUpperCase(),state:document.getElementById('g-state').value,statecode:document.getElementById('g-statecode').value,type:document.getElementById('g-type').value,rate:document.getElementById('g-rate').value};
+  await DB.saveSettings('gst',g);
+  showToast('GST settings saved! ✅');
+}
+async function saveBank(){
+  const b={name:document.getElementById('b-name').value,bank:document.getElementById('b-bank').value,acc:document.getElementById('b-acc').value,ifsc:document.getElementById('b-ifsc').value.toUpperCase(),branch:document.getElementById('b-branch').value,upi:document.getElementById('b-upi').value};
+  await DB.saveSettings('bank',b);
+  showToast('Bank details saved! ✅');
+}
+function saveFirebase(){
+  const fb={apiKey:document.getElementById('fb-apikey').value,authDomain:document.getElementById('fb-auth').value,projectId:document.getElementById('fb-proj').value,storageBucket:document.getElementById('fb-storage').value,messagingSenderId:document.getElementById('fb-sender').value,appId:document.getElementById('fb-appid').value};
+  if(!fb.apiKey||!fb.projectId){alert('API Key and Project ID are required');return;}
+  localStorage.setItem('kidv-firebase-config',JSON.stringify(fb));
+  setFbStatus(true);
+  showToast('Firebase config saved! Reload to connect.');
+}
+function testFirebase(){showToast('Firebase SDK will be loaded on next page reload.');}
+function setFbStatus(ok){
+  const dot=document.getElementById('fbDot');
+  const label=document.getElementById('fbLabel');
+  const sub=document.getElementById('fbSub');
+  if(ok){dot.className='fb-dot ok';label.textContent='Config Saved';sub.textContent='Firebase will connect on reload';}
+  else{dot.className='fb-dot err';label.textContent='Not Connected';sub.textContent='Enter config below';}
+}
+function saveInvoiceSettings(){
+  const s={prefix:document.getElementById('i-prefix').value,start:document.getElementById('i-start').value,terms:document.getElementById('i-terms').value,currency:document.getElementById('i-curr').value,note:document.getElementById('i-note').value,footer:document.getElementById('i-footer').value};
+  localStorage.setItem('kidv-invoice-settings',JSON.stringify(s));
+  showToast('Invoice settings saved!');
+}
+function exportData(){
+  const data={clients:JSON.parse(localStorage.getItem('kidv-clients')||'[]'),products:JSON.parse(localStorage.getItem('kidv-products')||'[]'),invoices:JSON.parse(localStorage.getItem('kidv-invoices')||'[]'),quotes:JSON.parse(localStorage.getItem('kidv-quotes')||'[]'),payments:JSON.parse(localStorage.getItem('kidv-payments')||'[]'),exportedAt:new Date().toISOString()};
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download='kidv-invoice-backup-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+}
+function clearData(key,label){if(confirm('Clear all '+label+'?')){localStorage.removeItem(key);showToast(label+' cleared!');}}
+function resetAll(){if(confirm('⚠️ This will delete ALL data. Are you sure?')){['kidv-clients','kidv-products','kidv-invoices','kidv-quotes','kidv-payments','kidv-company','kidv-gst','kidv-bank','kidv-firebase-config'].forEach(k=>localStorage.removeItem(k));showToast('All data cleared!');}}
+
+// Toast
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}
+  t.innerHTML='<span class="material-icons-round" style="color:#3fb950;font-size:18px">check_circle</span>'+msg;
+  t.style.opacity='1';t.style.transform='translateY(0)';
+  setTimeout(()=>{t.style.opacity='0';},2500);
+}
+
+document.addEventListener('kidv:db-ready',loadAll);
+</script>
+</body>
+</html>

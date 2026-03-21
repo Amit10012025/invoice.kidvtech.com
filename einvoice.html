@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – E-Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+:root{--rail-w:68px;--flyout-w:240px;--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:rgba(255,255,255,0.07);--text:#e6edf3;--muted:#7d8590;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-einv:#f7c948;--c-clients:#3fb950;--c-invoice:#39d0d8;--c-quote:#bc8cff;--c-payment:#58a6ff;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
+.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--muted);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:22px;}
+.rail-item:hover{background:rgba(255,255,255,0.06);color:var(--text);}
+.rail-item.active{background:rgba(247,201,72,0.15);color:var(--c-einv);border-color:rgba(247,201,72,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
+.flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:rgba(22,27,34,0.97);backdrop-filter:blur(12px);border-right:1px solid var(--border);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
+.flyout.open{transform:translateX(0);}
+.flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-einv);}
+.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
+.flyout-link .material-icons-round{font-size:18px;}
+.flyout-link:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.flyout-link.active{color:var(--text);background:rgba(247,201,72,0.08);border-left-color:var(--c-einv);}
+.overlay{display:none;position:fixed;inset:0;z-index:180;}
+.overlay.show{display:block;}
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
+.main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:600;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);}
+.btn-yellow{background:rgba(247,201,72,0.15);color:var(--c-einv);border:1px solid rgba(247,201,72,0.25);}
+.btn-yellow:hover{background:rgba(247,201,72,0.25);}
+.btn .material-icons-round{font-size:18px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+/* Info Banner */
+.info-banner{background:rgba(247,201,72,0.07);border:1px solid rgba(247,201,72,0.2);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:14px;margin-bottom:24px;}
+.info-banner .material-icons-round{color:var(--c-einv);font-size:22px;flex-shrink:0;margin-top:1px;}
+.info-banner-title{font-size:14px;font-weight:600;color:var(--c-einv);margin-bottom:4px;}
+.info-banner-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.info-banner-text a{color:var(--accent);}
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:transform .18s;}
+.mini-stat:hover{transform:translateY(-2px);}
+.ms-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ms-val{font-size:22px;font-weight:700;}
+.ms-label{font-size:12px;color:var(--muted);}
+/* Table card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+/* IRN Badge */
+.irn-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.irn-generated{background:rgba(63,185,80,0.12);color:#3fb950;}
+.irn-pending{background:rgba(247,201,72,0.1);color:var(--c-einv);}
+.irn-cancelled{background:rgba(248,81,73,0.1);color:#f85149;}
+.irn-code{font-family:monospace;font-size:11px;color:var(--muted);margin-top:3px;}
+/* Steps */
+.steps-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.step{padding:16px 14px;display:flex;align-items:center;gap:10px;border-right:1px solid var(--border);position:relative;}
+.step:last-child{border-right:none;}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.step.done .step-num{background:rgba(63,185,80,0.15);color:#3fb950;}
+.step.active .step-num{background:rgba(247,201,72,0.15);color:var(--c-einv);}
+.step.pending .step-num{background:var(--surface2);color:var(--muted);}
+.step-label{font-size:12px;font-weight:500;}
+.step-label .step-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.step.done .step-label{color:#3fb950;}
+.step.active .step-label{color:var(--c-einv);}
+.step.pending .step-label{color:var(--muted);}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:680px;max-width:98vw;margin:auto;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
+.modal-close .material-icons-round{font-size:20px;}
+.modal-body{padding:24px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:18px 24px;border-top:1px solid var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-group input,.form-group select{background:#212a3a;border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--c-einv);}
+.form-group select option{background:var(--surface2);}
+.section-label{font-size:11px;font-weight:600;color:var(--c-einv);text-transform:uppercase;letter-spacing:.08em;margin:16px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+/* IRN Result */
+.irn-result{background:var(--surface2);border:1px solid rgba(63,185,80,0.2);border-radius:12px;padding:20px;margin-top:16px;display:none;}
+.irn-result.show{display:block;}
+.irn-result-label{font-size:11px;font-weight:600;color:#3fb950;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.irn-field{margin-bottom:10px;}
+.irn-field-label{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.irn-field-val{font-family:monospace;font-size:13px;background:var(--surface);border:1px solid var(--border);padding:8px 12px;border-radius:8px;word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.copy-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;}
+.copy-btn:hover{color:var(--text);}
+.copy-btn .material-icons-round{font-size:16px;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px;}
+</style>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<nav class="rail">
+  <div class="rail-logo">KI</div>
+  <div class="rail-item" onclick="location.href='index.html'"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item" onclick="location.href='clients.html'"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
+  <div class="rail-item" onclick="location.href='products.html'"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item" onclick="location.href='invoices.html'"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-item" onclick="location.href='quotations.html'"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-item" onclick="location.href='reports.html'"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">qr_code_2</span><div class="rail-tooltip">E-Invoice / EWB</div></div>
+  <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item"><span class="material-icons-round">account_circle</span><div class="rail-tooltip">Profile</div></div>
+</nav>
+<div class="flyout" id="flyout">
+  <div class="flyout-header"><div class="flyout-title">Compliance</div></div>
+  <a class="flyout-link active" href="einvoice.html"><span class="material-icons-round">qr_code_2</span>E-Invoice (IRN)</a>
+  <a class="flyout-link" href="ewaybill.html"><span class="material-icons-round">local_shipping</span>E-Way Bill</a>
+  <a class="flyout-link" href="gst-returns.html"><span class="material-icons-round">receipt</span>GST Returns</a>
+  <a class="flyout-link" href="hsn-master.html"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
+</div>
+<div class="overlay" id="overlay" onclick="closeFlyout()"></div>
+
+<main class="main" id="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">E-Invoice (IRN)</div>
+      <div class="page-subtitle">Invoice Registration Number · IRP Portal Integration</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-yellow" onclick="openModal()"><span class="material-icons-round">add</span>Generate IRN</button>
+      <div class="avatar">A</div>
+    </div>
+  </div>
+
+  <!-- Info Banner -->
+  <div class="info-banner">
+    <span class="material-icons-round">info</span>
+    <div>
+      <div class="info-banner-title">E-Invoice applicable if turnover &gt; ₹5 Crore</div>
+      <div class="info-banner-text">
+        IRN (Invoice Reference Number) is generated from <a href="https://einvoice1.gst.gov.in" target="_blank">einvoice1.gst.gov.in</a>. 
+        This UI is ready — connect your GSTIN credentials in <a href="settings.html">Settings → GST</a> to enable API. 
+        Each B2B invoice must be registered within 30 days of invoice date.
+      </div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-row">
+    <div class="step done"><div class="step-num"><span class="material-icons-round" style="font-size:14px">check</span></div><div class="step-label">Create Invoice<div class="step-sub">invoices.html</div></div></div>
+    <div class="step active"><div class="step-num">2</div><div class="step-label">Generate IRN<div class="step-sub">This page</div></div></div>
+    <div class="step pending"><div class="step-num">3</div><div class="step-label">Get QR Code<div class="step-sub">IRP returns</div></div></div>
+    <div class="step pending"><div class="step-num">4</div><div class="step-label">Print Invoice<div class="step-sub">With QR</div></div></div>
+    <div class="step pending"><div class="step-num">5</div><div class="step-label">Send to Client<div class="step-sub">Email/WhatsApp</div></div></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="mini-stat">
+      <div class="ms-top"><div class="ms-icon" style="background:rgba(63,185,80,0.12);color:#3fb950"><span class="material-icons-round">check_circle</span></div></div>
+      <div class="ms-val" id="s-generated">0</div><div class="ms-label">IRN Generated</div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-top"><div class="ms-icon" style="background:rgba(247,201,72,0.1);color:var(--c-einv)"><span class="material-icons-round">schedule</span></div></div>
+      <div class="ms-val" id="s-pending">0</div><div class="ms-label">Pending IRN</div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-top"><div class="ms-icon" style="background:rgba(248,81,73,0.1);color:#f85149"><span class="material-icons-round">cancel</span></div></div>
+      <div class="ms-val" id="s-cancelled">0</div><div class="ms-label">Cancelled</div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-top"><div class="ms-icon" style="background:rgba(57,208,216,0.1);color:var(--c-invoice)"><span class="material-icons-round">receipt_long</span></div></div>
+      <div class="ms-val" id="s-total">0</div><div class="ms-label">Total Invoices</div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">E-Invoice Register</div>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="exportCSV()"><span class="material-icons-round" style="font-size:15px">download</span>Export</button>
+    </div>
+    <table>
+      <thead><tr><th>Invoice No</th><th>Client</th><th>Date</th><th>Amount</th><th>IRN Status</th><th>IRN / ACK No</th><th>Actions</th></tr></thead>
+      <tbody id="einvBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Generate IRN Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Generate IRN for Invoice</div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div class="section-label">Select Invoice</div>
+      <div class="form-row full">
+        <div class="form-group"><label>Invoice *</label>
+          <select id="f-invoice" onchange="fillInvoiceDetails()">
+            <option value="">Select Invoice to register</option>
+          </select>
+        </div>
+      </div>
+      <div id="inv-details" style="display:none">
+        <div class="section-label">Invoice Details (Auto-filled)</div>
+        <div class="form-row three">
+          <div class="form-group"><label>Invoice No</label><input type="text" id="d-invno" readonly style="opacity:.7"/></div>
+          <div class="form-group"><label>Invoice Date</label><input type="text" id="d-date" readonly style="opacity:.7"/></div>
+          <div class="form-group"><label>Total Amount</label><input type="text" id="d-total" readonly style="opacity:.7"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Supplier GSTIN</label><input type="text" id="d-sgstin" placeholder="Your GSTIN" style="text-transform:uppercase;font-family:monospace"/></div>
+          <div class="form-group"><label>Buyer GSTIN</label><input type="text" id="d-bgstin" readonly style="opacity:.7;font-family:monospace"/></div>
+        </div>
+        <div class="section-label">IRP API Credentials</div>
+        <div class="form-row">
+          <div class="form-group"><label>User ID (IRP)</label><input type="text" id="f-uid" placeholder="Your IRP User ID"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="f-pwd" placeholder="IRP Password"/></div>
+        </div>
+        <div style="background:rgba(247,201,72,0.07);border:1px solid rgba(247,201,72,0.15);border-radius:10px;padding:12px 16px;font-size:12.5px;color:var(--muted);margin-bottom:16px;">
+          <span style="color:var(--c-einv);font-weight:600">⚠ API Pending:</span> IRP credentials save karo Settings → GST ma. Abhi "Simulate" button se mock IRN generate thashe.
+        </div>
+      </div>
+
+      <!-- IRN Result -->
+      <div class="irn-result" id="irnResult">
+        <div class="irn-result-label">✅ IRN Generated Successfully</div>
+        <div class="irn-field"><div class="irn-field-label">IRN (Invoice Reference Number)</div>
+          <div class="irn-field-val"><span id="r-irn">—</span><button class="copy-btn" onclick="copyText('r-irn')"><span class="material-icons-round">content_copy</span></button></div>
+        </div>
+        <div class="irn-field"><div class="irn-field-label">Acknowledgement Number</div>
+          <div class="irn-field-val"><span id="r-ack">—</span><button class="copy-btn" onclick="copyText('r-ack')"><span class="material-icons-round">content_copy</span></button></div>
+        </div>
+        <div class="irn-field"><div class="irn-field-label">Acknowledgement Date & Time</div>
+          <div class="irn-field-val"><span id="r-ackdt">—</span></div>
+        </div>
+        <div class="irn-field"><div class="irn-field-label">Signed QR Code</div>
+          <div class="irn-field-val"><span id="r-qr" style="font-size:11px">—</span><button class="copy-btn" onclick="copyText('r-qr')"><span class="material-icons-round">content_copy</span></button></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+      <button class="btn btn-ghost" id="simulateBtn" onclick="simulateIRN()" style="display:none"><span class="material-icons-round">science</span>Simulate IRN</button>
+      <button class="btn btn-yellow" id="generateBtn" onclick="generateIRN()" style="display:none"><span class="material-icons-round">qr_code_2</span>Generate IRN</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let invoices = JSON.parse(localStorage.getItem('kidv-invoices')||'[]');
+let einvData = JSON.parse(localStorage.getItem('kidv-einvoices')||'[]');
+const gst = JSON.parse(localStorage.getItem('kidv-gst')||'{}');
+
+function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
+function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
+function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
+
+function renderTable(){
+  const tbody=document.getElementById('einvBody');
+  const generated=einvData.filter(e=>e.status==='generated').length;
+  const pending=invoices.length - generated;
+  const cancelled=einvData.filter(e=>e.status==='cancelled').length;
+  document.getElementById('s-generated').textContent=generated;
+  document.getElementById('s-pending').textContent=Math.max(0,pending);
+  document.getElementById('s-cancelled').textContent=cancelled;
+  document.getElementById('s-total').textContent=invoices.length;
+
+  if(!invoices.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No invoices found. <a href="invoices.html" style="color:var(--c-einv)">Create invoices first →</a></td></tr>`;return;}
+
+  tbody.innerHTML=invoices.map((inv,i)=>{
+    const einv=einvData.find(e=>e.invoiceNo===inv.invoiceNo);
+    const status=einv?einv.status:'pending';
+    const irn=einv?einv.irn:'';
+    const ack=einv?einv.ack:'';
+    return`<tr>
+      <td style="font-weight:600;color:var(--c-einv)">${inv.invoiceNo||'—'}</td>
+      <td>${inv.clientName||'—'}</td>
+      <td>${inv.date||'—'}</td>
+      <td style="font-weight:600">${fmt(inv.total)}</td>
+      <td><span class="irn-badge irn-${status}">${status==='generated'?'✓ IRN Generated':status==='cancelled'?'✗ Cancelled':'⏳ Pending'}</span></td>
+      <td><div style="font-family:monospace;font-size:11px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis">${irn||'—'}</div><div style="font-size:11px;color:var(--muted)">ACK: ${ack||'—'}</div></td>
+      <td>
+        ${status==='pending'?`<button onclick="quickGenerate(${i})" style="background:rgba(247,201,72,0.12);border:1px solid rgba(247,201,72,0.2);color:var(--c-einv);padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Outfit'">Generate</button>`:''}
+        ${status==='generated'?`<button onclick="cancelIRN('${inv.invoiceNo}')" style="background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.15);color:#f85149;padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Outfit'">Cancel</button>`:''}
+      </td>
+    </tr>`;}).join('');
+}
+
+function openModal(){
+  const sel=document.getElementById('f-invoice');
+  sel.innerHTML='<option value="">Select Invoice to register</option>'+invoices.map((inv,i)=>`<option value="${i}">${inv.invoiceNo} — ${inv.clientName} (${fmt(inv.total)})</option>`).join('');
+  document.getElementById('inv-details').style.display='none';
+  document.getElementById('irnResult').classList.remove('show');
+  document.getElementById('simulateBtn').style.display='none';
+  document.getElementById('generateBtn').style.display='none';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+
+function fillInvoiceDetails(){
+  const idx=document.getElementById('f-invoice').value;
+  if(idx===''){document.getElementById('inv-details').style.display='none';return;}
+  const inv=invoices[idx];
+  document.getElementById('d-invno').value=inv.invoiceNo||'';
+  document.getElementById('d-date').value=inv.date||'';
+  document.getElementById('d-total').value=fmt(inv.total);
+  document.getElementById('d-sgstin').value=gst.gstin||'';
+  document.getElementById('d-bgstin').value=inv.clientGSTIN||'Not Available';
+  document.getElementById('inv-details').style.display='';
+  document.getElementById('simulateBtn').style.display='';
+  document.getElementById('generateBtn').style.display='';
+  document.getElementById('irnResult').classList.remove('show');
+}
+
+function simulateIRN(){
+  const idx=document.getElementById('f-invoice').value;
+  if(idx==='') return;
+  const inv=invoices[idx];
+  // Generate mock IRN (64 char hex)
+  const irn=Array.from({length:64},()=>'0123456789abcdef'[Math.floor(Math.random()*16)]).join('');
+  const ack=String(Date.now()).slice(0,13);
+  const ackDt=new Date().toLocaleString('en-IN');
+  const qr=btoa(JSON.stringify({irn,ackNo:ack,sellerGSTIN:document.getElementById('d-sgstin').value,buyerGSTIN:document.getElementById('d-bgstin').value,docNo:inv.invoiceNo,docDt:inv.date,totInvVal:inv.total}));
+
+  document.getElementById('r-irn').textContent=irn;
+  document.getElementById('r-ack').textContent=ack;
+  document.getElementById('r-ackdt').textContent=ackDt;
+  document.getElementById('r-qr').textContent=qr.slice(0,60)+'...';
+  document.getElementById('irnResult').classList.add('show');
+
+  // Save
+  const existing=einvData.findIndex(e=>e.invoiceNo===inv.invoiceNo);
+  const record={invoiceNo:inv.invoiceNo,irn,ack,ackDt,qr,status:'generated',generatedAt:new Date().toISOString()};
+  if(existing>=0) einvData[existing]=record; else einvData.push(record);
+  localStorage.setItem('kidv-einvoices',JSON.stringify(einvData));
+  renderTable();
+  showToast('IRN simulated & saved!');
+}
+
+function generateIRN(){showToast('API integration pending — use Simulate for now.');}
+
+function quickGenerate(i){
+  openModal();
+  setTimeout(()=>{document.getElementById('f-invoice').value=i;fillInvoiceDetails();},100);
+}
+
+function cancelIRN(invNo){
+  if(!confirm('Cancel IRN for '+invNo+'?')) return;
+  const idx=einvData.findIndex(e=>e.invoiceNo===invNo);
+  if(idx>=0){einvData[idx].status='cancelled';localStorage.setItem('kidv-einvoices',JSON.stringify(einvData));renderTable();showToast('IRN cancelled!');}
+}
+
+function copyText(id){navigator.clipboard.writeText(document.getElementById(id).textContent);showToast('Copied!');}
+
+function exportCSV(){
+  const rows=[['Invoice No','Client','Date','Amount','IRN','ACK No','Status'],...invoices.map(inv=>{const e=einvData.find(x=>x.invoiceNo===inv.invoiceNo);return[inv.invoiceNo,inv.clientName,inv.date,inv.total,e?.irn||'',e?.ack||'',e?.status||'pending'];})];
+  const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(rows.map(r=>r.join(',')).join('\n'));a.download='einvoice-register.csv';a.click();
+}
+
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3);transition:opacity .3s';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);
+}
+
+renderTable();
+</script>
+</body>
+</html>

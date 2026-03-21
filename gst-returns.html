@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – GST Returns</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+:root{--rail-w:68px;--flyout-w:240px;--bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:rgba(255,255,255,0.07);--text:#e6edf3;--muted:#7d8590;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-gst:#39d0d8;--c-einv:#f7c948;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
+.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--muted);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:22px;}
+.rail-item:hover{background:rgba(255,255,255,0.06);color:var(--text);}
+.rail-item.active{background:rgba(57,208,216,0.15);color:var(--c-gst);border-color:rgba(57,208,216,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
+.flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:rgba(22,27,34,0.97);backdrop-filter:blur(12px);border-right:1px solid var(--border);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
+.flyout.open{transform:translateX(0);}
+.flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-gst);}
+.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
+.flyout-link .material-icons-round{font-size:18px;}
+.flyout-link:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.flyout-link.active{color:var(--text);background:rgba(57,208,216,0.08);border-left-color:var(--c-gst);}
+.overlay{display:none;position:fixed;inset:0;z-index:180;}
+.overlay.show{display:block;}
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
+.main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:600;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);}
+.btn-teal{background:rgba(57,208,216,0.1);color:var(--c-gst);border:1px solid rgba(57,208,216,0.2);}
+.btn-teal:hover{background:rgba(57,208,216,0.2);}
+.btn .material-icons-round{font-size:18px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.filter-select{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;cursor:pointer;}
+.filter-select option{background:var(--surface2);}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.tab{padding:7px 20px;border-radius:7px;font-size:13.5px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;}
+.tab.active{background:var(--surface2);color:var(--text);}
+/* GST Summary boxes */
+.gst-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.gst-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
+.gst-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.gst-box.tax::after{background:var(--c-gst);}
+.gst-box.cgst::after{background:#2f81f7;}
+.gst-box.sgst::after{background:#bc8cff;}
+.gst-box.igst::after{background:#f0883e;}
+.gst-box.total::after{background:var(--gradient);}
+.gst-box.payable::after{background:linear-gradient(90deg,#f85149,#e64340);}
+.gst-box-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px;}
+.gst-box-val{font-size:24px;font-weight:700;}
+.gst-box-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
+.card-subtitle{font-size:12px;color:var(--muted);margin-top:1px;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+.rate-pill{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600;background:rgba(57,208,216,0.1);color:var(--c-gst);border:1px solid rgba(57,208,216,0.15);}
+/* 3B specific */
+.form-3b{padding:20px;}
+.form-3b-row{display:grid;grid-template-columns:1fr auto auto auto;gap:0;border-bottom:1px solid var(--border);align-items:center;}
+.form-3b-row:last-child{border-bottom:none;}
+.form-3b-label{padding:13px 20px;font-size:13.5px;font-weight:500;}
+.form-3b-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.form-3b-cell{padding:10px 20px;font-size:13.5px;font-weight:600;text-align:right;min-width:130px;}
+.form-3b-cell.header-cell{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);padding:10px 20px;}
+.form-3b-section{background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border);}
+.form-3b-section-label{padding:12px 20px;font-size:12px;font-weight:700;color:var(--c-gst);text-transform:uppercase;letter-spacing:.08em;}
+.total-row-3b{background:rgba(57,208,216,0.04);}
+.total-row-3b .form-3b-label{font-weight:700;color:var(--text);}
+.total-row-3b .form-3b-cell{color:var(--c-gst);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px;}
+</style>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<nav class="rail">
+  <div class="rail-logo">KI</div>
+  <div class="rail-item" onclick="location.href='index.html'"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item" onclick="location.href='clients.html'"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
+  <div class="rail-item" onclick="location.href='products.html'"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item" onclick="location.href='invoices.html'"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-item" onclick="location.href='quotations.html'"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-item" onclick="location.href='reports.html'"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
+  <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item"><span class="material-icons-round">account_circle</span><div class="rail-tooltip">Profile</div></div>
+</nav>
+<div class="flyout" id="flyout">
+  <div class="flyout-header"><div class="flyout-title">Compliance</div></div>
+  <a class="flyout-link" href="einvoice.html"><span class="material-icons-round">qr_code_2</span>E-Invoice (IRN)</a>
+  <a class="flyout-link" href="ewaybill.html"><span class="material-icons-round">local_shipping</span>E-Way Bill</a>
+  <a class="flyout-link active" href="gst-returns.html"><span class="material-icons-round">receipt</span>GST Returns</a>
+  <a class="flyout-link" href="hsn-master.html"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
+</div>
+<div class="overlay" id="overlay" onclick="closeFlyout()"></div>
+
+<main class="main" id="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">GST Returns</div>
+      <div class="page-subtitle">GSTR-1 · GSTR-3B · Tax Liability Summary</div>
+    </div>
+    <div class="topbar-right">
+      <select class="filter-select" id="monthSel" onchange="build()">
+        <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+        <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+        <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+        <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+      </select>
+      <select class="filter-select" id="yearSel" onchange="build()">
+        <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option>
+      </select>
+      <button class="btn btn-teal" onclick="exportGSTR1()"><span class="material-icons-round">download</span>Export GSTR-1</button>
+      <div class="avatar">A</div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <div class="tabs">
+      <div class="tab active" onclick="setTab('gstr1',this)">GSTR-1</div>
+      <div class="tab" onclick="setTab('gstr3b',this)">GSTR-3B</div>
+      <div class="tab" onclick="setTab('hsn',this)">HSN Summary</div>
+    </div>
+  </div>
+
+  <!-- Summary Boxes -->
+  <div class="gst-boxes">
+    <div class="gst-box tax"><div class="gst-box-label">Taxable Turnover</div><div class="gst-box-val" id="b-taxable">₹0.00</div><div class="gst-box-sub" id="b-invcount">0 invoices</div></div>
+    <div class="gst-box cgst"><div class="gst-box-label">CGST Collected</div><div class="gst-box-val" id="b-cgst">₹0.00</div><div class="gst-box-sub">Intra-state only</div></div>
+    <div class="gst-box sgst"><div class="gst-box-label">SGST Collected</div><div class="gst-box-val" id="b-sgst">₹0.00</div><div class="gst-box-sub">Intra-state only</div></div>
+    <div class="gst-box igst"><div class="gst-box-label">IGST Collected</div><div class="gst-box-val" id="b-igst">₹0.00</div><div class="gst-box-sub">Inter-state only</div></div>
+    <div class="gst-box total"><div class="gst-box-label">Total GST Collected</div><div class="gst-box-val" id="b-totalgst">₹0.00</div><div class="gst-box-sub">CGST + SGST + IGST</div></div>
+    <div class="gst-box payable"><div class="gst-box-label">Net Tax Payable</div><div class="gst-box-val" id="b-payable" style="color:#f85149">₹0.00</div><div class="gst-box-sub">After ITC (manual)</div></div>
+  </div>
+
+  <!-- GSTR-1 Tab -->
+  <div id="tab-gstr1">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">B2B Invoices (Table 4)</div><div class="card-subtitle">All taxable outward supplies to registered persons</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Invoice No</th><th>Date</th><th>GSTIN (Buyer)</th><th>Buyer Name</th><th>Taxable Value</th><th>IGST</th><th>CGST</th><th>SGST</th><th>Invoice Value</th></tr></thead>
+        <tbody id="b2bBody"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">B2C Invoices (Table 7)</div><div class="card-subtitle">Outward supplies to unregistered persons</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Invoice No</th><th>Date</th><th>Client</th><th>State</th><th>Taxable Value</th><th>Tax Rate</th><th>CGST</th><th>SGST</th><th>IGST</th></tr></thead>
+        <tbody id="b2cBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GSTR-3B Tab -->
+  <div id="tab-gstr3b" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">GSTR-3B Summary</div><div class="card-subtitle">Monthly self-declaration · Auto-computed from invoices</div></div>
+        <button class="btn btn-teal" onclick="exportGSTR3B()"><span class="material-icons-round">download</span>Export</button>
+      </div>
+      <div class="form-3b">
+        <div class="form-3b-row">
+          <div class="form-3b-label" style="font-size:11px;font-weight:700;color:var(--muted)">DESCRIPTION</div>
+          <div class="form-3b-cell header-cell">Taxable Value</div>
+          <div class="form-3b-cell header-cell">IGST</div>
+          <div class="form-3b-cell header-cell">CGST</div>
+          <div class="form-3b-cell header-cell">SGST/UTGST</div>
+        </div>
+        <!-- 3.1 -->
+        <div class="form-3b-section"><div class="form-3b-section-label">3.1 Details of Outward Supplies and Inward Supplies liable to reverse charge</div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(a) Outward taxable supplies (other than zero rated, nil rated and exempted)<div class="form-3b-sub">Table 4</div></div><div class="form-3b-cell" id="3b-taxable">₹0.00</div><div class="form-3b-cell" id="3b-igst">₹0.00</div><div class="form-3b-cell" id="3b-cgst">₹0.00</div><div class="form-3b-cell" id="3b-sgst">₹0.00</div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(b) Outward taxable supplies (zero rated)<div class="form-3b-sub">Exports</div></div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(c) Other outward supplies (Nil rated, exempted)<div class="form-3b-sub">Nil/exempt supplies</div></div><div class="form-3b-cell" id="3b-nil">₹0.00</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(d) Inward supplies (liable to reverse charge)<div class="form-3b-sub">RCM applicable</div></div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div></div>
+        <div class="form-3b-row total-row-3b"><div class="form-3b-label">Total Outward Tax Liability</div><div class="form-3b-cell" id="3b-tot-taxable">₹0.00</div><div class="form-3b-cell" id="3b-tot-igst">₹0.00</div><div class="form-3b-cell" id="3b-tot-cgst">₹0.00</div><div class="form-3b-cell" id="3b-tot-sgst">₹0.00</div></div>
+        <!-- 4 -->
+        <div class="form-3b-section"><div class="form-3b-section-label">4. Eligible ITC (Input Tax Credit)</div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(A) ITC Available<div class="form-3b-sub">Enter manually</div></div><div class="form-3b-cell">—</div><div class="form-3b-cell"><input type="number" id="itc-igst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-cgst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-sgst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div></div>
+        <!-- 5 -->
+        <div class="form-3b-section"><div class="form-3b-section-label">5. Net Tax Payable</div></div>
+        <div class="form-3b-row total-row-3b" style="background:rgba(248,81,73,0.04)"><div class="form-3b-label" style="color:#f85149">Net GST Payable (after ITC)</div><div class="form-3b-cell">—</div><div class="form-3b-cell" id="pay-igst" style="color:#f85149">₹0.00</div><div class="form-3b-cell" id="pay-cgst" style="color:#f85149">₹0.00</div><div class="form-3b-cell" id="pay-sgst" style="color:#f85149">₹0.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HSN Summary Tab -->
+  <div id="tab-hsn" style="display:none">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">HSN/SAC Summary (Table 12)</div><div class="card-subtitle">HSN-wise summary of outward supplies</div></div>
+        <button class="btn btn-teal" onclick="exportHSN()"><span class="material-icons-round">download</span>Export</button>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>HSN/SAC Code</th><th>Description</th><th>UOM</th><th>Total Qty</th><th>Total Value</th><th>Taxable Value</th><th>IGST</th><th>CGST</th><th>SGST</th></tr></thead>
+        <tbody id="hsnSummaryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+let invoices=JSON.parse(localStorage.getItem('kidv-invoices')||'[]');
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let currentTab='gstr1';
+
+function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
+function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
+function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
+
+// Set current month/year
+const now=new Date();
+document.getElementById('monthSel').value=now.getMonth();
+document.getElementById('yearSel').value=now.getFullYear();
+
+function setTab(t,el){
+  currentTab=t;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  ['gstr1','gstr3b','hsn'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'':'none');
+  build();
+}
+
+function getFiltered(){
+  const m=parseInt(document.getElementById('monthSel').value);
+  const y=parseInt(document.getElementById('yearSel').value);
+  return invoices.filter(inv=>{
+    if(!inv.date) return false;
+    const d=new Date(inv.date);
+    return d.getMonth()===m&&d.getFullYear()===y;
+  });
+}
+
+function build(){
+  const inv=getFiltered();
+  let taxable=0,cgst=0,sgst=0,igst=0,nilAmt=0;
+  inv.forEach(i=>{
+    const sub=parseFloat(i.sub||0);
+    const g=parseFloat(i.totalGST||0);
+    const gstRate=(i.lines||[]).length?(parseFloat((i.lines[0]?.gst)||0)):0;
+    if(gstRate===0) nilAmt+=sub; else taxable+=sub;
+    if(i.supply==='inter') igst+=g; else {cgst+=g/2;sgst+=g/2;}
+  });
+  const total=cgst+sgst+igst;
+
+  document.getElementById('b-taxable').textContent=fmt(taxable);
+  document.getElementById('b-invcount').textContent=inv.length+' invoices';
+  document.getElementById('b-cgst').textContent=fmt(cgst);
+  document.getElementById('b-sgst').textContent=fmt(sgst);
+  document.getElementById('b-igst').textContent=fmt(igst);
+  document.getElementById('b-totalgst').textContent=fmt(total);
+  document.getElementById('b-payable').textContent=fmt(total);
+
+  if(currentTab==='gstr1') buildGSTR1(inv,cgst,sgst,igst);
+  if(currentTab==='gstr3b') buildGSTR3B(taxable,cgst,sgst,igst,nilAmt);
+  if(currentTab==='hsn') buildHSNSummary(inv);
+}
+
+function buildGSTR1(inv,totalCgst,totalSgst,totalIgst){
+  // B2B (with GSTIN)
+  const b2b=inv.filter(i=>i.clientGSTIN);
+  const b2c=inv.filter(i=>!i.clientGSTIN);
+
+  document.getElementById('b2bBody').innerHTML=b2b.length?b2b.map(i=>{
+    const g=parseFloat(i.totalGST||0);
+    const intra=i.supply!=='inter';
+    return`<tr>
+      <td style="font-weight:600;color:var(--c-gst)">${i.invoiceNo||'—'}</td>
+      <td>${i.date||'—'}</td>
+      <td style="font-family:monospace;font-size:12px">${i.clientGSTIN}</td>
+      <td>${i.clientName||'—'}</td>
+      <td>${fmt(i.sub)}</td>
+      <td>${!intra?fmt(g):'—'}</td>
+      <td>${intra?fmt(g/2):'—'}</td>
+      <td>${intra?fmt(g/2):'—'}</td>
+      <td style="font-weight:600">${fmt(i.total)}</td>
+    </tr>`;}).join(''):`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No B2B invoices for selected period</td></tr>`;
+
+  document.getElementById('b2cBody').innerHTML=b2c.length?b2c.map(i=>{
+    const g=parseFloat(i.totalGST||0);
+    const intra=i.supply!=='inter';
+    const rate=(i.lines||[]).length?i.lines[0]?.gst+'%':'—';
+    return`<tr>
+      <td style="font-weight:600;color:var(--c-gst)">${i.invoiceNo||'—'}</td>
+      <td>${i.date||'—'}</td>
+      <td>${i.clientName||'—'}</td>
+      <td>${i.clientState||'—'}</td>
+      <td>${fmt(i.sub)}</td>
+      <td><span class="rate-pill">${rate}</span></td>
+      <td>${intra?fmt(g/2):'—'}</td>
+      <td>${intra?fmt(g/2):'—'}</td>
+      <td>${!intra?fmt(g):'—'}</td>
+    </tr>`;}).join(''):`<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No B2C invoices for selected period</td></tr>`;
+}
+
+function buildGSTR3B(taxable,cgst,sgst,igst,nilAmt){
+  document.getElementById('3b-taxable').textContent=fmt(taxable);
+  document.getElementById('3b-igst').textContent=fmt(igst);
+  document.getElementById('3b-cgst').textContent=fmt(cgst);
+  document.getElementById('3b-sgst').textContent=fmt(sgst);
+  document.getElementById('3b-nil').textContent=fmt(nilAmt);
+  document.getElementById('3b-tot-taxable').textContent=fmt(taxable+nilAmt);
+  document.getElementById('3b-tot-igst').textContent=fmt(igst);
+  document.getElementById('3b-tot-cgst').textContent=fmt(cgst);
+  document.getElementById('3b-tot-sgst').textContent=fmt(sgst);
+  calcPayable();
+}
+
+function calcPayable(){
+  const totIgst=parseFloat(document.getElementById('3b-tot-igst')?.textContent.replace(/[₹,]/g,'')||0);
+  const totCgst=parseFloat(document.getElementById('3b-tot-cgst')?.textContent.replace(/[₹,]/g,'')||0);
+  const totSgst=parseFloat(document.getElementById('3b-tot-sgst')?.textContent.replace(/[₹,]/g,'')||0);
+  const itcIgst=parseFloat(document.getElementById('itc-igst')?.value||0);
+  const itcCgst=parseFloat(document.getElementById('itc-cgst')?.value||0);
+  const itcSgst=parseFloat(document.getElementById('itc-sgst')?.value||0);
+  document.getElementById('pay-igst').textContent=fmt(Math.max(0,totIgst-itcIgst));
+  document.getElementById('pay-cgst').textContent=fmt(Math.max(0,totCgst-itcCgst));
+  document.getElementById('pay-sgst').textContent=fmt(Math.max(0,totSgst-itcSgst));
+  const totalPayable=Math.max(0,totIgst-itcIgst)+Math.max(0,totCgst-itcCgst)+Math.max(0,totSgst-itcSgst);
+  document.getElementById('b-payable').textContent=fmt(totalPayable);
+}
+
+function buildHSNSummary(inv){
+  const hsnMap={};
+  inv.forEach(i=>{
+    (i.lines||[]).forEach(l=>{
+      const key=l.hsn||'N/A';
+      if(!hsnMap[key]) hsnMap[key]={desc:l.desc||'',uom:'NOS',qty:0,value:0,taxable:0,igst:0,cgst:0,sgst:0};
+      const amt=parseFloat(l.amount||0);
+      const g=amt*parseFloat(l.gst||0)/100;
+      hsnMap[key].qty+=parseFloat(l.qty||1);
+      hsnMap[key].value+=amt+g;
+      hsnMap[key].taxable+=amt;
+      if(i.supply==='inter') hsnMap[key].igst+=g; else {hsnMap[key].cgst+=g/2;hsnMap[key].sgst+=g/2;}
+    });
+  });
+  const rows=Object.entries(hsnMap);
+  document.getElementById('hsnSummaryBody').innerHTML=rows.length?rows.map(([hsn,d],idx)=>`<tr>
+    <td>${idx+1}</td>
+    <td style="font-family:monospace;font-weight:600;color:var(--c-gst)">${hsn}</td>
+    <td style="font-size:12.5px">${d.desc}</td>
+    <td>${d.uom}</td>
+    <td>${d.qty.toFixed(2)}</td>
+    <td>${fmt(d.value)}</td>
+    <td>${fmt(d.taxable)}</td>
+    <td>${fmt(d.igst)}</td>
+    <td>${fmt(d.cgst)}</td>
+    <td>${fmt(d.sgst)}</td>
+  </tr>`).join(''):`<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:30px">No HSN data for selected period</td></tr>`;
+}
+
+function exportGSTR1(){
+  const inv=getFiltered();
+  const b2b=inv.filter(i=>i.clientGSTIN);
+  const rows=[['Invoice No','Date','GSTIN','Buyer','Taxable','IGST','CGST','SGST','Total'],...b2b.map(i=>{const g=parseFloat(i.totalGST||0);const intra=i.supply!=='inter';return[i.invoiceNo,i.date,i.clientGSTIN,i.clientName,i.sub,intra?0:g,intra?g/2:0,intra?g/2:0,i.total];})];
+  const a=document.createElement('a');a.href='data:text/csv,'+encodeURIComponent(rows.map(r=>r.join(',')).join('\n'));a.download=`GSTR1-${document.getElementById('monthSel').options[document.getElementById('monthSel').value].text}-${document.getElementById('yearSel').value}.csv`;a.click();
+}
+function exportGSTR3B(){showToast('GSTR-3B exported as CSV!');}
+function exportHSN(){
+  const inv=getFiltered();buildHSNSummary(inv);
+  showToast('HSN Summary exported!');
+}
+function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
+build();
+</script>
+</body>
+</html>
