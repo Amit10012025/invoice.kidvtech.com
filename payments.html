@@ -209,16 +209,16 @@ async function savePayment(){
   if(iIdx===''||!amount){alert('Invoice and amount required');return;}
   const inv=invoices[iIdx];
   const p={invoiceIdx:iIdx,invoiceNo:inv?.invoiceNo||'',clientName:inv?.clientName||'',date:document.getElementById('f-date').value,amount:parseFloat(amount),method:document.getElementById('f-method').value,ref:document.getElementById('f-ref').value,status:document.getElementById('f-status').value,remarks:document.getElementById('f-remarks').value};
-  const pid=await DB.add('payments',p);
+  const pid=await KIDV.add('payments',p);
   payments.push({...p,_id:pid});
   if(inv&&parseFloat(amount)>=parseFloat(inv.total||0)){
     invoices[iIdx].status='paid';
     const invId=invoices[iIdx]._id||iIdx;
-    await DB.set('invoices',invId,invoices[iIdx]);
+    await KIDV.set('invoices',invId,invoices[iIdx]);
   }
   closeModal();renderPayments();
 }
-async function deletePayment(i){if(confirm('Delete?')){const id=payments[i]._id||i;await DB.delete('payments',id);payments.splice(i,1);renderPayments();}}
+async function deletePayment(i){if(confirm('Delete?')){const id=payments[i]._id||i;await KIDV.delete('payments',id);payments.splice(i,1);renderPayments();}}
 </script>
 </body>
 </html>
