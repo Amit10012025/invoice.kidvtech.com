@@ -360,14 +360,25 @@ function shareWA(){
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
+// Quick load from localStorage first (instant!)
+const _previewInv = localStorage.getItem('kidv-preview-invoice');
+if(_previewInv){
+  try{
+    const inv = JSON.parse(_previewInv);
+    invoices = [inv];
+    renderInvoice(inv);
+  }catch(e){}
+}
+
 document.addEventListener('kidv:db-ready',async()=>{
   try{invoices=await KIDV.list('invoices');}catch(e){invoices=[];}
   if(!invoices.length) invoices=[DEMO];
   const params=new URLSearchParams(location.search);
   currentIdx=Math.max(0,Math.min(invoices.length-1,parseInt(params.get('idx')||'0')));
   renderInvoice(invoices[currentIdx]);
+  // Clear preview cache
+  localStorage.removeItem('kidv-preview-invoice');
 });
-setTimeout(()=>{if(document.getElementById('hInvNo').textContent==='—'){invoices=[DEMO];renderInvoice(DEMO);}},2000);
 </script>
 </body>
 </html>
