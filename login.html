@@ -7,79 +7,234 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#e6edf3;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-body::before{content:'';position:fixed;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(47,129,247,0.08),transparent 70%);pointer-events:none;}
-body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(57,208,216,0.06),transparent 70%);pointer-events:none;}
-.login-card{background:#fff;border:1px solid #e2e8f0;border-radius:24px;width:420px;max-width:95vw;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,0.5);animation:slideUp .4s cubic-bezier(0.2,0,0,1);}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-.logo-wrap{display:flex;align-items:center;gap:14px;margin-bottom:32px;}
-.logo-box{width:48px;height:48px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(47,129,247,0.35);}
-.logo-text{font-size:20px;font-weight:700;}.logo-sub{font-size:12px;color:#7d8590;margin-top:2px;}
-.login-title{font-size:24px;font-weight:700;margin-bottom:6px;}
-.login-sub{font-size:14px;color:#7d8590;margin-bottom:28px;}
-.tab-row{display:flex;gap:4px;background:#f0f4f8;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:4px;margin-bottom:24px;}
-.tab{flex:1;padding:8px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;}
-.tab.active{background:#fff;color:#1a2332;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+body{font-family:'Outfit',sans-serif;min-height:100vh;display:flex;overflow:hidden;}
+
+/* ── LEFT PANEL ── */
+.left-panel{
+  width:55%;flex-shrink:0;
+  background:linear-gradient(145deg,#0f1f3d 0%,#1a3a6b 50%,#0d3359 100%);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:48px;
+}
+/* Decorative circles */
+.left-panel::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(47,129,247,0.12);pointer-events:none;}
+.left-panel::after{content:'';position:absolute;bottom:-100px;left:-60px;width:280px;height:280px;border-radius:50%;background:rgba(57,208,216,0.08);pointer-events:none;}
+.lp-circle-mid{position:absolute;top:40%;right:10%;width:180px;height:180px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);pointer-events:none;}
+
+/* Left top — logo */
+.lp-logo{display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.lp-logo-box{width:46px;height:46px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(47,129,247,0.4);}
+.lp-logo-name{font-size:20px;font-weight:800;color:#fff;}
+.lp-logo-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;letter-spacing:.05em;}
+
+/* Left middle — headline */
+.lp-hero{position:relative;z-index:1;margin-top:auto;margin-bottom:auto;padding:40px 0 20px;}
+.lp-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.35);color:#60a5fa;font-size:11.5px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:.04em;}
+.lp-tag .material-icons-round{font-size:14px;}
+.lp-headline{font-size:36px;font-weight:800;color:#fff;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;}
+.lp-headline span{background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.lp-desc{font-size:14px;color:rgba(255,255,255,0.55);line-height:1.75;max-width:360px;margin-bottom:32px;}
+
+/* Feature chips */
+.lp-features{display:flex;flex-direction:column;gap:12px;margin-bottom:8px;}
+.lp-feat{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;}
+.lp-feat-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lp-feat-icon .material-icons-round{font-size:18px;}
+.lp-feat-text{font-size:13px;color:rgba(255,255,255,0.8);font-weight:500;}
+.lp-feat-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px;}
+
+/* Left bottom — stats */
+.lp-stats{display:flex;gap:28px;position:relative;z-index:1;padding-top:24px;border-top:1px solid rgba(255,255,255,0.08);}
+.lp-stat-val{font-size:22px;font-weight:800;color:#fff;}
+.lp-stat-lbl{font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;}
+
+/* ── RIGHT PANEL ── */
+.right-panel{
+  flex:1;background:#f0f4f8;
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 32px;overflow-y:auto;
+}
+.login-card{
+  background:#fff;border-radius:24px;
+  width:100%;max-width:420px;
+  padding:40px 36px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.1);
+  animation:slideUp .4s cubic-bezier(0.2,0,0,1);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.login-title{font-size:24px;font-weight:800;color:#1a2332;margin-bottom:6px;}
+.login-sub{font-size:13.5px;color:#6b7a90;margin-bottom:28px;line-height:1.5;}
+.tab-row{display:flex;gap:4px;background:#f0f4f8;border-radius:10px;padding:4px;margin-bottom:24px;}
+.tab{flex:1;padding:9px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;}
+.tab.active{background:#fff;color:#1a2332;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
 .form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:12px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;}
 .input-wrap{position:relative;}
-.input-wrap .material-icons-round{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#4a5568;}
-.form-group input{width:100%;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px 12px 42px;color:#1a2332;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;}
-.form-group input:focus{border-color:#2f81f7;box-shadow:0 0 0 3px rgba(47,129,247,0.12);}
-.form-group input::placeholder{color:#4a5568;}
-.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 20px rgba(47,129,247,0.35);transition:all .18s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(47,129,247,0.45);}
+.input-wrap .material-icons-round{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:18px;color:#9ca3af;}
+.form-group input{width:100%;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px 11px 40px;color:#1a2332;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;}
+.form-group input:focus{border-color:#2f81f7;background:#fff;box-shadow:0 0 0 3px rgba(47,129,247,0.1);}
+.form-group input::placeholder{color:#c0ccda;}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:'Outfit',sans-serif;font-size:14.5px;font-weight:700;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 20px rgba(47,129,247,0.3);transition:all .18s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(47,129,247,0.4);}
 .btn-login:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 .btn-login .material-icons-round{font-size:20px;}
-.error-box{background:rgba(248,81,73,0.08);border:1px solid rgba(248,81,73,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:#f85149;margin-bottom:16px;display:none;align-items:center;gap:8px;}
+.error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 14px;font-size:13px;color:#ef4444;margin-bottom:16px;display:none;align-items:center;gap:8px;}
 .error-box.show{display:flex;}
 .error-box .material-icons-round{font-size:16px;flex-shrink:0;}
 .forgot{text-align:right;margin-top:-8px;margin-bottom:16px;}
-.forgot a{font-size:12.5px;color:#2f81f7;text-decoration:none;cursor:pointer;}
+.forgot a{font-size:12.5px;color:#2f81f7;cursor:pointer;text-decoration:none;}
 .forgot a:hover{text-decoration:underline;}
-.loading-spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.loading-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.admin-badge{background:rgba(247,201,72,0.1);border:1px solid rgba(247,201,72,0.2);border-radius:8px;padding:8px 14px;font-size:12px;color:#f7c948;margin-bottom:20px;display:flex;align-items:center;gap:6px;}
+.admin-badge{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 14px;font-size:12px;color:#d97706;margin-bottom:20px;display:flex;align-items:center;gap:6px;}
 .admin-badge .material-icons-round{font-size:15px;}
+.trial-note{margin-top:20px;padding:12px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;font-size:12px;color:#0369a1;display:flex;align-items:center;gap:8px;line-height:1.5;}
+.trial-note .material-icons-round{font-size:16px;flex-shrink:0;}
+.footer-note{text-align:center;margin-top:20px;font-size:12px;color:#9ca3af;}
+.footer-note a{color:#2f81f7;text-decoration:none;font-weight:500;}
+
+/* Mobile responsive */
+@media(max-width:768px){
+  .left-panel{display:none;}
+  .right-panel{padding:24px 16px;}
+}
 </style>
 </head>
 <body>
-<div class="login-card">
-  <div class="logo-wrap">
-    <div class="logo-box">KI</div>
-    <div><div class="logo-text">KIDV Invoice</div><div class="logo-sub">by KIDV Tech</div></div>
-  </div>
-  <div class="login-title" id="formTitle">Welcome back</div>
-  <div class="login-sub" id="formSub">Sign in to your account</div>
-  <div class="tab-row">
-    <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-    <button class="tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
-  </div>
-  <div class="error-box" id="errorBox"><span class="material-icons-round">error</span><span id="errorMsg"></span></div>
 
-  <!-- Login -->
-  <div id="loginForm">
-    <div class="form-group"><label>Email</label><div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div></div>
-    <div class="form-group"><label>Password</label><div class="input-wrap"><span class="material-icons-round">lock</span><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div></div>
-    <div class="forgot"><a onclick="doForgot()">Forgot password?</a></div>
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">
-      <span class="loading-spinner" id="loginSpinner"></span>
-      <span class="material-icons-round" id="loginIcon">login</span>
-      <span id="loginTxt">Sign In</span>
-    </button>
+<!-- ── LEFT PANEL ── -->
+<div class="left-panel">
+  <div class="lp-circle-mid"></div>
+
+  <!-- Logo -->
+  <div class="lp-logo">
+    <div class="lp-logo-box">KI</div>
+    <div>
+      <div class="lp-logo-name">KIDV Invoice</div>
+      <div class="lp-logo-sub">by KIDV Tech · kidvtech.com</div>
+    </div>
   </div>
 
-  <!-- Register -->
-  <div id="registerForm" style="display:none">
-    <div class="admin-badge"><span class="material-icons-round">admin_panel_settings</span>Admin account — full access to all data</div>
-    <div class="form-group"><label>Full Name</label><div class="input-wrap"><span class="material-icons-round">person</span><input type="text" id="regName" placeholder="Your name"/></div></div>
-    <div class="form-group"><label>Email</label><div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="regEmail" placeholder="your@email.com"/></div></div>
-    <div class="form-group"><label>Password</label><div class="input-wrap"><span class="material-icons-round">lock</span><input type="password" id="regPass" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"/></div></div>
-    <button class="btn-login" id="regBtn" onclick="doRegister()">
-      <span class="loading-spinner" id="regSpinner"></span>
-      <span class="material-icons-round" id="regIcon">person_add</span>
-      <span id="regTxt">Create Account</span>
-    </button>
+  <!-- Hero -->
+  <div class="lp-hero">
+    <div class="lp-tag"><span class="material-icons-round">auto_awesome</span>GST-Ready Invoicing Software</div>
+    <div class="lp-headline">Smart Invoicing<br/>for <span>Indian Business</span></div>
+    <div class="lp-desc">Create professional GST invoices, manage customers, track payments — all in one place. No accounting knowledge needed.</div>
+
+    <div class="lp-features">
+      <div class="lp-feat">
+        <div class="lp-feat-icon" style="background:rgba(47,129,247,0.15)"><span class="material-icons-round" style="color:#60a5fa">receipt_long</span></div>
+        <div>
+          <div class="lp-feat-text">GST Tax Invoices</div>
+          <div class="lp-feat-sub">CGST · SGST · IGST · E-Invoice ready</div>
+        </div>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon" style="background:rgba(52,211,153,0.15)"><span class="material-icons-round" style="color:#34d399">payments</span></div>
+        <div>
+          <div class="lp-feat-text">Payment Tracking</div>
+          <div class="lp-feat-sub">Outstanding · Paid · WhatsApp reminders</div>
+        </div>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon" style="background:rgba(251,191,36,0.15)"><span class="material-icons-round" style="color:#fbbf24">bar_chart</span></div>
+        <div>
+          <div class="lp-feat-text">GST Returns Ready</div>
+          <div class="lp-feat-sub">GSTR-1 · GSTR-3B · HSN Summary</div>
+        </div>
+      </div>
+      <div class="lp-feat">
+        <div class="lp-feat-icon" style="background:rgba(167,139,250,0.15)"><span class="material-icons-round" style="color:#a78bfa">cloud_sync</span></div>
+        <div>
+          <div class="lp-feat-text">Cloud Backup</div>
+          <div class="lp-feat-sub">Firebase · Access from anywhere</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="lp-stats">
+    <div>
+      <div class="lp-stat-val">14</div>
+      <div class="lp-stat-lbl">Day Free Trial</div>
+    </div>
+    <div>
+      <div class="lp-stat-val">₹499</div>
+      <div class="lp-stat-lbl">Per Month</div>
+    </div>
+    <div>
+      <div class="lp-stat-val">100%</div>
+      <div class="lp-stat-lbl">GST Compliant</div>
+    </div>
+    <div>
+      <div class="lp-stat-val">24/7</div>
+      <div class="lp-stat-lbl">Cloud Access</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right-panel">
+  <div class="login-card">
+    <div class="login-title" id="formTitle">Welcome back 👋</div>
+    <div class="login-sub" id="formSub">Sign in to your KIDV Invoice account</div>
+
+    <div class="tab-row">
+      <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <div class="error-box" id="errorBox"><span class="material-icons-round">error</span><span id="errorMsg"></span></div>
+
+    <!-- Login -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap"><span class="material-icons-round">lock</span><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      </div>
+      <div class="forgot"><a onclick="doForgot()">Forgot password?</a></div>
+      <button class="btn-login" id="loginBtn" onclick="doLogin()">
+        <span class="loading-spinner" id="loginSpinner"></span>
+        <span class="material-icons-round" id="loginIcon">login</span>
+        <span id="loginTxt">Sign In</span>
+      </button>
+    </div>
+
+    <!-- Register -->
+    <div id="registerForm" style="display:none">
+      <div class="admin-badge"><span class="material-icons-round">admin_panel_settings</span>Full access — 14-day free trial included</div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="input-wrap"><span class="material-icons-round">person</span><input type="text" id="regName" placeholder="Your name"/></div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="regEmail" placeholder="your@email.com"/></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap"><span class="material-icons-round">lock</span><input type="password" id="regPass" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"/></div>
+      </div>
+      <button class="btn-login" id="regBtn" onclick="doRegister()">
+        <span class="loading-spinner" id="regSpinner"></span>
+        <span class="material-icons-round" id="regIcon">person_add</span>
+        <span id="regTxt">Start Free Trial</span>
+      </button>
+      <div class="trial-note">
+        <span class="material-icons-round">info</span>
+        14-day free trial · No credit card required · Cancel anytime
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Need help? <a href="https://wa.me/919898681171" target="_blank">📱 WhatsApp Support</a>
+    </div>
   </div>
 </div>
 
@@ -91,18 +246,12 @@ const FIREBASE_CONFIG={apiKey:"AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",authDoma
 if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth=firebase.auth();
 const db=firebase.firestore();
-
-// ADMIN emails — tame add karo
-const ADMIN_EMAILS=['amit@kidvtech.com']; // tamaro email add karo
+const ADMIN_EMAILS=['amit@kidvtech.com'];
 
 auth.onAuthStateChanged(async user=>{
   if(user){
-    // Mark as admin if in list
     const isAdmin=ADMIN_EMAILS.includes(user.email.toLowerCase());
-    await db.collection('users').doc(user.uid).set({
-      email:user.email,name:user.displayName||'',
-      isAdmin:isAdmin,lastLogin:new Date().toISOString()
-    },{merge:true});
+    await db.collection('users').doc(user.uid).set({email:user.email,name:user.displayName||'',isAdmin:isAdmin,lastLogin:new Date().toISOString()},{merge:true});
     location.href='index.html';
   }
 });
@@ -112,11 +261,10 @@ function switchTab(t){
   document.getElementById('registerForm').style.display=t==='register'?'':'none';
   document.getElementById('tabLogin').classList.toggle('active',t==='login');
   document.getElementById('tabRegister').classList.toggle('active',t==='register');
-  document.getElementById('formTitle').textContent=t==='login'?'Welcome back':'Create account';
-  document.getElementById('formSub').textContent=t==='login'?'Sign in to your account':'Set up KIDV Invoice account';
+  document.getElementById('formTitle').textContent=t==='login'?'Welcome back 👋':'Create account ✨';
+  document.getElementById('formSub').textContent=t==='login'?'Sign in to your KIDV Invoice account':'Start your 14-day free trial today';
   hideError();
 }
-
 function setLoading(btn,spinner,icon,txt,on,label){
   document.getElementById(btn).disabled=on;
   document.getElementById(spinner).style.display=on?'block':'none';
@@ -129,41 +277,33 @@ function friendlyError(code){
   const m={'auth/user-not-found':'Email not found. Please create account.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Invalid email or password.','auth/email-already-in-use':'Email already registered. Please sign in.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Invalid email address.','auth/too-many-requests':'Too many attempts. Try again later.'};
   return m[code]||'Error: '+code;
 }
-
 async function doLogin(){
   const email=document.getElementById('loginEmail').value.trim();
   const pass=document.getElementById('loginPass').value;
   if(!email||!pass){showError('Please enter email and password.');return;}
   hideError();
   setLoading('loginBtn','loginSpinner','loginIcon','loginTxt',true,'Sign In');
-  try{ await auth.signInWithEmailAndPassword(email,pass); }
-  catch(e){ showError(friendlyError(e.code)); setLoading('loginBtn','loginSpinner','loginIcon','loginTxt',false,'Sign In'); }
+  try{await auth.signInWithEmailAndPassword(email,pass);}
+  catch(e){showError(friendlyError(e.code));setLoading('loginBtn','loginSpinner','loginIcon','loginTxt',false,'Sign In');}
 }
-
 async function doRegister(){
   const name=document.getElementById('regName').value.trim();
   const email=document.getElementById('regEmail').value.trim();
   const pass=document.getElementById('regPass').value;
   if(!name||!email||!pass){showError('Please fill all fields.');return;}
   hideError();
-  setLoading('regBtn','regSpinner','regIcon','regTxt',true,'Create Account');
+  setLoading('regBtn','regSpinner','regIcon','regTxt',true,'Start Free Trial');
   try{
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
-    // Set trial start
-    await db.collection('users').doc(cred.user.uid).set({
-      email:email, name:name,
-      createdAt: new Date().toISOString(),
-      subscriptionStatus: 'trial',
-    },{merge:true});
-  }catch(e){ showError(friendlyError(e.code)); setLoading('regBtn','regSpinner','regIcon','regTxt',false,'Create Account'); }
+    await db.collection('users').doc(cred.user.uid).set({email:email,name:name,createdAt:new Date().toISOString(),subscriptionStatus:'trial'},{merge:true});
+  }catch(e){showError(friendlyError(e.code));setLoading('regBtn','regSpinner','regIcon','regTxt',false,'Start Free Trial');}
 }
-
 async function doForgot(){
   const email=document.getElementById('loginEmail').value.trim();
   if(!email){showError('Enter your email first.');return;}
-  try{ await auth.sendPasswordResetEmail(email); alert('Password reset email sent to '+email); }
-  catch(e){ showError(friendlyError(e.code)); }
+  try{await auth.sendPasswordResetEmail(email);alert('Password reset email sent to '+email);}
+  catch(e){showError(friendlyError(e.code));}
 }
 </script>
 </body>
