@@ -383,7 +383,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 let invoices=[], payments=[], clients=[], products=[];
 async function loadReportData(){
   [invoices,payments,clients,products] = await Promise.all([
-    DB.list('invoices'),DB.list('payments'),DB.list('clients'),DB.list('products')
+    KIDV.list('invoices'),DB.list('payments'),DB.list('clients'),DB.list('products')
   ]);
   buildAll();
 }
