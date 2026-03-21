@@ -241,7 +241,7 @@ function showPanel(id, el){
 }
 
 async function loadAll(){
-  const comp=await DB.getSettings('company');
+  const comp=await KIDV.getSettings('company');
   if(comp.name) document.getElementById('c-name').value=comp.name;
   if(comp.display) document.getElementById('c-display').value=comp.display;
   if(comp.email) document.getElementById('c-email').value=comp.email;
@@ -250,13 +250,13 @@ async function loadAll(){
   if(comp.city) document.getElementById('c-city').value=comp.city;
   if(comp.address) document.getElementById('c-address').value=comp.address;
 
-  const gst=await DB.getSettings('gst');
+  const gst=await KIDV.getSettings('gst');
   if(gst.gstin) document.getElementById('g-gstin').value=gst.gstin;
   if(gst.pan) document.getElementById('g-pan').value=gst.pan;
   if(gst.state) document.getElementById('g-state').value=gst.state;
   if(gst.statecode) document.getElementById('g-statecode').value=gst.statecode;
 
-  const bank=await DB.getSettings('bank');
+  const bank=await KIDV.getSettings('bank');
   if(bank.name) document.getElementById('b-name').value=bank.name;
   if(bank.bank) document.getElementById('b-bank').value=bank.bank;
   if(bank.acc) document.getElementById('b-acc').value=bank.acc;
@@ -278,17 +278,17 @@ async function loadAll(){
 
 async function saveCompany(){
   const c={name:document.getElementById('c-name').value,display:document.getElementById('c-display').value,email:document.getElementById('c-email').value,phone:document.getElementById('c-phone').value,web:document.getElementById('c-web').value,city:document.getElementById('c-city').value,address:document.getElementById('c-address').value};
-  await DB.saveSettings('company',c);
+  await KIDV.saveSettings('company',c);
   showToast('Company profile saved! ✅');
 }
 async function saveGST(){
   const g={gstin:document.getElementById('g-gstin').value.toUpperCase(),pan:document.getElementById('g-pan').value.toUpperCase(),state:document.getElementById('g-state').value,statecode:document.getElementById('g-statecode').value,type:document.getElementById('g-type').value,rate:document.getElementById('g-rate').value};
-  await DB.saveSettings('gst',g);
+  await KIDV.saveSettings('gst',g);
   showToast('GST settings saved! ✅');
 }
 async function saveBank(){
   const b={name:document.getElementById('b-name').value,bank:document.getElementById('b-bank').value,acc:document.getElementById('b-acc').value,ifsc:document.getElementById('b-ifsc').value.toUpperCase(),branch:document.getElementById('b-branch').value,upi:document.getElementById('b-upi').value};
-  await DB.saveSettings('bank',b);
+  await KIDV.saveSettings('bank',b);
   showToast('Bank details saved! ✅');
 }
 function saveFirebase(){
