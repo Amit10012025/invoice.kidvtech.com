@@ -230,9 +230,9 @@ let comp={};
 
 async function loadAll(){
   [invoices, clients, products] = await Promise.all([
-    DB.list('invoices'), DB.list('clients'), DB.list('products')
+    KIDV.list('invoices'), KIDV.list('clients'), KIDV.list('products')
   ]);
-  comp = await DB.getSettings('company');
+  comp = await KIDV.getSettings('company');
   renderInvoices();
 }
 document.addEventListener('kidv:db-ready', loadAll);
@@ -258,6 +258,7 @@ function renderInvoices(list){
       <td>
         <button class="action-btn" onclick="previewInvoice(${i})" title="Preview"><span class="material-icons-round">visibility</span></button>
         <button class="action-btn" onclick="editInv(${i})" title="Edit"><span class="material-icons-round">edit</span></button>
+        <button class="action-btn" onclick="whatsappShare(${i})" title="WhatsApp" style="color:#25d366"><span class="material-icons-round">share</span></button>
         <button class="action-btn" onclick="markPaid(${i})" title="Mark Paid" style="${invoices[i].status==='paid'?'color:var(--c-clients)':''}"><span class="material-icons-round">check_circle</span></button>
         <button class="action-btn" onclick="deleteInv(${i})" title="Delete"><span class="material-icons-round">delete</span></button>
       </td>
@@ -388,18 +389,18 @@ async function saveInvoice(status){
   };
   if(editIdx>=0){
     const id=invoices[editIdx]._id||editIdx;
-    await DB.set('invoices',id,inv);
+    await KIDV.set('invoices',id,inv);
     invoices[editIdx]={...inv,_id:id};
   } else {
-    const id=await DB.add('invoices',inv);
+    const id=await KIDV.add('invoices',inv);
     invoices.push({...inv,_id:id});
   }
   closeModal(); renderInvoices();
 }
 
-async function deleteInv(i){if(confirm('Delete invoice?')){const id=invoices[i]._id||i;await DB.delete('invoices',id);invoices.splice(i,1);renderInvoices();}}
+async function deleteInv(i){if(confirm('Delete invoice?')){const id=invoices[i]._id||i;await KIDV.delete('invoices',id);invoices.splice(i,1);renderInvoices();}}
 function editInv(i){openModal(i);}
-async function markPaid(i){invoices[i].status='paid';const id=invoices[i]._id||i;await DB.set('invoices',id,invoices[i]);renderInvoices();}
+async function markPaid(i){invoices[i].status='paid';const id=invoices[i]._id||i;await KIDV.set('invoices',id,invoices[i]);renderInvoices();}
 
 function previewInvoice(i){
   const inv=invoices[i];
@@ -432,6 +433,12 @@ function previewInvoice(i){
 }
 function closePrint(){document.getElementById('printBg').classList.remove('open');}
 
+
+function whatsappShare(i){
+  const inv = invoices[i];
+  const phone = clients.find(c=>c.name===inv.clientName)?.phone||'';
+  KIDV.shareWhatsApp(inv, phone);
+}
 </script>
 </body>
 </html>
