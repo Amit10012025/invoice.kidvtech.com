@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Subscribe</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.logo-bar{display:flex;align-items:center;gap:12px;margin-bottom:32px;}
+.logo-box{width:44px;height:44px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;}
+.logo-name{font-size:18px;font-weight:700;color:#1a2332;}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:900px;width:100%;margin-bottom:32px;}
+.plan-card{background:#fff;border-radius:20px;padding:28px 24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:2px solid transparent;position:relative;transition:all .2s;}
+.plan-card.popular{border-color:#2f81f7;box-shadow:0 8px 32px rgba(47,129,247,0.2);}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;}
+.plan-name{font-size:14px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.plan-price{font-size:36px;font-weight:800;color:#1a2332;line-height:1;}
+.plan-price span{font-size:14px;font-weight:500;color:#6b7a90;}
+.plan-desc{font-size:13px;color:#6b7a90;margin:8px 0 20px;}
+.plan-features{list-style:none;margin-bottom:24px;}
+.plan-features li{font-size:13px;color:#374151;padding:6px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f0f4f8;}
+.plan-features li:last-child{border-bottom:none;}
+.plan-features li .material-icons-round{font-size:16px;color:#16a34a;flex-shrink:0;}
+.btn-plan{width:100%;padding:12px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-outline{background:#fff;color:#2f81f7;border:2px solid #2f81f7;}
+.btn-outline:hover{background:#f0f4f8;}
+.razorpay-note{text-align:center;font-size:12px;color:#9ca3af;margin-bottom:16px;}
+.razorpay-note img{height:20px;vertical-align:middle;margin-left:4px;}
+.logout-link{font-size:13px;color:#6b7a90;cursor:pointer;text-decoration:underline;}
+.trial-info{background:#fff;border-radius:16px;padding:20px 24px;max-width:900px;width:100%;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;display:flex;align-items:center;gap:16px;}
+.trial-icon{width:48px;height:48px;background:#fff7ed;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.trial-icon .material-icons-round{font-size:24px;color:#d97706;}
+</style>
+</head>
+<body>
+
+<div class="logo-bar">
+  <div class="logo-box">KI</div>
+  <div class="logo-name">KIDV Invoice</div>
+</div>
+
+<div class="trial-info" id="trialInfo" style="display:none">
+  <div class="trial-icon"><span class="material-icons-round">hourglass_top</span></div>
+  <div>
+    <div style="font-size:15px;font-weight:700;color:#1a2332" id="trialMsg">Your trial period</div>
+    <div style="font-size:13px;color:#6b7a90;margin-top:3px">Upgrade to keep full access to all features and your data.</div>
+  </div>
+</div>
+
+<div class="plans-grid">
+
+  <!-- Monthly -->
+  <div class="plan-card">
+    <div class="plan-name">Monthly</div>
+    <div class="plan-price">₹499 <span>/ month</span></div>
+    <div class="plan-desc">Billed monthly. Cancel anytime.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Unlimited Invoices</li>
+      <li><span class="material-icons-round">check</span>Unlimited Customers</li>
+      <li><span class="material-icons-round">check</span>GST Reports (GSTR-1, 3B)</li>
+      <li><span class="material-icons-round">check</span>WhatsApp Sharing</li>
+      <li><span class="material-icons-round">check</span>Cloud Backup (Firebase)</li>
+      <li><span class="material-icons-round">check</span>PDF Download</li>
+    </ul>
+    <button class="btn-plan btn-outline" onclick="initPayment('monthly',499)">Choose Monthly</button>
+  </div>
+
+  <!-- Yearly — Popular -->
+  <div class="plan-card popular">
+    <div class="popular-badge">🔥 Most Popular — Save 33%</div>
+    <div class="plan-name">Yearly</div>
+    <div class="plan-price">₹3,999 <span>/ year</span></div>
+    <div class="plan-desc">₹333/month. Best value.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Everything in Monthly</li>
+      <li><span class="material-icons-round">check</span>Priority Support</li>
+      <li><span class="material-icons-round">check</span>E-Invoice (IRN) Ready</li>
+      <li><span class="material-icons-round">check</span>E-Way Bill Ready</li>
+      <li><span class="material-icons-round">check</span>HSN/SAC Master</li>
+      <li><span class="material-icons-round">check</span>Free Updates — 1 Year</li>
+    </ul>
+    <button class="btn-plan btn-primary" onclick="initPayment('yearly',3999)">Choose Yearly</button>
+  </div>
+
+  <!-- Lifetime -->
+  <div class="plan-card">
+    <div class="plan-name">Lifetime</div>
+    <div class="plan-price">₹9,999 <span>one-time</span></div>
+    <div class="plan-desc">Pay once. Use forever.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Everything in Yearly</li>
+      <li><span class="material-icons-round">check</span>Lifetime Updates</li>
+      <li><span class="material-icons-round">check</span>Multi-Company Support</li>
+      <li><span class="material-icons-round">check</span>Dedicated Support</li>
+      <li><span class="material-icons-round">check</span>Custom Branding</li>
+      <li><span class="material-icons-round">check</span>API Access</li>
+    </ul>
+    <button class="btn-plan btn-outline" onclick="initPayment('lifetime',9999)">Choose Lifetime</button>
+  </div>
+
+</div>
+
+<div class="razorpay-note">Secure payment via Razorpay &nbsp;|&nbsp; UPI · Cards · NetBanking · Wallets accepted</div>
+<div style="margin-bottom:12px;font-size:13px;color:#6b7a90;text-align:center">
+  Need help? <a href="https://wa.me/919898681171?text=Hi, I need help with KIDV Invoice subscription" target="_blank" style="color:#25d366;font-weight:600">📱 WhatsApp us</a>
+</div>
+<span class="logout-link" onclick="if(window.KIDV)KIDV.logout()">← Back to Login</span>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+// Show trial info
+document.addEventListener('kidv:db-ready', async()=>{
+  if(!KIDV._ready||!KIDV._uid) return;
+  const doc = await KIDV._db.collection('users').doc(KIDV._uid).get();
+  const data = doc.exists ? doc.data() : {};
+  const registeredAt = data.createdAt ? new Date(data.createdAt) : new Date();
+  const trialEnd = new Date(registeredAt.getTime() + 14*24*60*60*1000);
+  const daysLeft = Math.max(0, Math.ceil((trialEnd-new Date())/(24*60*60*1000)));
+  const info = document.getElementById('trialInfo');
+  const msg = document.getElementById('trialMsg');
+  if(data.subscriptionStatus==='active'){
+    msg.textContent = '✅ Your subscription is active!';
+    info.style.display='flex';
+    setTimeout(()=>location.href='index.html',2000);
+  } else if(daysLeft>0){
+    msg.textContent = `Trial: ${daysLeft} day${daysLeft===1?'':'s'} remaining`;
+    info.style.display='flex';
+  } else {
+    msg.textContent = '⚠️ Your trial has expired. Please subscribe to continue.';
+    info.style.display='flex';
+    info.style.borderLeft='4px solid #ef4444';
+  }
+});
+
+function initPayment(plan, amount){
+  if(!KIDV._user){ alert('Please login first'); return; }
+
+  // Check if Razorpay key is configured
+  const rzpKey = 'YOUR_RAZORPAY_KEY_ID'; // Replace with actual key
+
+  if(rzpKey === 'YOUR_RAZORPAY_KEY_ID'){
+    // Razorpay not configured — manual payment flow
+    const msg = `Hi, I want to subscribe to KIDV Invoice.\n\nPlan: ${plan.toUpperCase()}\nAmount: ₹${amount.toLocaleString('en-IN')}\nEmail: ${KIDV._user.email}\n\nPlease activate my account.`;
+    window.open('https://wa.me/919898681171?text='+encodeURIComponent(msg),'_blank');
+    alert('WhatsApp message opened!\n\nAfter payment, we will activate your account within 24 hours.');
+    return;
+  }
+
+  // Razorpay payment
+  const options = {
+    key: rzpKey,
+    amount: amount * 100,
+    currency: 'INR',
+    name: 'KIDV Invoice',
+    description: `${plan.charAt(0).toUpperCase()+plan.slice(1)} Subscription`,
+    image: '',
+    prefill: {
+      email: KIDV._user.email,
+      name: KIDV._user.displayName||'',
+    },
+    theme: { color: '#2f81f7' },
+    handler: async function(response){
+      // Payment success — update Firestore
+      const now = new Date();
+      const expiry = plan==='monthly'
+        ? new Date(now.getTime()+30*24*60*60*1000)
+        : plan==='yearly'
+        ? new Date(now.getTime()+365*24*60*60*1000)
+        : new Date('2099-12-31');
+
+      await KIDV._db.collection('users').doc(KIDV._uid).set({
+        subscriptionStatus: 'active',
+        subscriptionPlan: plan,
+        subscriptionExpiry: expiry.toISOString(),
+        subscriptionActivatedAt: now.toISOString(),
+        razorpayPaymentId: response.razorpay_payment_id,
+      }, {merge:true});
+
+      alert('✅ Payment successful! Welcome to KIDV Invoice.');
+      location.href='index.html';
+    }
+  };
+  new Razorpay(options).open();
+}
+</script>
+<!-- Razorpay SDK (load when needed) -->
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+</body>
+</html>

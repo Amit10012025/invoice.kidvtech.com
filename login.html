@@ -150,6 +150,12 @@ async function doRegister(){
   try{
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
+    // Set trial start
+    await db.collection('users').doc(cred.user.uid).set({
+      email:email, name:name,
+      createdAt: new Date().toISOString(),
+      subscriptionStatus: 'trial',
+    },{merge:true});
   }catch(e){ showError(friendlyError(e.code)); setLoading('regBtn','regSpinner','regIcon','regTxt',false,'Create Account'); }
 }
 

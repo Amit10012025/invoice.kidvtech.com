@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;color:#1a2332;}
+.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
+.topbar-title{font-size:16px;font-weight:700;color:#fff;}
+.admin-badge{background:#7c3aed;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;}
+.btn-danger{background:#ef4444;color:#fff;}
+.btn-success{background:#16a34a;color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn .material-icons-round{font-size:16px;}
+.main{padding:28px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.stat-val{font-size:28px;font-weight:800;color:#1a2332;}
+.stat-lbl{font-size:12px;color:#6b7a90;margin-top:4px;}
+.stat-icon{font-size:22px;margin-bottom:10px;}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;}
+.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;font-size:10.5px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #f0f4f8;}
+td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.badge-trial{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
+.badge-active{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.badge-expired{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+.badge-admin{background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;}
+.actions{display:flex;gap:6px;}
+.search{background:#f0f4f8;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:13px;width:260px;outline:none;}
+.search:focus{border-color:#2f81f7;}
+.empty{text-align:center;padding:40px;color:#9ca3af;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">KI</div>
+    <div class="topbar-title">KIDV Invoice — Admin Panel</div>
+    <div class="admin-badge">ADMIN ONLY</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index.html'"><span class="material-icons-round">arrow_back</span>Back to App</button>
+    <button class="btn btn-danger btn-sm" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Logout</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat"><div class="stat-icon">👥</div><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total Users</div></div>
+    <div class="stat"><div class="stat-icon">⏳</div><div class="stat-val" id="statTrial">—</div><div class="stat-lbl">On Trial</div></div>
+    <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="statActive">—</div><div class="stat-lbl">Active Subscriptions</div></div>
+    <div class="stat"><div class="stat-icon">🔴</div><div class="stat-val" id="statExpired">—</div><div class="stat-lbl">Trial Expired</div></div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Users</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input class="search" placeholder="Search by email..." oninput="filterUsers(this.value)" id="searchInput"/>
+        <button class="btn btn-primary btn-sm" onclick="loadUsers()"><span class="material-icons-round">refresh</span>Refresh</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Trial / Expiry</th><th>Registered</th><th>Actions</th></tr></thead>
+      <tbody id="usersTable"><tr><td colspan="7" class="empty">Loading users...</td></tr></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let allUsers = [];
+
+document.addEventListener('kidv:db-ready', async()=>{
+  if(!KIDV._ready){ alert('Not logged in'); location.href='login.html'; return; }
+  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
+  loadUsers();
+});
+
+async function loadUsers(){
+  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+  try {
+    const snap = await KIDV._db.collection('users').orderBy('createdAt','desc').get();
+    allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderUsers(allUsers);
+  } catch(e){
+    document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Error loading users</td></tr>';
+  }
+}
+
+function getStatus(u){
+  if(u.isAdmin) return 'admin';
+  if(u.subscriptionStatus==='active'){
+    const exp = u.subscriptionExpiry ? new Date(u.subscriptionExpiry) : null;
+    if(!exp || exp > new Date()) return 'active';
+  }
+  const reg = u.createdAt ? new Date(u.createdAt) : new Date();
+  const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+  const daysLeft = Math.ceil((trialEnd-new Date())/(24*60*60*1000));
+  if(daysLeft > 0) return 'trial:'+daysLeft;
+  return 'expired';
+}
+
+function renderUsers(users){
+  const now = new Date();
+  let trial=0,active=0,expired=0;
+  if(!users.length){
+    document.getElementById('usersTable').innerHTML='<tr><td colspan="7" class="empty">No users found</td></tr>';
+    return;
+  }
+  document.getElementById('usersTable').innerHTML = users.map((u,i)=>{
+    const st = getStatus(u);
+    let badge='', expInfo='';
+    if(st==='admin'){ badge='<span class="badge badge-admin">Admin</span>'; }
+    else if(st==='active'){ badge='<span class="badge badge-active">Active</span>'; active++; expInfo=u.subscriptionExpiry?new Date(u.subscriptionExpiry).toLocaleDateString('en-IN'):'Lifetime'; }
+    else if(st.startsWith('trial')){ const d=st.split(':')[1]; badge=`<span class="badge badge-trial">Trial (${d}d left)</span>`; trial++; expInfo=d+' days left'; }
+    else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
+
+    return `<tr>
+      <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+      <td style="font-weight:500">${u.email||'—'}</td>
+      <td>${u.name||u.displayName||'—'}</td>
+      <td>${badge}</td>
+      <td style="font-size:12px;color:#6b7a90">${expInfo}</td>
+      <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
+      <td><div class="actions">
+        <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','monthly')" title="Activate Monthly"><span class="material-icons-round">calendar_month</span></button>
+        <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','lifetime')" title="Activate Lifetime"><span class="material-icons-round">all_inclusive</span></button>
+        <button class="btn btn-danger btn-sm" onclick="suspendUser('${u.id}')" title="Suspend"><span class="material-icons-round">block</span></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('statTotal').textContent = users.length;
+  document.getElementById('statTrial').textContent = trial;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statExpired').textContent = expired;
+}
+
+async function activateUser(uid, plan){
+  const now = new Date();
+  const expiry = plan==='monthly'
+    ? new Date(now.getTime()+30*24*60*60*1000)
+    : plan==='yearly'
+    ? new Date(now.getTime()+365*24*60*60*1000)
+    : new Date('2099-12-31');
+
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'active',
+    subscriptionPlan:plan,
+    subscriptionExpiry:expiry.toISOString(),
+    subscriptionActivatedAt:now.toISOString(),
+    activatedByAdmin:KIDV._user.email,
+  },{merge:true});
+
+  alert(`✅ Activated: ${plan} plan\nExpiry: ${expiry.toLocaleDateString('en-IN')}`);
+  loadUsers();
+}
+
+async function suspendUser(uid){
+  if(!confirm('Suspend this user?')) return;
+  await KIDV._db.collection('users').doc(uid).set({subscriptionStatus:'suspended'},{merge:true});
+  alert('User suspended');
+  loadUsers();
+}
+
+function filterUsers(q){
+  const filtered = allUsers.filter(u=>(u.email||'').toLowerCase().includes(q.toLowerCase())||(u.name||'').toLowerCase().includes(q.toLowerCase()));
+  renderUsers(filtered);
+}
+</script>
+</body>
+</html>

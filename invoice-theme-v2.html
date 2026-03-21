@@ -125,7 +125,8 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
     <span id="navCounter" style="font-size:13px;color:#7d8590;min-width:60px;text-align:center">1 / 1</span>
     <button class="btn btn-ghost" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
     <button class="btn btn-ghost" onclick="shareWA()"><span class="material-icons-round" style="color:#25d366">share</span>WhatsApp</button>
-    <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print / PDF</button>
+    <button class="btn btn-ghost" onclick="downloadPDF()" style="color:#dc2626;border-color:#fecaca;"><span class="material-icons-round">picture_as_pdf</span>Download PDF</button>
+    <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print</button>
   </div>
 </div>
 
@@ -393,6 +394,17 @@ function renderInvoice(inv){
 }
 
 function navigate(dir){if(!invoices.length)return;currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));renderInvoice(invoices[currentIdx]);}
+
+function downloadPDF(){
+  // Set filename before print dialog
+  const inv = invoices.length ? invoices[currentIdx] : {};
+  const filename = (inv.invoiceNo||'invoice') + '-' + (inv.clientName||'').replace(/\s+/g,'-') + '.pdf';
+  // Chrome trick: use title as PDF filename
+  const origTitle = document.title;
+  document.title = filename;
+  window.print();
+  setTimeout(()=> document.title = origTitle, 100);
+}
 
 function shareWA(){
   const inv=invoices.length?invoices[currentIdx]:DEMO;

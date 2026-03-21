@@ -88,6 +88,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
 <script src="firebase-config.js"></script>
+<script src="subscription.js"></script>
 </head>
 <body>
 <nav class="rail">
@@ -100,6 +101,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
   <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
   <div class="rail-item" onclick="location.href='reports.html'"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-spacer"></div>
+  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
   <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
   <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item"><span class="material-icons-round">account_circle</span><div class="rail-tooltip">Profile</div></div>
