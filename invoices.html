@@ -179,8 +179,30 @@ tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="form-group"><label>Due Date</label><input type="date" id="f-due"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Client *</label><select id="f-client"><option value="">Select Client</option></select></div>
+        <div class="form-group"><label>Client *</label><select id="f-client" onchange="onClientChange()"><option value="">Select Client</option></select></div>
         <div class="form-group"><label>Supply Type</label><select id="f-supply" onchange="calcTotals()"><option value="intra">Intra-State (CGST+SGST)</option><option value="inter">Inter-State (IGST)</option></select></div>
+      </div>
+
+      <!-- Ship To toggle -->
+      <div style="margin-bottom:14px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)">
+          <input type="checkbox" id="f-shipto-toggle" onchange="toggleShipTo()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"/>
+          <span>Shipping address different from billing address (Consignee / Ship To)</span>
+        </label>
+      </div>
+      <div id="shipToSection" style="display:none;background:rgba(47,129,247,0.04);border:1px solid rgba(47,129,247,0.15);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">📦 Consignee / Ship To</div>
+        <div class="form-row">
+          <div class="form-group"><label>Consignee Name</label><input type="text" id="f-shipname" placeholder="Company or person name"/></div>
+          <div class="form-group"><label>GSTIN (if any)</label><input type="text" id="f-shipgstin" placeholder="GSTIN" style="text-transform:uppercase;font-family:monospace"/></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Shipping Address</label><input type="text" id="f-shipaddress" placeholder="Full delivery address"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label><input type="text" id="f-shipcity" placeholder="City"/></div>
+          <div class="form-group"><label>State</label><input type="text" id="f-shipstate" placeholder="State"/></div>
+        </div>
       </div>
 
       <div class="section-label">Line Items</div>
@@ -288,6 +310,13 @@ function openModal(idx=-1){
     document.getElementById('f-due').value=due.toISOString().split('T')[0];
     document.getElementById('f-status').value='pending';
     document.getElementById('f-notes').value='Thank you for your business!';
+    document.getElementById('f-shipto-toggle').checked = false;
+    document.getElementById('shipToSection').style.display = 'none';
+    document.getElementById('f-shipname').value='';
+    document.getElementById('f-shipgstin').value='';
+    document.getElementById('f-shipaddress').value='';
+    document.getElementById('f-shipcity').value='';
+    document.getElementById('f-shipstate').value='';
     document.getElementById('lineItems').innerHTML='';
     addLine();
   } else {
@@ -299,6 +328,17 @@ function openModal(idx=-1){
     document.getElementById('f-supply').value=inv.supply||'intra';
     document.getElementById('f-status').value=inv.status||'draft';
     document.getElementById('f-notes').value=inv.notes||'';
+    // Ship To
+    const hasShip = !!(inv.shipName||inv.shipAddress);
+    document.getElementById('f-shipto-toggle').checked = hasShip;
+    document.getElementById('shipToSection').style.display = hasShip ? '' : 'none';
+    if(hasShip){
+      document.getElementById('f-shipname').value    = inv.shipName||'';
+      document.getElementById('f-shipgstin').value   = inv.shipGSTIN||'';
+      document.getElementById('f-shipaddress').value = inv.shipAddress||'';
+      document.getElementById('f-shipcity').value    = inv.shipCity||'';
+      document.getElementById('f-shipstate').value   = inv.shipState||'';
+    }
     document.getElementById('lineItems').innerHTML='';
     (inv.lines||[]).forEach(l=>addLine(l));
   }
@@ -367,6 +407,25 @@ function getLines(){
   }));
 }
 
+function toggleShipTo(){
+  const on = document.getElementById('f-shipto-toggle').checked;
+  document.getElementById('shipToSection').style.display = on ? '' : 'none';
+}
+
+function onClientChange(){
+  const cIdx = document.getElementById('f-client').value;
+  if(cIdx===''||!clients[cIdx]) return;
+  // Auto-detect supply type based on client state
+  const clientState = clients[cIdx]?.state||'';
+  const compState = comp.city||'Gujarat';
+  if(clientState && !clientState.toLowerCase().includes('gujarat') && !compState.toLowerCase().includes(clientState.toLowerCase())){
+    document.getElementById('f-supply').value = 'inter';
+  } else {
+    document.getElementById('f-supply').value = 'intra';
+  }
+  calcTotals();
+}
+
 async function saveInvoice(status){
   const invno=document.getElementById('f-invno').value.trim();
   const cIdx=document.getElementById('f-client').value;
@@ -374,6 +433,10 @@ async function saveInvoice(status){
   const lines=getLines();
   const sub=lines.reduce((s,l)=>s+parseFloat(l.amount||0),0);
   const gstTotal=lines.reduce((s,l)=>s+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
+
+  // Ship To
+  const shipToEnabled = document.getElementById('f-shipto-toggle').checked;
+
   const inv={
     invoiceNo:invno,
     date:document.getElementById('f-date').value,
@@ -383,6 +446,7 @@ async function saveInvoice(status){
     clientGSTIN:clients[cIdx]?.gstin||'',
     clientAddress:clients[cIdx]?.address||'',
     clientState:clients[cIdx]?.state||'',
+    clientStateCode:clients[cIdx]?.stateCode||'24',
     supply:document.getElementById('f-supply').value,
     lines,
     sub:sub.toFixed(2),
@@ -392,6 +456,12 @@ async function saveInvoice(status){
     status:status||document.getElementById('f-status').value,
     notes:document.getElementById('f-notes').value,
     createdAt:new Date().toISOString(),
+    // Ship To fields
+    shipName:    shipToEnabled ? document.getElementById('f-shipname').value.trim()    : '',
+    shipGSTIN:   shipToEnabled ? document.getElementById('f-shipgstin').value.trim()   : '',
+    shipAddress: shipToEnabled ? document.getElementById('f-shipaddress').value.trim() : '',
+    shipCity:    shipToEnabled ? document.getElementById('f-shipcity').value.trim()    : '',
+    shipState:   shipToEnabled ? document.getElementById('f-shipstate').value.trim()   : '',
   };
   if(editIdx>=0){
     const id=invoices[editIdx]._id||editIdx;
