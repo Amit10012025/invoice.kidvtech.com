@@ -6,13 +6,13 @@
 
 // ── Firebase Config ──────────────────────────────────────
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyArgCHTFznNS6elZcehfp_rfaoBR8pb77s",
-  authDomain:        "invoice-6046a.firebaseapp.com",
-  projectId:         "invoice-6046a",
-  storageBucket:     "invoice-6046a.firebasestorage.app",
-  messagingSenderId: "877676932386",
-  appId:             "1:877676932386:web:f67eb2479dbb1c5496497b",
-  measurementId:     "G-LFNVCSBD4X"
+  apiKey:            "AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",
+  authDomain:        "kidv-tech-project.firebaseapp.com",
+  projectId:         "kidv-tech-project",
+  storageBucket:     "kidv-tech-project.firebasestorage.app",
+  messagingSenderId: "168663801953",
+  appId:             "1:168663801953:web:af953338df12480b4fca20",
+  measurementId:     "G-KY98RSCW77"
 };
 
 // ── Collection names ──────────────────────────────────────
