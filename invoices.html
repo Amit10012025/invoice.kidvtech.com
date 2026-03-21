@@ -192,17 +192,13 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       </div>
       <div id="shipToSection" style="display:none;background:rgba(47,129,247,0.04);border:1px solid rgba(47,129,247,0.15);border-radius:12px;padding:16px;margin-bottom:16px;">
         <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">📦 Consignee / Ship To</div>
-        <div class="form-row">
-          <div class="form-group"><label>Consignee Name</label><input type="text" id="f-shipname" placeholder="Company or person name"/></div>
-          <div class="form-group"><label>GSTIN (if any)</label><input type="text" id="f-shipgstin" placeholder="GSTIN" style="text-transform:uppercase;font-family:monospace"/></div>
+        <div class="form-group">
+          <label>Select Consignee (from Clients)</label>
+          <select id="f-shipclient" onchange="onShipClientChange()">
+            <option value="">— Select Client as Consignee —</option>
+          </select>
         </div>
-        <div class="form-row full">
-          <div class="form-group"><label>Shipping Address</label><input type="text" id="f-shipaddress" placeholder="Full delivery address"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>City</label><input type="text" id="f-shipcity" placeholder="City"/></div>
-          <div class="form-group"><label>State</label><input type="text" id="f-shipstate" placeholder="State"/></div>
-        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:12px;color:var(--muted);line-height:1.7" id="shipPreview" style="display:none"></div>
       </div>
 
       <div class="section-label">Line Items</div>
@@ -312,11 +308,8 @@ function openModal(idx=-1){
     document.getElementById('f-notes').value='Thank you for your business!';
     document.getElementById('f-shipto-toggle').checked = false;
     document.getElementById('shipToSection').style.display = 'none';
-    document.getElementById('f-shipname').value='';
-    document.getElementById('f-shipgstin').value='';
-    document.getElementById('f-shipaddress').value='';
-    document.getElementById('f-shipcity').value='';
-    document.getElementById('f-shipstate').value='';
+    document.getElementById('f-shipclient').value = '';
+    document.getElementById('shipPreview').innerHTML = '';
     document.getElementById('lineItems').innerHTML='';
     addLine();
   } else {
@@ -328,16 +321,18 @@ function openModal(idx=-1){
     document.getElementById('f-supply').value=inv.supply||'intra';
     document.getElementById('f-status').value=inv.status||'draft';
     document.getElementById('f-notes').value=inv.notes||'';
-    // Ship To
+    // Ship To restore
     const hasShip = !!(inv.shipName||inv.shipAddress);
     document.getElementById('f-shipto-toggle').checked = hasShip;
     document.getElementById('shipToSection').style.display = hasShip ? '' : 'none';
     if(hasShip){
-      document.getElementById('f-shipname').value    = inv.shipName||'';
-      document.getElementById('f-shipgstin').value   = inv.shipGSTIN||'';
-      document.getElementById('f-shipaddress').value = inv.shipAddress||'';
-      document.getElementById('f-shipcity').value    = inv.shipCity||'';
-      document.getElementById('f-shipstate').value   = inv.shipState||'';
+      populateShipClients();
+      // Find client index by name
+      const shipIdx = clients.findIndex(c=>c.name===inv.shipName);
+      if(shipIdx>=0){
+        document.getElementById('f-shipclient').value = shipIdx;
+        onShipClientChange();
+      }
     }
     document.getElementById('lineItems').innerHTML='';
     (inv.lines||[]).forEach(l=>addLine(l));
@@ -410,20 +405,34 @@ function getLines(){
 function toggleShipTo(){
   const on = document.getElementById('f-shipto-toggle').checked;
   document.getElementById('shipToSection').style.display = on ? '' : 'none';
+  if(on) populateShipClients();
 }
 
-function onClientChange(){
-  const cIdx = document.getElementById('f-client').value;
-  if(cIdx===''||!clients[cIdx]) return;
-  // Auto-detect supply type based on client state
-  const clientState = clients[cIdx]?.state||'';
-  const compState = comp.city||'Gujarat';
-  if(clientState && !clientState.toLowerCase().includes('gujarat') && !compState.toLowerCase().includes(clientState.toLowerCase())){
-    document.getElementById('f-supply').value = 'inter';
-  } else {
-    document.getElementById('f-supply').value = 'intra';
+function populateShipClients(){
+  const sel = document.getElementById('f-shipclient');
+  const currentVal = sel.value;
+  const billClientIdx = document.getElementById('f-client').value;
+  sel.innerHTML = '<option value="">— Select Client as Consignee —</option>' +
+    clients.map((c,i) =>
+      `<option value="${i}" ${i==currentVal?'selected':''}>${c.name}${c.city?' · '+c.city:''}</option>`
+    ).join('');
+  if(currentVal) sel.value = currentVal;
+  onShipClientChange();
+}
+
+function onShipClientChange(){
+  const idx = document.getElementById('f-shipclient').value;
+  const preview = document.getElementById('shipPreview');
+  if(idx===''||!clients[idx]){
+    preview.innerHTML=''; preview.style.display='none'; return;
   }
-  calcTotals();
+  const c = clients[idx];
+  preview.style.display='';
+  preview.innerHTML = `
+    <strong style="color:var(--text)">${c.name}</strong><br/>
+    ${[c.address, c.city, c.state].filter(Boolean).join(', ')||'—'}<br/>
+    ${c.gstin?'<span style="font-family:monospace;font-size:11px;color:var(--accent)">GSTIN: '+c.gstin+'</span>':''}
+  `;
 }
 
 async function saveInvoice(status){
@@ -434,8 +443,10 @@ async function saveInvoice(status){
   const sub=lines.reduce((s,l)=>s+parseFloat(l.amount||0),0);
   const gstTotal=lines.reduce((s,l)=>s+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
 
-  // Ship To
+  // Ship To — from selected client
   const shipToEnabled = document.getElementById('f-shipto-toggle').checked;
+  const shipIdx = document.getElementById('f-shipclient').value;
+  const shipClient = (shipToEnabled && shipIdx !== '') ? clients[shipIdx] : null;
 
   const inv={
     invoiceNo:invno,
@@ -456,12 +467,12 @@ async function saveInvoice(status){
     status:status||document.getElementById('f-status').value,
     notes:document.getElementById('f-notes').value,
     createdAt:new Date().toISOString(),
-    // Ship To fields
-    shipName:    shipToEnabled ? document.getElementById('f-shipname').value.trim()    : '',
-    shipGSTIN:   shipToEnabled ? document.getElementById('f-shipgstin').value.trim()   : '',
-    shipAddress: shipToEnabled ? document.getElementById('f-shipaddress').value.trim() : '',
-    shipCity:    shipToEnabled ? document.getElementById('f-shipcity').value.trim()    : '',
-    shipState:   shipToEnabled ? document.getElementById('f-shipstate').value.trim()   : '',
+    // Ship To from client
+    shipName:    shipClient ? shipClient.name    : '',
+    shipGSTIN:   shipClient ? shipClient.gstin   : '',
+    shipAddress: shipClient ? shipClient.address : '',
+    shipCity:    shipClient ? shipClient.city     : '',
+    shipState:   shipClient ? shipClient.state    : '',
   };
   if(editIdx>=0){
     const id=invoices[editIdx]._id||editIdx;
