@@ -7,24 +7,24 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#e6edf3;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
 body::before{content:'';position:fixed;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(47,129,247,0.08),transparent 70%);pointer-events:none;}
 body::after{content:'';position:fixed;bottom:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(57,208,216,0.06),transparent 70%);pointer-events:none;}
-.login-card{background:#161b22;border:1px solid rgba(255,255,255,0.08);border-radius:24px;width:420px;max-width:95vw;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,0.5);animation:slideUp .4s cubic-bezier(0.2,0,0,1);}
+.login-card{background:#fff;border:1px solid #e2e8f0;border-radius:24px;width:420px;max-width:95vw;padding:40px;box-shadow:0 24px 80px rgba(0,0,0,0.5);animation:slideUp .4s cubic-bezier(0.2,0,0,1);}
 @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 .logo-wrap{display:flex;align-items:center;gap:14px;margin-bottom:32px;}
 .logo-box{width:48px;height:48px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(47,129,247,0.35);}
 .logo-text{font-size:20px;font-weight:700;}.logo-sub{font-size:12px;color:#7d8590;margin-top:2px;}
 .login-title{font-size:24px;font-weight:700;margin-bottom:6px;}
 .login-sub{font-size:14px;color:#7d8590;margin-bottom:28px;}
-.tab-row{display:flex;gap:4px;background:#0d1117;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:4px;margin-bottom:24px;}
-.tab{flex:1;padding:8px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;color:#7d8590;background:none;transition:all .18s;}
-.tab.active{background:#161b22;color:#e6edf3;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.tab-row{display:flex;gap:4px;background:#f0f4f8;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:4px;margin-bottom:24px;}
+.tab{flex:1;padding:8px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;}
+.tab.active{background:#fff;color:#1a2332;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .form-group{margin-bottom:16px;}
 .form-group label{display:block;font-size:12px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;}
 .input-wrap{position:relative;}
 .input-wrap .material-icons-round{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;color:#4a5568;}
-.form-group input{width:100%;background:#1c2230;border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 14px 12px 42px;color:#e6edf3;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;}
+.form-group input{width:100%;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px 12px 42px;color:#1a2332;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;}
 .form-group input:focus{border-color:#2f81f7;box-shadow:0 0 0 3px rgba(47,129,247,0.12);}
 .form-group input::placeholder{color:#4a5568;}
 .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;border:none;border-radius:12px;cursor:pointer;box-shadow:0 4px 20px rgba(47,129,247,0.35);transition:all .18s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
