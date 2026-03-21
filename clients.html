@@ -184,7 +184,7 @@ tr:hover td{background:#f8faff;}
 <div class="flyout" id="flyout">
   <div class="flyout-header"><div class="flyout-title">Clients</div></div>
   <a class="flyout-link active" href="clients.html"><span class="material-icons-round">people_alt</span>All Clients</a>
-  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Client</a>
+  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Customer</a>
 </div>
 <div class="overlay" id="overlay" onclick="closeFlyout()"></div>
 
@@ -193,13 +193,13 @@ tr:hover td{background:#f8faff;}
     <div><div class="page-title">Clients</div><div class="page-subtitle">GSTIN auto-fill enabled · Manage customers</div></div>
     <div class="topbar-right">
       <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search clients..." id="searchInput" oninput="filterClients()"/></div>
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Client</button>
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Customer</button>
       <div class="avatar">A</div>
     </div>
   </div>
 
   <div class="stats-row">
-    <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.12);color:var(--c-clients)"><span class="material-icons-round">people_alt</span></div><div><div class="ms-val" id="s-total">0</div><div class="ms-label">Total Clients</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.12);color:var(--c-clients)"><span class="material-icons-round">people_alt</span></div><div><div class="ms-val" id="s-total">0</div><div class="ms-label">Total Customers</div></div></div>
     <div class="mini-stat"><div class="ms-icon" style="background:rgba(57,208,216,0.12);color:var(--c-invoice)"><span class="material-icons-round">receipt_long</span></div><div><div class="ms-val" id="s-invoiced">0</div><div class="ms-label">Invoiced</div></div></div>
     <div class="mini-stat"><div class="ms-icon" style="background:rgba(88,166,255,0.12);color:var(--c-payment)"><span class="material-icons-round">payments</span></div><div><div class="ms-val" id="s-outstanding">₹0</div><div class="ms-label">Outstanding</div></div></div>
     <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.1);color:var(--c-clients)"><span class="material-icons-round">verified</span></div><div><div class="ms-val" id="s-gst">0</div><div class="ms-label">GST Verified</div></div></div>
@@ -208,7 +208,7 @@ tr:hover td{background:#f8faff;}
   <div class="card">
     <div class="card-header"><div class="card-title">All Clients</div><span id="clientCount" style="font-size:13px;color:var(--muted)">0 clients</span></div>
     <table>
-      <thead><tr><th>Client</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Customer</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Actions</th></tr></thead>
       <tbody id="clientsBody"></tbody>
     </table>
   </div>
@@ -252,7 +252,7 @@ tr:hover td{background:#f8faff;}
       <!-- Basic Info -->
       <div class="section-label">Basic Information</div>
       <div class="form-row">
-        <div class="form-group"><label>Company / Client Name *</label><input type="text" id="f-name" placeholder="Auto-filled from GSTIN"/></div>
+        <div class="form-group"><label>Company / Customer Name *</label><input type="text" id="f-name" placeholder="Auto-filled from GSTIN"/></div>
         <div class="form-group"><label>Contact Person</label><input type="text" id="f-contact" placeholder="Person name"/></div>
       </div>
       <div class="form-row">
@@ -523,7 +523,7 @@ function openModal(idx=-1){
   editIdx=idx; clearForm();
   if(idx>=0){
     const c=clients[idx];
-    document.getElementById('modalTitle').textContent='Edit Client';
+    document.getElementById('modalTitle').textContent='Edit Customer';
     setVal('f-name',c.name||'');setVal('f-contact',c.contact||'');
     setVal('f-email',c.email||'');setVal('f-phone',c.phone||'');
     document.getElementById('f-ctype').value=c.ctype||'Company';
@@ -534,7 +534,7 @@ function openModal(idx=-1){
     setVal('f-address',c.address||'');setVal('f-city',c.city||'');setVal('f-pin',c.pin||'');
     if(c.gstin){ setVal('gstinLookup',c.gstin); localParse(c.gstin); document.getElementById('fetchBtn').disabled=false; document.getElementById('gstinLookup').classList.add('valid'); }
   } else {
-    document.getElementById('modalTitle').textContent='Add New Client';
+    document.getElementById('modalTitle').textContent='Add New Customer';
   }
   document.getElementById('modalBg').classList.add('open');
 }
@@ -574,7 +574,7 @@ async function saveClient(){
     clients.push({...c,_id:id});
   }
   closeModal(); renderClients(clients);
-  showToast(editIdx>=0?'Client updated! ✅':'Client saved to Firebase! ✅');
+  showToast(editIdx>=0?'Customer updated! ✅':'Customer saved! ✅');
 }
 async function deleteClient(i){
   if(confirm('Delete?')){
