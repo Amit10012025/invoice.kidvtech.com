@@ -3,46 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Theme Preview</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet"/>
+<title>KIDV Invoice – Tax Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <style>
-/* ════════════════════════════════════
-   APP SHELL
-════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
-
-/* Toolbar */
-.toolbar{
-  background:#161b22;
-  border-bottom:1px solid rgba(255,255,255,0.07);
-  padding:12px 28px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-}
+.toolbar{background:#161b22;border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .toolbar-left{display:flex;align-items:center;gap:16px;}
 .back-btn{display:flex;align-items:center;gap:6px;color:#7d8590;font-size:13.5px;cursor:pointer;text-decoration:none;transition:color .15s;}
-.back-btn:hover{color:#e6edf3;}
-.back-btn .material-icons-round{font-size:20px;}
-.divider{width:1px;height:22px;background:rgba(255,255,255,0.07);}
+.back-btn:hover{color:#e6edf3;}.back-btn .material-icons-round{font-size:20px;}
+.divider-v{width:1px;height:22px;background:rgba(255,255,255,0.07);}
 .toolbar-title{font-size:15px;font-weight:600;color:#e6edf3;}
-
-/* Theme switcher */
-.theme-switcher{display:flex;gap:0;background:#0d1117;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:4px;overflow:hidden;}
-.theme-btn{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 20px;
-  border-radius:8px;
-  font-family:'Outfit',sans-serif;
-  font-size:13px;font-weight:500;
-  cursor:pointer;border:none;
-  color:#7d8590;background:none;
-  transition:all .2s;
-}
-.theme-btn .dot{width:10px;height:10px;border-radius:50%;}
-.theme-btn.active{background:#161b22;color:#e6edf3;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
-
 .toolbar-right{display:flex;align-items:center;gap:10px;}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
 .btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
@@ -50,839 +22,352 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
 .btn-ghost{background:rgba(255,255,255,0.06);color:#e6edf3;border:1px solid rgba(255,255,255,0.08);}
 .btn-ghost:hover{background:rgba(255,255,255,0.1);}
 .btn .material-icons-round{font-size:17px;}
-
-/* Preview area */
-.preview-outer{
-  padding:36px 28px;
-  display:flex;justify-content:center;
-  min-height:calc(100vh - 60px);
-  background:radial-gradient(ellipse at top,#1a2438 0%,#0d1117 60%);
-}
-
-/* ════════════════════════════════════
-   INVOICE PAPER BASE
-════════════════════════════════════ */
-.invoice-paper{
-  width:794px;max-width:100%;
-  background:#fff;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 32px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
-  animation:paperIn .4s cubic-bezier(0.2,0,0,1);
-}
-@keyframes paperIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-/* ════════════════════════════════════
-   THEME A — "MERIDIAN"
-   Clean • Corporate • Minimal
-════════════════════════════════════ */
-#themeA{display:none;}
-#themeB{display:block;}
-
-/* Left accent stripe */
-.ma-stripe{
-  position:absolute;left:0;top:0;bottom:0;width:5px;
-  background:linear-gradient(180deg,#1e3a5f 0%,#2f81f7 50%,#39d0d8 100%);
-}
-
-.ma-wrap{position:relative;padding:0 48px 0 60px;}
-
-/* Header */
-.ma-header{
-  padding:44px 0 32px;
-  display:flex;justify-content:space-between;align-items:flex-start;
-  border-bottom:1.5px solid #f0f3f8;
-}
-.ma-brand{display:flex;flex-direction:column;}
-.ma-logo-box{
-  width:48px;height:48px;
-  background:linear-gradient(135deg,#1e3a5f,#2f81f7);
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Outfit',sans-serif;
-  font-size:16px;font-weight:800;
-  color:#fff;letter-spacing:-0.5px;
-  margin-bottom:12px;
-}
-.ma-company-name{
-  font-family:'Outfit',sans-serif;
-  font-size:20px;font-weight:700;
-  color:#0f1f3d;
-  letter-spacing:-0.3px;
-}
-.ma-company-sub{font-size:12px;color:#8896b0;margin-top:2px;font-weight:400;}
-.ma-company-gstin{
-  font-size:11px;color:#2f81f7;font-weight:600;
-  margin-top:8px;font-family:monospace;
-  letter-spacing:0.5px;
-}
-
-.ma-inv-block{text-align:right;}
-.ma-inv-label{
-  font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.14em;
-  color:#8896b0;margin-bottom:8px;
-}
-.ma-inv-number{
-  font-family:'Outfit',sans-serif;
-  font-size:32px;font-weight:800;
-  color:#0f1f3d;letter-spacing:-1px;line-height:1;
-}
-.ma-inv-date{font-size:13px;color:#8896b0;margin-top:6px;}
-.ma-inv-date strong{color:#374151;font-weight:600;}
-
-/* Dates row */
-.ma-dates{
-  display:flex;gap:0;
-  padding:16px 0;
-  border-bottom:1px solid #f0f3f8;
-}
-.ma-date-item{
-  flex:1;padding:0 20px 0 0;
-  border-right:1px solid #e8edf5;
-}
-.ma-date-item:first-child{padding-left:0;}
-.ma-date-item:last-child{border-right:none;}
-.ma-date-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#b0bad0;margin-bottom:5px;}
-.ma-date-val{font-size:14px;font-weight:600;color:#1a2b4a;}
-
-/* Parties */
-.ma-parties{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:0;padding:28px 0;
-  border-bottom:1px solid #f0f3f8;
-}
-.ma-party{padding-right:32px;}
-.ma-party:last-child{padding-right:0;padding-left:32px;border-left:1px solid #f0f3f8;}
-.ma-party-label{
-  font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.12em;
-  color:#2f81f7;margin-bottom:10px;
-  display:flex;align-items:center;gap:6px;
-}
-.ma-party-label::after{content:'';flex:1;height:1px;background:#e8edf5;}
-.ma-party-name{font-size:16px;font-weight:700;color:#0f1f3d;margin-bottom:4px;}
-.ma-party-detail{font-size:12.5px;color:#6b7c9b;line-height:1.7;}
-.ma-gstin-tag{
-  display:inline-block;margin-top:7px;
-  font-family:monospace;font-size:11px;font-weight:700;
-  color:#1e3a5f;background:#edf2ff;
-  padding:3px 10px;border-radius:4px;
-  letter-spacing:0.5px;border:1px solid #c8d8ff;
-}
-
-/* Items table */
-.ma-table-wrap{padding:0 0 0 0;}
-.ma-table{width:100%;border-collapse:collapse;}
-.ma-table thead tr{
-  background:#f7f9fc;
-  border-top:1.5px solid #e4eaf4;
-  border-bottom:1.5px solid #e4eaf4;
-}
-.ma-table th{
-  padding:11px 14px;
-  font-size:10.5px;font-weight:700;
-  color:#8896b0;text-transform:uppercase;
-  letter-spacing:0.09em;text-align:left;
-}
-.ma-table th:last-child,.ma-table td.amount{text-align:right;}
-.ma-table th.center,.ma-table td.center{text-align:center;}
-.ma-table td{
-  padding:13px 14px;
-  font-size:13px;color:#374151;
-  border-bottom:1px solid #f0f3f8;
-}
-.ma-table tbody tr:last-child td{border-bottom:none;}
-.ma-table tbody tr:hover td{background:#fafbff;}
-.ma-item-sno{
-  width:28px;height:28px;border-radius:6px;
-  background:#edf2ff;color:#2f81f7;
-  font-size:11px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-}
-.ma-item-name{font-weight:600;color:#0f1f3d;font-size:13.5px;}
-.ma-item-hsn{font-size:11px;color:#b0bad0;font-family:monospace;margin-top:2px;}
-.ma-gst-chip{
-  display:inline-block;padding:2px 8px;
-  border-radius:4px;font-size:11px;font-weight:600;
-  background:#f0f7ff;color:#2f81f7;
-}
-
-/* Totals */
-.ma-bottom{
-  display:grid;grid-template-columns:1fr 260px;
-  gap:0;border-top:2px solid #e4eaf4;
-  margin:0;
-}
-.ma-notes-col{padding:24px 24px 24px 0;border-right:1px solid #f0f3f8;}
-.ma-note-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#b0bad0;margin-bottom:7px;}
-.ma-note-text{font-size:12.5px;color:#6b7c9b;line-height:1.6;}
-.ma-words{margin-top:16px;}
-.ma-totals-col{padding:20px 0 20px 24px;}
-.ma-total-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;}
-.ma-total-row .tl{color:#8896b0;font-weight:500;}
-.ma-total-row .tv{font-weight:600;color:#374151;}
-.ma-total-divider{height:1px;background:#e4eaf4;margin:8px 0;}
-.ma-grand{
-  display:flex;justify-content:space-between;align-items:center;
-  background:#0f1f3d;margin:0 -24px -20px -24px;
-  padding:18px 24px;
-  border-radius:0;
-}
-.ma-grand .tl{color:rgba(255,255,255,0.6);font-size:11.5px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;}
-.ma-grand .tv{color:#fff;font-size:22px;font-weight:800;}
-
-/* Bank */
-.ma-bank{
-  background:#f7f9fc;
-  border-top:1.5px solid #e4eaf4;
-  padding:18px 0;
-  display:grid;grid-template-columns:1fr auto;
-  gap:20px;align-items:center;
-}
-.ma-bank-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#b0bad0;margin-bottom:7px;}
-.ma-bank-detail{font-size:12.5px;color:#374151;line-height:1.8;}
-.ma-bank-detail .val{font-weight:600;color:#0f1f3d;}
-
-/* Footer */
-.ma-footer{
-  border-top:1px solid #f0f3f8;
-  padding:16px 0;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.ma-footer-brand{font-size:11.5px;color:#b0bad0;}
-.ma-footer-brand strong{color:#2f81f7;}
-.ma-footer-sig{text-align:right;}
-.ma-sig-label{font-size:10px;color:#b0bad0;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:24px;}
-.ma-sig-name{font-size:12px;font-weight:700;color:#0f1f3d;border-top:1.5px solid #c8d4e8;padding-top:6px;}
-
+.preview-outer{padding:32px 24px;display:flex;justify-content:center;min-height:calc(100vh - 60px);}
+/* Invoice Paper */
+.invoice-paper{width:794px;max-width:100%;background:#fff;font-family:'Outfit',sans-serif;color:#111;border:1.5px solid #111;font-size:11px;box-shadow:0 24px 80px rgba(0,0,0,0.5);position:relative;}
 /* Paid stamp */
-.ma-stamp{
-  position:absolute;top:44px;right:48px;
-  border:3px solid #22c55e;color:#22c55e;
-  border-radius:8px;
-  padding:6px 16px;
-  font-size:13px;font-weight:800;
-  letter-spacing:0.2em;text-transform:uppercase;
-  transform:rotate(8deg);
-  background:rgba(34,197,94,0.05);
-  display:none;
-}
-.ma-stamp.show{display:block;}
-
-/* ════════════════════════════════════
-   THEME B — "AURORA"
-   Bold • Creative • Premium
-════════════════════════════════════ */
-.mb-header{
-  background:linear-gradient(120deg,#0a0f1e 0%,#0d2045 35%,#0a3d62 65%,#0d4f4f 100%);
-  padding:36px 44px 0;
-  position:relative;
-  overflow:hidden;
-}
-.mb-header::before{
-  content:'';position:absolute;
-  top:-80px;right:-80px;
-  width:320px;height:320px;border-radius:50%;
-  background:radial-gradient(circle,rgba(57,208,216,0.15),transparent 70%);
-}
-.mb-header::after{
-  content:'';position:absolute;
-  bottom:-40px;left:140px;
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(47,129,247,0.1),transparent 70%);
-}
-
-.mb-header-top{
-  display:flex;justify-content:space-between;
-  align-items:flex-start;position:relative;z-index:1;
-  padding-bottom:28px;
-}
-.mb-brand-name{
-  font-family:'Playfair Display',serif;
-  font-size:26px;font-weight:700;color:#fff;
-  letter-spacing:-0.3px;
-}
-.mb-brand-sub{font-size:11px;color:rgba(255,255,255,0.45);letter-spacing:0.12em;text-transform:uppercase;margin-top:3px;}
-.mb-brand-gstin{font-size:11px;color:rgba(57,208,216,0.8);font-family:monospace;margin-top:10px;letter-spacing:0.5px;}
-
-.mb-inv-right{text-align:right;}
-.mb-inv-word{
-  font-family:'Playfair Display',serif;
-  font-size:13px;font-style:italic;
-  color:rgba(255,255,255,0.4);
-  letter-spacing:0.08em;text-transform:uppercase;
-  margin-bottom:6px;
-}
-.mb-inv-no{
-  font-family:'Outfit',sans-serif;
-  font-size:30px;font-weight:800;
-  color:#fff;letter-spacing:-0.5px;
-}
-.mb-inv-meta{font-size:12.5px;color:rgba(255,255,255,0.5);margin-top:5px;}
-
-/* Curved bottom */
-.mb-header-bottom{
-  display:flex;gap:40px;
-  background:rgba(255,255,255,0.06);
-  border-top:1px solid rgba(255,255,255,0.08);
-  padding:16px 44px;
-  position:relative;z-index:1;
-  margin:0 -44px;
-}
-.mb-meta-item .label{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;font-weight:600;}
-.mb-meta-item .value{font-size:13px;color:#fff;font-weight:600;}
-
-/* Clip path bottom of header */
-.mb-header-clip{
-  height:24px;
-  background:#fff;
-  position:relative;
-  margin-top:-1px;
-}
-.mb-header-clip::before{
-  content:'';
-  position:absolute;bottom:0;left:0;right:0;top:0;
-  background:linear-gradient(120deg,#0a3d62,#0d4f4f);
-  clip-path:polygon(0 0,100% 0,100% 0%,0 100%);
-}
-
-/* Body */
-.mb-body{padding:32px 44px;}
-
+.paid-stamp{position:absolute;top:50px;right:50px;border:3px solid #22c55e;color:#22c55e;border-radius:6px;padding:5px 14px;font-size:14px;font-weight:800;letter-spacing:.2em;transform:rotate(8deg);background:rgba(34,197,94,0.05);display:none;z-index:10;}
+.paid-stamp.show{display:block;}
+/* Header */
+.inv-header{display:grid;grid-template-columns:60% 40%;border-bottom:1.5px solid #111;}
+.header-left{padding:12px 14px;border-right:1.5px solid #111;display:flex;gap:12px;align-items:flex-start;}
+.logo-box{width:62px;height:62px;background:linear-gradient(135deg,#1a3a6b,#2f81f7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;border:1px solid #1a3a6b;}
+.company-info{flex:1;}
+.company-name{font-size:13px;font-weight:800;color:#111;line-height:1.3;margin-bottom:3px;}
+.company-detail{font-size:9.5px;color:#333;line-height:1.65;}
+.header-right{padding:8px 12px;}
+.invoice-title{font-size:15px;font-weight:800;text-align:center;color:#fff;background:#1a3a6b;padding:7px;margin:-8px -12px 8px;letter-spacing:2px;}
+.meta-table{width:100%;border-collapse:collapse;}
+.meta-table tr td{font-size:10px;padding:3px 4px;border-bottom:1px dotted #ccc;}
+.meta-table tr:last-child td{border-bottom:none;}
+.meta-table .ml{font-weight:600;color:#444;width:48%;}
+.meta-table .mv{font-weight:700;color:#111;}
 /* Parties */
-.mb-parties{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:24px;margin-bottom:28px;
-}
-.mb-party-card{
-  background:#f8faff;
-  border:1px solid #e8eef8;
-  border-radius:12px;
-  padding:20px;
-}
-.mb-party-tag{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:0.12em;margin-bottom:12px;
-}
-.tag-from{color:#2f81f7;}
-.tag-to{color:#0d4f4f;}
-.mb-party-name{font-size:16px;font-weight:700;color:#0a1628;margin-bottom:4px;font-family:'DM Sans',sans-serif;}
-.mb-party-detail{font-size:12.5px;color:#6b7c9b;line-height:1.7;}
-.mb-gstin{
-  display:inline-block;margin-top:8px;
-  font-family:monospace;font-size:11px;font-weight:700;
-  padding:3px 10px;border-radius:4px;
-  letter-spacing:0.5px;
-}
-.gstin-from{background:#edf4ff;color:#1a4fa0;border:1px solid #c5daff;}
-.gstin-to{background:#e8f8f5;color:#0d6b5b;border:1px solid #b0e8dc;}
-
-/* Table */
-.mb-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
-.mb-thead{background:linear-gradient(90deg,#0a1628,#0d3359);}
-.mb-thead th{
-  padding:12px 16px;
-  font-size:10.5px;font-weight:600;
-  color:rgba(255,255,255,0.7);
-  text-transform:uppercase;letter-spacing:0.09em;
-  text-align:left;
-}
-.mb-thead th:last-child,.mb-table td.amount{text-align:right;}
-.mb-thead th.center,.mb-table td.center{text-align:center;}
-.mb-table td{
-  padding:13px 16px;
-  font-size:13px;color:#374151;
-  border-bottom:1px solid #f0f4fb;
-  font-family:'DM Sans',sans-serif;
-}
-.mb-table tbody tr:nth-child(even) td{background:#fafcff;}
-.mb-table tbody tr:last-child td{border-bottom:none;}
-.mb-item-badge{
-  width:26px;height:26px;border-radius:50%;
-  background:linear-gradient(135deg,#2f81f7,#39d0d8);
-  color:#fff;font-size:11px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-}
-.mb-item-name{font-weight:600;color:#0a1628;font-size:13.5px;}
-.mb-item-hsn{font-size:11px;color:#b0bad0;font-family:monospace;margin-top:2px;}
-.mb-gst-pill{
-  display:inline-block;padding:2px 9px;
-  border-radius:20px;font-size:11px;font-weight:700;
-  background:linear-gradient(90deg,rgba(47,129,247,0.12),rgba(57,208,216,0.12));
-  color:#1a5fa8;border:1px solid rgba(47,129,247,0.2);
-}
-
+.parties-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.party-block{padding:8px 12px;}
+.party-block:first-child{border-right:1.5px solid #111;}
+.party-type{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#fff;background:#444;padding:2px 7px;display:inline-block;border-radius:2px;margin-bottom:5px;}
+.party-name{font-size:12px;font-weight:800;color:#111;margin-bottom:3px;}
+.party-detail{font-size:9.5px;color:#333;line-height:1.65;}
+.party-gstin{font-size:10px;font-weight:700;color:#1a3a6b;margin-top:3px;}
+/* Items table */
+.items-table{width:100%;border-collapse:collapse;border-bottom:1.5px solid #111;}
+.items-table th{background:#1a3a6b;color:#fff;padding:6px 7px;font-size:9px;text-align:center;border-right:1px solid #2a4a8b;text-transform:uppercase;letter-spacing:.04em;font-weight:700;}
+.items-table th.left{text-align:left;}
+.items-table th:last-child{border-right:none;}
+.items-table td{padding:6px 7px;font-size:10.5px;border-bottom:1px solid #e0e0e0;border-right:1px solid #e0e0e0;vertical-align:top;}
+.items-table td:last-child{border-right:none;}
+.items-table td.c{text-align:center;}
+.items-table td.r{text-align:right;}
+.items-table tbody tr:nth-child(even) td{background:#f8f9ff;}
+.item-desc{font-weight:600;color:#111;}
+.item-hsn{font-size:9px;color:#666;font-family:monospace;margin-top:1px;}
+.items-table tfoot td{background:#eef2ff;font-weight:700;font-size:10.5px;border-top:1.5px solid #111;}
 /* Totals */
-.mb-bottom{display:grid;grid-template-columns:1fr 270px;gap:24px;margin-bottom:24px;}
-.mb-notes-box{
-  background:#f8faff;border:1px solid #e8eef8;
-  border-radius:12px;padding:20px;
-}
-.mb-note-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#b0bad0;margin-bottom:8px;}
-.mb-note-text{font-size:12.5px;color:#6b7c9b;line-height:1.6;}
-.mb-totals-box{
-  background:#f8faff;border:1px solid #e8eef8;
-  border-radius:12px;overflow:hidden;
-}
-.mb-total-row{display:flex;justify-content:space-between;padding:9px 18px;font-size:13px;border-bottom:1px solid #e8eef8;}
-.mb-total-row:last-child{border-bottom:none;}
-.mb-total-row .tl{color:#8896b0;font-weight:500;}
-.mb-total-row .tv{font-weight:600;color:#374151;}
-.mb-grand-row{
-  background:linear-gradient(120deg,#0a0f1e,#0d3359);
-  display:flex;justify-content:space-between;align-items:center;
-  padding:16px 18px;
-}
-.mb-grand-row .tl{color:rgba(255,255,255,0.6);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
-.mb-grand-row .tv{color:#fff;font-size:21px;font-weight:800;}
-
-/* Bank section */
-.mb-bank{
-  background:linear-gradient(90deg,#f8faff,#f0f8f7);
-  border:1px solid #e0eef5;
-  border-radius:12px;padding:20px;
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:24px;
-}
-.mb-bank-left .label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#b0bad0;margin-bottom:8px;}
-.mb-bank-detail{font-size:12.5px;color:#374151;line-height:1.8;}
-.mb-bank-detail .val{font-weight:600;color:#0a1628;}
-.mb-upi-box{text-align:center;}
-.mb-upi-label{font-size:10px;color:#b0bad0;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;}
-.mb-upi-val{
-  font-size:13px;font-weight:700;
-  background:linear-gradient(90deg,#2f81f7,#39d0d8);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  padding:6px 16px;
-  border:1px solid rgba(47,129,247,0.2);
-  border-radius:8px;
-  background-clip:text;
-}
-
+.totals-section{display:grid;grid-template-columns:55% 45%;border-bottom:1.5px solid #111;}
+.totals-left{padding:10px 12px;border-right:1.5px solid #111;}
+.words-label{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:2px;}
+.words-text{font-size:11px;font-style:italic;color:#111;font-weight:500;margin-bottom:8px;}
+.irn-box{background:#f0f4ff;border:1px solid #c5daff;border-radius:4px;padding:5px 8px;margin-top:6px;display:none;}
+.irn-box-label{font-size:8px;font-weight:700;color:#2f81f7;text-transform:uppercase;}
+.irn-val{font-size:8.5px;font-family:monospace;color:#333;word-break:break-all;}
+.totals-right{padding:0;}
+.total-row{display:flex;justify-content:space-between;padding:4px 12px;border-bottom:1px solid #eee;font-size:11px;}
+.total-row:last-child{border-bottom:none;}
+.total-row .tl{color:#444;}
+.total-row .tv{font-weight:700;color:#111;}
+.total-row.hi{background:#fff8e1;}
+.total-row.hi .tl{color:#e65100;font-weight:600;}
+.total-row.hi .tv{color:#e65100;}
+.total-row.grand{background:#1a3a6b;padding:7px 12px;}
+.total-row.grand .tl{color:#fff;font-weight:700;font-size:12px;}
+.total-row.grand .tv{color:#fff;font-weight:800;font-size:14px;}
+/* Bottom */
+.bottom-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.bottom-left{padding:8px 12px;border-right:1.5px solid #111;}
+.bottom-right{padding:8px 12px;}
+.sec-head{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#555;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:5px;}
+.pan-text{font-size:11px;font-weight:700;margin-bottom:6px;color:#111;}
+.decl-text{font-size:9.5px;color:#555;line-height:1.6;font-style:italic;}
+.bank-row{display:flex;gap:6px;font-size:10px;padding:2px 0;border-bottom:1px dotted #eee;}
+.bank-row:last-child{border-bottom:none;}
+.bank-lbl{font-weight:600;color:#444;min-width:90px;}
+.bank-val{color:#111;font-weight:500;}
+/* Signature */
+.sig-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.sig-block{padding:8px 12px;}
+.sig-block:first-child{border-right:1.5px solid #111;}
+.sig-label{font-size:9px;color:#666;margin-bottom:22px;}
+.sig-line{border-top:1.5px solid #555;padding-top:4px;margin-top:4px;}
+.sig-name{font-size:10.5px;font-weight:700;color:#111;}
+.sig-co{font-size:9.5px;color:#444;}
 /* Footer */
-.mb-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  padding-top:20px;
-  border-top:1px solid #e8eef8;
-}
-.mb-footer-brand{font-size:11.5px;color:#b0bad0;}
-.mb-footer-brand strong{
-  background:linear-gradient(90deg,#2f81f7,#39d0d8);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.mb-sig{text-align:right;}
-.mb-sig-label{font-size:10px;color:#b0bad0;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:24px;}
-.mb-sig-name{font-size:13px;font-weight:700;color:#0a1628;border-top:2px solid;border-image:linear-gradient(90deg,#2f81f7,#39d0d8) 1;padding-top:6px;}
-
-/* Paid stamp B */
-.mb-stamp{
-  position:absolute;
-  border:3px solid #22c55e;color:#22c55e;
-  border-radius:50%;width:90px;height:90px;
-  display:none;flex-direction:column;
-  align-items:center;justify-content:center;
-  font-size:12px;font-weight:800;
-  letter-spacing:0.1em;text-transform:uppercase;
-  transform:rotate(-12deg);
-  background:rgba(34,197,94,0.05);
-}
-.mb-stamp.show{display:flex;}
-
-/* ════════════
-   PRINT
-════════════ */
+.inv-footer{padding:5px 14px;text-align:center;font-size:9.5px;font-weight:800;color:#fff;background:#1a3a6b;letter-spacing:.12em;text-transform:uppercase;}
+/* Print */
 @media print{
   body{background:#fff;}
   .toolbar{display:none!important;}
   .preview-outer{padding:0;background:#fff;}
-  .invoice-paper{box-shadow:none;border-radius:0;width:100%;max-width:100%;}
-  @page{size:A4;margin:10mm;}
+  .invoice-paper{box-shadow:none;width:100%;max-width:100%;}
+  @page{size:A4;margin:6mm;}
 }
 </style>
 </head>
 <body>
-
-<!-- Toolbar -->
 <div class="toolbar">
   <div class="toolbar-left">
     <a class="back-btn" href="invoices.html"><span class="material-icons-round">arrow_back</span>Invoices</a>
-    <div class="divider"></div>
-    <span class="toolbar-title">Invoice Theme Preview</span>
+    <div class="divider-v"></div>
+    <span class="toolbar-title">Tax Invoice</span>
   </div>
-
-  <!-- Theme Label -->
-  <div style="display:flex;align-items:center;gap:8px;background:rgba(57,208,216,0.08);border:1px solid rgba(57,208,216,0.2);border-radius:10px;padding:8px 16px;">
-    <div style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#0d3359,#39d0d8);flex-shrink:0"></div>
-    <span style="font-size:13px;font-weight:600;color:#39d0d8">Theme: Aurora</span>
-    <span class="material-icons-round" style="font-size:16px;color:#39d0d8;margin-left:2px">check_circle</span>
-  </div>
-
   <div class="toolbar-right">
-    <button class="btn btn-ghost" onclick="shareWA()"><span class="material-icons-round">share</span>WhatsApp</button>
+    <button class="btn btn-ghost" onclick="navigate(-1)"><span class="material-icons-round">chevron_left</span></button>
+    <span id="navCounter" style="font-size:13px;color:#7d8590;min-width:60px;text-align:center">1 / 1</span>
+    <button class="btn btn-ghost" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
+    <button class="btn btn-ghost" onclick="shareWA()"><span class="material-icons-round" style="color:#25d366">share</span>WhatsApp</button>
     <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print / PDF</button>
   </div>
 </div>
 
-<!-- Preview -->
 <div class="preview-outer">
+<div class="invoice-paper" id="invoicePaper">
+  <div class="paid-stamp" id="paidStamp">✓ PAID</div>
 
-<!-- ════════ THEME A — MERIDIAN ════════ -->
-<div class="invoice-paper" id="themeA">
-  <div style="position:relative;">
-    <div class="ma-stripe"></div>
-    <div class="ma-stamp show" id="stampA">PAID</div>
-
-    <div class="ma-wrap">
-
-      <!-- Header -->
-      <div class="ma-header">
-        <div class="ma-brand">
-          <div class="ma-logo-box" id="a-logo">KI</div>
-          <div class="ma-company-name" id="a-cname">KIDV Tech</div>
-          <div class="ma-company-sub">Technology Solutions</div>
-          <div class="ma-company-gstin" id="a-gstin">GSTIN: 24XXXXX0000X1ZX</div>
-        </div>
-        <div class="ma-inv-block">
-          <div class="ma-inv-label">Tax Invoice</div>
-          <div class="ma-inv-number" id="a-invno">INV-001</div>
-          <div class="ma-inv-date">Date: <strong id="a-date">20 Mar 2026</strong></div>
-          <div class="ma-inv-date" style="margin-top:3px">Due: <strong id="a-due">19 Apr 2026</strong></div>
-        </div>
-      </div>
-
-      <!-- Dates strip -->
-      <div class="ma-dates">
-        <div class="ma-date-item">
-          <div class="ma-date-label">Payment Terms</div>
-          <div class="ma-date-val" id="a-terms">Net 30</div>
-        </div>
-        <div class="ma-date-item" style="padding-left:20px">
-          <div class="ma-date-label">Supply Type</div>
-          <div class="ma-date-val" id="a-supply">Intra-State</div>
-        </div>
-        <div class="ma-date-item" style="padding-left:20px">
-          <div class="ma-date-label">Place of Supply</div>
-          <div class="ma-date-val" id="a-pos">Gujarat (24)</div>
-        </div>
-        <div class="ma-date-item" style="padding-left:20px">
-          <div class="ma-date-label">IRN Status</div>
-          <div class="ma-date-val" style="color:#8896b0" id="a-irn">Not Generated</div>
-        </div>
-      </div>
-
-      <!-- Parties -->
-      <div class="ma-parties">
-        <div class="ma-party">
-          <div class="ma-party-label">From</div>
-          <div class="ma-party-name" id="a-fname">KIDV Tech</div>
-          <div class="ma-party-detail" id="a-fdetail">info@kidvtech.com · Ahmedabad, Gujarat</div>
-          <div class="ma-gstin-tag" id="a-fgstin">GSTIN: 24XXXXX0000X1ZX</div>
-        </div>
-        <div class="ma-party">
-          <div class="ma-party-label">Bill To</div>
-          <div class="ma-party-name" id="a-tname">Acme Industries Pvt. Ltd.</div>
-          <div class="ma-party-detail" id="a-tdetail">Plot 42, GIDC Phase 2<br/>Ahmedabad, Gujarat</div>
-          <div class="ma-gstin-tag" id="a-tgstin">GSTIN: 24AABCU9603R1ZX</div>
-        </div>
-      </div>
-
-      <!-- Items -->
-      <div class="ma-table-wrap">
-        <table class="ma-table">
-          <thead>
-            <tr>
-              <th style="width:40px">#</th>
-              <th>Description</th>
-              <th style="width:80px" class="center">HSN/SAC</th>
-              <th style="width:55px" class="center">Qty</th>
-              <th style="width:100px;text-align:right">Rate (₹)</th>
-              <th style="width:65px" class="center">GST</th>
-              <th style="width:110px;text-align:right">Amount (₹)</th>
-            </tr>
-          </thead>
-          <tbody id="a-items"></tbody>
-        </table>
-      </div>
-
-      <!-- Bottom -->
-      <div class="ma-bottom">
-        <div class="ma-notes-col">
-          <div class="ma-note-label">Notes</div>
-          <div class="ma-note-text" id="a-notes">Thank you for your business!</div>
-          <div class="ma-words">
-            <div class="ma-note-label">Amount in Words</div>
-            <div class="ma-note-text" id="a-words" style="font-style:italic;color:#374151"></div>
-          </div>
-        </div>
-        <div class="ma-totals-col">
-          <div class="ma-total-row"><span class="tl">Subtotal</span><span class="tv" id="a-sub">₹0.00</span></div>
-          <div class="ma-total-row" id="a-cgst-row"><span class="tl" id="a-cgst-lbl">CGST</span><span class="tv" id="a-cgst">₹0.00</span></div>
-          <div class="ma-total-row" id="a-sgst-row"><span class="tl" id="a-sgst-lbl">SGST</span><span class="tv" id="a-sgst">₹0.00</span></div>
-          <div class="ma-total-row" id="a-igst-row" style="display:none"><span class="tl">IGST</span><span class="tv" id="a-igst">₹0.00</span></div>
-          <div class="ma-total-divider"></div>
-          <div class="ma-grand">
-            <span class="tl">Total Payable</span>
-            <span class="tv" id="a-total">₹0.00</span>
-          </div>
-        </div>
+  <!-- HEADER -->
+  <div class="inv-header">
+    <div class="header-left">
+      <div class="logo-box" id="logoBox">KI</div>
+      <div class="company-info">
+        <div class="company-name" id="hCname">KIDV Tech</div>
+        <div class="company-detail" id="hCdetail">Ahmedabad, Gujarat</div>
       </div>
     </div>
+    <div class="header-right">
+      <div class="invoice-title">TAX INVOICE</div>
+      <table class="meta-table">
+        <tr><td class="ml">Invoice No</td><td class="mv" id="hInvNo">—</td></tr>
+        <tr><td class="ml">Invoice Date</td><td class="mv" id="hInvDate">—</td></tr>
+        <tr><td class="ml">Due Date</td><td class="mv" id="hDueDate">—</td></tr>
+        <tr><td class="ml">Payment Terms</td><td class="mv" id="hTerms">—</td></tr>
+        <tr><td class="ml">Place of Supply</td><td class="mv" id="hPos">Gujarat (24)</td></tr>
+        <tr><td class="ml">Supply Type</td><td class="mv" id="hSupply">Intra-State</td></tr>
+      </table>
+    </div>
+  </div>
 
-    <!-- Bank -->
-    <div class="ma-bank ma-wrap">
-      <div>
-        <div class="ma-bank-label">Payment Details</div>
-        <div class="ma-bank-detail" id="a-bank">Add bank details in Settings → Bank Details</div>
-      </div>
-      <div id="a-upi-wrap" style="display:none;text-align:center">
-        <div class="ma-bank-label">UPI</div>
-        <div id="a-upi" style="font-size:13px;font-weight:700;color:#2f81f7;background:#edf2ff;padding:6px 14px;border-radius:6px;border:1px solid #c8d8ff;"></div>
+  <!-- PARTIES -->
+  <div class="parties-section">
+    <div class="party-block">
+      <div class="party-type">Bill From (Supplier)</div>
+      <div class="party-name" id="fromName">KIDV Tech</div>
+      <div class="party-detail" id="fromDetail">Ahmedabad, Gujarat</div>
+      <div class="party-gstin" id="fromGSTIN"></div>
+    </div>
+    <div class="party-block">
+      <div class="party-type">Bill To (Buyer)</div>
+      <div class="party-name" id="toName">—</div>
+      <div class="party-detail" id="toDetail">—</div>
+      <div class="party-gstin" id="toGSTIN"></div>
+    </div>
+  </div>
+
+  <!-- ITEMS TABLE -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width:30px">Sr.</th>
+        <th class="left" style="width:36%">Description of Goods / Services</th>
+        <th style="width:65px">HSN/SAC</th>
+        <th style="width:40px">Qty</th>
+        <th style="width:38px">UOM</th>
+        <th style="width:80px">Rate (₹)</th>
+        <th style="width:48px">GST%</th>
+        <th style="width:90px">Amount (₹)</th>
+      </tr>
+    </thead>
+    <tbody id="itemsBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" class="r" style="font-size:10px;color:#555">Total Qty →</td>
+        <td class="c" id="totalQty">0</td>
+        <td colspan="3" class="r">Subtotal</td>
+        <td class="r" id="footerSub">₹0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- TOTALS -->
+  <div class="totals-section">
+    <div class="totals-left">
+      <div class="words-label">Amount in Words</div>
+      <div class="words-text" id="amtWords">—</div>
+      <div class="words-label">Tax Amount in Words</div>
+      <div class="words-text" id="taxWords">—</div>
+      <div class="irn-box" id="irnBox">
+        <div class="irn-box-label">IRN (Invoice Reference Number)</div>
+        <div class="irn-val" id="irnVal">—</div>
       </div>
     </div>
+    <div class="totals-right">
+      <div class="total-row"><span class="tl">Subtotal (Taxable Value)</span><span class="tv" id="tSub">₹0.00</span></div>
+      <div class="total-row hi" id="cgstRow"><span class="tl" id="cgstLbl">Output Tax CGST @ 9%</span><span class="tv" id="tCgst">₹0.00</span></div>
+      <div class="total-row hi" id="sgstRow"><span class="tl" id="sgstLbl">Output Tax SGST @ 9%</span><span class="tv" id="tSgst">₹0.00</span></div>
+      <div class="total-row hi" id="igstRow" style="display:none"><span class="tl" id="igstLbl">Output Tax IGST @ 18%</span><span class="tv" id="tIgst">₹0.00</span></div>
+      <div class="total-row"><span class="tl">Total Taxes and Charges</span><span class="tv" id="tTax">₹0.00</span></div>
+      <div class="total-row"><span class="tl">Rounding Adjustment</span><span class="tv">₹ 0.00</span></div>
+      <div class="total-row grand"><span class="tl">Grand Total</span><span class="tv" id="tGrand">₹0.00</span></div>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <div class="ma-footer ma-wrap" style="padding-bottom:28px">
-      <div class="ma-footer-brand">Generated by <strong>KIDV Invoice</strong> · kidvtech.com</div>
-      <div class="ma-footer-sig">
-        <div class="ma-sig-label">For KIDV Tech</div>
-        <div class="ma-sig-name" id="a-signame">Authorised Signatory</div>
+  <!-- BOTTOM -->
+  <div class="bottom-section">
+    <div class="bottom-left">
+      <div class="pan-text" id="panText"></div>
+      <div class="sec-head">Declaration</div>
+      <div class="decl-text" id="notesText">We declare that this invoice shows the actual price of the goods/services described and that all particulars are true and correct.</div>
+    </div>
+    <div class="bottom-right">
+      <div class="sec-head">Company's Bank Details</div>
+      <div class="bank-row"><span class="bank-lbl">Bank Name</span><span class="bank-val" id="bBank">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">A/c No.</span><span class="bank-val" id="bAcc">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">Branch &amp; IFS Code</span><span class="bank-val" id="bIfsc">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">UPI ID</span><span class="bank-val" id="bUpi">—</span></div>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="sig-section">
+    <div class="sig-block">
+      <div class="sig-label">Customer's Seal and Signature</div>
+      <div style="height:34px"></div>
+    </div>
+    <div class="sig-block" style="text-align:right">
+      <div class="sig-label" id="sigFor">For KIDV Tech</div>
+      <div style="height:34px"></div>
+      <div class="sig-line">
+        <div class="sig-name">Authorised Signatory</div>
       </div>
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <div class="inv-footer" id="invFooter">SUBJECT TO AHMEDABAD JURISDICTION</div>
+</div>
 </div>
 
-<!-- ════════ THEME B — AURORA ════════ -->
-<div class="invoice-paper" id="themeB">
-  <!-- Header -->
-  <div class="mb-header">
-    <div style="position:absolute;top:20px;right:44px;z-index:2" id="stampB">
-      <div class="mb-stamp show" style="position:static;transform:rotate(-12deg)">
-        <span class="material-icons-round" style="font-size:18px;margin-bottom:2px">check_circle</span>
-        PAID
-      </div>
-    </div>
-    <div class="mb-header-top">
-      <div>
-        <div class="mb-brand-name" id="b-cname">KIDV Tech</div>
-        <div class="mb-brand-sub">Technology Solutions</div>
-        <div class="mb-brand-gstin" id="b-gstin">GSTIN: 24XXXXX0000X1ZX</div>
-      </div>
-      <div class="mb-inv-right">
-        <div class="mb-inv-word">Tax Invoice</div>
-        <div class="mb-inv-no" id="b-invno">INV-001</div>
-        <div class="mb-inv-meta">Date: <strong style="color:rgba(255,255,255,0.8)" id="b-date">20 Mar 2026</strong> &nbsp;·&nbsp; Due: <strong style="color:#39d0d8" id="b-due">19 Apr 2026</strong></div>
-      </div>
-    </div>
-    <div class="mb-header-bottom">
-      <div class="mb-meta-item"><div class="label">Payment Terms</div><div class="value" id="b-terms">Net 30</div></div>
-      <div class="mb-meta-item"><div class="label">Supply Type</div><div class="value" id="b-supply">Intra-State</div></div>
-      <div class="mb-meta-item"><div class="label">Place of Supply</div><div class="value" id="b-pos">Gujarat (24)</div></div>
-      <div class="mb-meta-item"><div class="label">IRN</div><div class="value" style="color:rgba(255,255,255,0.4)" id="b-irn">Pending</div></div>
-    </div>
-  </div>
-  <div class="mb-header-clip"></div>
-
-  <!-- Body -->
-  <div class="mb-body">
-    <!-- Parties -->
-    <div class="mb-parties">
-      <div class="mb-party-card" style="border-top:3px solid #2f81f7">
-        <div class="mb-party-tag tag-from"><span class="material-icons-round" style="font-size:14px">business</span>From</div>
-        <div class="mb-party-name" id="b-fname">KIDV Tech</div>
-        <div class="mb-party-detail" id="b-fdetail">info@kidvtech.com<br/>Ahmedabad, Gujarat</div>
-        <div class="mb-gstin gstin-from" id="b-fgstin">GSTIN: 24XXXXX0000X1ZX</div>
-      </div>
-      <div class="mb-party-card" style="border-top:3px solid #39d0d8">
-        <div class="mb-party-tag tag-to"><span class="material-icons-round" style="font-size:14px">person</span>Bill To</div>
-        <div class="mb-party-name" id="b-tname">Acme Industries Pvt. Ltd.</div>
-        <div class="mb-party-detail" id="b-tdetail">Plot 42, GIDC Phase 2<br/>Ahmedabad, Gujarat</div>
-        <div class="mb-gstin gstin-to" id="b-tgstin">GSTIN: 24AABCU9603R1ZX</div>
-      </div>
-    </div>
-
-    <!-- Items -->
-    <table class="mb-table" style="margin-bottom:24px">
-      <thead class="mb-thead">
-        <tr>
-          <th style="width:40px">#</th>
-          <th>Description</th>
-          <th style="width:80px" class="center">HSN/SAC</th>
-          <th style="width:55px" class="center">Qty</th>
-          <th style="width:105px;text-align:right">Rate (₹)</th>
-          <th style="width:65px" class="center">GST</th>
-          <th style="width:115px;text-align:right">Amount (₹)</th>
-        </tr>
-      </thead>
-      <tbody id="b-items"></tbody>
-    </table>
-
-    <!-- Bottom -->
-    <div class="mb-bottom">
-      <div class="mb-notes-box">
-        <div class="mb-note-label">Notes & Terms</div>
-        <div class="mb-note-text" id="b-notes">Thank you for your business!</div>
-        <div style="margin-top:16px">
-          <div class="mb-note-label">Amount in Words</div>
-          <div class="mb-note-text" id="b-words" style="font-style:italic;color:#374151"></div>
-        </div>
-      </div>
-      <div class="mb-totals-box">
-        <div class="mb-total-row"><span class="tl">Subtotal</span><span class="tv" id="b-sub">₹0.00</span></div>
-        <div class="mb-total-row" id="b-cgst-row"><span class="tl" id="b-cgst-lbl">CGST</span><span class="tv" id="b-cgst">₹0.00</span></div>
-        <div class="mb-total-row" id="b-sgst-row"><span class="tl" id="b-sgst-lbl">SGST</span><span class="tv" id="b-sgst">₹0.00</span></div>
-        <div class="mb-total-row" id="b-igst-row" style="display:none"><span class="tl">IGST</span><span class="tv" id="b-igst">₹0.00</span></div>
-        <div class="mb-grand-row">
-          <span class="tl">Total Payable</span>
-          <span class="tv" id="b-total">₹0.00</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bank -->
-    <div class="mb-bank">
-      <div class="mb-bank-left">
-        <div class="label">Bank Transfer Details</div>
-        <div class="mb-bank-detail" id="b-bank">Add bank details in Settings → Bank Details</div>
-      </div>
-      <div class="mb-upi-box" id="b-upi-wrap" style="display:none">
-        <div class="mb-upi-label">Pay via UPI</div>
-        <div class="mb-upi-val" id="b-upi"></div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="mb-footer">
-      <div class="mb-footer-brand">Generated by <strong>KIDV Invoice</strong> · kidvtech.com</div>
-      <div class="mb-sig">
-        <div class="mb-sig-label">For KIDV Tech</div>
-        <div class="mb-sig-name" id="b-signame">Authorised Signatory</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-</div><!-- /preview-outer -->
-
+<script src="firebase-config.js"></script>
 <script>
-// ── Load real data ──
-const invoices = JSON.parse(localStorage.getItem('kidv-invoices')||'[]');
-const comp = JSON.parse(localStorage.getItem('kidv-company')||'{}');
-const gstConf = JSON.parse(localStorage.getItem('kidv-gst')||'{}');
-const bank = JSON.parse(localStorage.getItem('kidv-bank')||'{}');
-
 const ONES=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
 const TENS=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-function numToWords(n){n=Math.floor(n);if(n===0)return'Zero';if(n<20)return ONES[n];if(n<100)return TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');if(n<1000)return ONES[Math.floor(n/100)]+' Hundred'+(n%100?' '+numToWords(n%100):'');if(n<100000)return numToWords(Math.floor(n/1000))+' Thousand'+(n%1000?' '+numToWords(n%1000):'');if(n<10000000)return numToWords(Math.floor(n/100000))+' Lakh'+(n%100000?' '+numToWords(n%100000):'');return numToWords(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+numToWords(n%10000000):'');}
+function n2w(n){n=Math.floor(n);if(n===0)return'Zero';if(n<20)return ONES[n];if(n<100)return TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');if(n<1000)return ONES[Math.floor(n/100)]+' Hundred'+(n%100?' and '+n2w(n%100):'');if(n<100000)return n2w(Math.floor(n/1000))+' Thousand'+(n%1000?' '+n2w(n%1000):'');if(n<10000000)return n2w(Math.floor(n/100000))+' Lakh'+(n%100000?' '+n2w(n%100000):'');return n2w(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+n2w(n%10000000):'');}
 function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
-function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function set(id,v){const el=document.getElementById(id);if(el)el.textContent=v!=null?v:'—';}
 
-// Demo invoice if no data
-const demo={invoiceNo:'INV-001',date:'2026-03-20',due:'2026-04-19',terms:'Net 30',supply:'intra',status:'paid',clientName:'Acme Industries Pvt. Ltd.',clientGSTIN:'24AABCU9603R1ZX',clientAddress:'Plot 42, GIDC Phase 2',clientState:'Gujarat',lines:[{desc:'ERPNext Implementation',hsn:'998314',qty:1,rate:50000,gst:18,amount:50000},{desc:'Custom Module Development',hsn:'998314',qty:3,rate:8000,gst:18,amount:24000},{desc:'Annual Support & Maintenance',hsn:'998315',qty:1,rate:12000,gst:18,amount:12000}],sub:'86000.00',totalGST:'15480.00',total:'101480.00',notes:'Payment due within 30 days. Late fee of 2% per month applicable.'};
-const inv = invoices.length ? invoices[invoices.length-1] : demo;
+const DEMO={invoiceNo:'INV-001',date:'2026-03-21',due:'2026-04-20',terms:'Net 30',supply:'intra',status:'pending',clientName:'Acme Industries Pvt. Ltd.',clientGSTIN:'24AABCU9603R1ZX',clientAddress:'Plot 42, GIDC Phase 2, Vatva',clientState:'Gujarat',lines:[{desc:'ERPNext Implementation Services',hsn:'998314',qty:1,rate:50000,gst:18,amount:50000},{desc:'Custom Module Development',hsn:'998314',qty:3,rate:8000,gst:18,amount:24000},{desc:'Annual Support & Maintenance',hsn:'998315',qty:1,rate:12000,gst:18,amount:12000}],sub:'86000.00',totalGST:'15480.00',total:'101480.00',notes:'Thank you for your business!'};
 
-function fillTheme(prefix, inv){
-  const cname = comp.name||'KIDV Tech';
-  const gstin = gstConf.gstin||comp.gstin||'';
-  const sub = parseFloat(inv.sub||0);
-  const gstT = parseFloat(inv.totalGST||0);
-  const half = gstT/2;
-  const tot = parseFloat(inv.total||0);
-  const intra = inv.supply !== 'inter';
+let invoices=[],currentIdx=0;
+const comp=JSON.parse(localStorage.getItem('kidv-company')||'{}');
+const gstConf=JSON.parse(localStorage.getItem('kidv-gst')||'{}');
+const bank=JSON.parse(localStorage.getItem('kidv-bank')||'{}');
 
-  const set = (id,v) => { const el=document.getElementById(prefix+id); if(el) el.textContent=v||''; };
-  const setHTML = (id,v) => { const el=document.getElementById(prefix+id); if(el) el.innerHTML=v||''; };
+function renderInvoice(inv){
+  if(!inv) return;
+  document.getElementById('navCounter').textContent=(currentIdx+1)+' / '+Math.max(1,invoices.length);
+  document.getElementById('paidStamp').classList.toggle('show',inv.status==='paid');
 
-  set('-cname', cname);
-  set('-logo', cname.slice(0,2).toUpperCase());
-  set('-gstin', gstin?'GSTIN: '+gstin:'');
-  set('-invno', inv.invoiceNo||'INV-001');
-  set('-date', fmtDate(inv.date));
-  set('-due', fmtDate(inv.due));
-  set('-terms', inv.terms||'Net 30');
-  set('-supply', intra?'Intra-State (CGST+SGST)':'Inter-State (IGST)');
-  set('-pos', (comp.city||'Gujarat')+' ('+( gstConf.statecode||'24')+')');
-  set('-irn', 'Pending');
-  set('-fname', cname);
-  setHTML('-fdetail', [comp.email,comp.phone,comp.address,comp.city].filter(Boolean).join(' · ')||'info@kidvtech.com · Ahmedabad');
-  set('-fgstin', gstin?'GSTIN: '+gstin:'');
-  set('-tname', inv.clientName||'—');
-  setHTML('-tdetail', [inv.clientAddress,inv.clientState].filter(Boolean).join(', ')||'—');
-  set('-tgstin', inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'');
-  set('-notes', inv.notes||'Thank you for your business!');
-  set('-words', numToWords(Math.floor(tot))+' Rupees Only');
-  set('-sub', fmt(sub));
-  if(intra){
-    set('-cgst', fmt(half));
-    set('-sgst', fmt(half));
-    if(document.getElementById(prefix+'-igst-row')) document.getElementById(prefix+'-igst-row').style.display='none';
-  } else {
-    if(document.getElementById(prefix+'-cgst-row')) document.getElementById(prefix+'-cgst-row').style.display='none';
-    if(document.getElementById(prefix+'-sgst-row')) document.getElementById(prefix+'-sgst-row').style.display='none';
-    if(document.getElementById(prefix+'-igst-row')) document.getElementById(prefix+'-igst-row').style.display='';
-    set('-igst', fmt(gstT));
-  }
-  set('-total', fmt(tot));
-  set('-signame', cname);
+  const cname=comp.name||'KIDV Tech';
+  const gstin=gstConf.gstin||comp.gstin||'';
+  const pan=gstConf.pan||'';
+  document.getElementById('logoBox').textContent=cname.slice(0,2).toUpperCase();
+  set('hCname',cname);
+  document.getElementById('hCdetail').innerHTML=[
+    comp.address||'',comp.city?comp.city+', Gujarat':'Gujarat, India',
+    gstin?'GSTIN/UIN: '+gstin:'',
+    comp.phone?'Contact No: '+comp.phone:'',
+    comp.email?'Email Id: '+comp.email:'',
+    comp.web?'Website: '+comp.web:'',
+    pan?'CIN/PAN: '+pan:'',
+  ].filter(Boolean).join('<br/>');
 
-  // Bank
-  if(bank.acc){
-    setHTML('-bank', `Account: <span class="val">${bank.acc}</span> &nbsp; Bank: <span class="val">${bank.bank||'—'}</span><br/>IFSC: <span class="val">${bank.ifsc||'—'}</span> &nbsp; Branch: <span class="val">${bank.branch||'—'}</span>`);
-  }
-  if(bank.upi){
-    const uw=document.getElementById(prefix+'-upi-wrap');
-    if(uw) uw.style.display='';
-    set('-upi', bank.upi);
-  }
+  set('hInvNo',inv.invoiceNo);
+  set('hInvDate',fmtDate(inv.date));
+  set('hDueDate',fmtDate(inv.due));
+  set('hTerms',inv.terms||'Net 30');
+  set('hPos',(comp.city||'Gujarat')+' ('+(gstConf.statecode||'24')+')');
+  set('hSupply',inv.supply==='inter'?'Inter-State (IGST)':'Intra-State (CGST+SGST)');
 
-  // Status stamp
-  const stA=document.getElementById('stampA');
-  const stB=document.getElementById('stampB');
-  if(inv.status==='paid'){if(stA)stA.classList.add('show');if(stB)stB.style.display='';}
-  else{if(stA)stA.classList.remove('show');if(stB)stB.style.display='none';}
+  set('fromName',cname);
+  document.getElementById('fromDetail').innerHTML=[comp.address,comp.city].filter(Boolean).join(', ')||'Ahmedabad, Gujarat';
+  document.getElementById('fromGSTIN').textContent=gstin?'GSTIN/UIN: '+gstin:'';
 
-  // Items
-  const tbody=document.getElementById(prefix+'-items');
-  if(!tbody) return;
-  tbody.innerHTML=(inv.lines||[]).map((l,i)=>{
-    const isA = prefix==='a';
-    const sno = isA
-      ? `<div class="ma-item-sno">${i+1}</div>`
-      : `<div class="mb-item-badge">${i+1}</div>`;
-    const nameClass = isA?'ma-item-name':'mb-item-name';
-    const hsnClass = isA?'ma-item-hsn':'mb-item-hsn';
-    const gstClass = isA?'ma-gst-chip':'mb-gst-pill';
+  set('toName',inv.clientName);
+  document.getElementById('toDetail').innerHTML=[inv.clientAddress,inv.clientState?'State Code: 24':''].filter(Boolean).join('<br/>')||'—';
+  document.getElementById('toGSTIN').textContent=inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
+
+  const lines=inv.lines||[];
+  let totalQty=0;
+  document.getElementById('itemsBody').innerHTML=lines.map((l,i)=>{
+    totalQty+=parseFloat(l.qty||1);
     return`<tr>
-      <td>${sno}</td>
-      <td><div class="${nameClass}">${l.desc||'—'}</div><div class="${hsnClass}">${l.hsn?'HSN: '+l.hsn:''}</div></td>
-      <td class="center" style="font-family:monospace;font-size:12px;color:#9ca3af">${l.hsn||'—'}</td>
-      <td class="center">${l.qty}</td>
-      <td class="amount">₹${parseFloat(l.rate||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
-      <td class="center"><span class="${gstClass}">${l.gst}%</span></td>
-      <td class="amount" style="font-weight:600">₹${parseFloat(l.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
-    </tr>`;
-  }).join('');
+      <td class="c">${i+1}</td>
+      <td><div class="item-desc">${l.desc||'—'}</div><div class="item-hsn">${l.hsn?'HSN: '+l.hsn:''}</div></td>
+      <td class="c" style="font-family:monospace;font-size:9.5px">${l.hsn||'—'}</td>
+      <td class="c">${l.qty}</td>
+      <td class="c">Nos</td>
+      <td class="r">₹${parseFloat(l.rate||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
+      <td class="c">${l.gst}%</td>
+      <td class="r" style="font-weight:700">₹${parseFloat(l.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
+    </tr>`;}).join('');
+  set('totalQty',totalQty.toString());
+  set('footerSub',fmt(inv.sub));
+
+  const sub=parseFloat(inv.sub||0),gstT=parseFloat(inv.totalGST||0),half=gstT/2,tot=parseFloat(inv.total||0),intra=inv.supply!=='inter';
+  set('tSub',fmt(sub));set('tTax',fmt(gstT));set('tGrand',fmt(tot));
+
+  if(intra){
+    const rMap={};
+    lines.forEach(l=>{const r=parseFloat(l.gst||18);rMap[r]=(rMap[r]||0)+parseFloat(l.amount||0)*r/100;});
+    const rates=Object.keys(rMap).sort();
+    if(rates.length===1){set('cgstLbl','Output Tax CGST @ '+(rates[0]/2)+'%');set('sgstLbl','Output Tax SGST @ '+(rates[0]/2)+'%');}
+    set('tCgst',fmt(half));set('tSgst',fmt(half));
+    document.getElementById('cgstRow').style.display='';document.getElementById('sgstRow').style.display='';document.getElementById('igstRow').style.display='none';
+  }else{
+    const rate=lines.length?lines[0].gst||18:18;
+    set('igstLbl','Output Tax IGST @ '+rate+'%');set('tIgst',fmt(gstT));
+    document.getElementById('cgstRow').style.display='none';document.getElementById('sgstRow').style.display='none';document.getElementById('igstRow').style.display='';
+  }
+
+  set('amtWords','INR '+n2w(Math.floor(tot))+' only.');
+  set('taxWords','INR '+n2w(Math.floor(gstT))+' only.');
+  document.getElementById('panText').textContent=pan?"Company's PAN:    "+pan:'';
+  set('notesText',(inv.notes?inv.notes+'\n\n':'')+'We declare that this invoice shows the actual price of the goods/services described and that all particulars are true and correct.');
+
+  if(bank.acc){
+    set('bBank',bank.bank||'—');set('bAcc',bank.acc||'—');
+    set('bIfsc',[bank.branch,bank.ifsc].filter(Boolean).join(' & ')||'—');
+    set('bUpi',bank.upi||'—');
+  }
+  set('sigFor','For '+cname);
+  set('invFooter','SUBJECT TO '+(comp.city||'AHMEDABAD').toUpperCase()+' JURISDICTION');
 }
 
-fillTheme('a', inv);
-fillTheme('b', inv);
-
-// ── Theme Switcher ──
-let active = 'A';
-function switchTheme(t){
-  active = t;
-  document.getElementById('themeA').style.display = t==='A'?'block':'none';
-  document.getElementById('themeB').style.display = t==='B'?'block':'none';
-  document.getElementById('btnA').classList.toggle('active', t==='A');
-  document.getElementById('btnB').classList.toggle('active', t==='B');
-}
+function navigate(dir){if(!invoices.length)return;currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));renderInvoice(invoices[currentIdx]);}
 
 function shareWA(){
-  const msg=`*${inv.invoiceNo}* — ${inv.clientName}\nAmount: ₹${parseFloat(inv.total).toLocaleString('en-IN')}\nDue: ${fmtDate(inv.due)}\n\n_KIDV Invoice · kidvtech.com_`;
+  const inv=invoices.length?invoices[currentIdx]:DEMO;
+  const msg='*Invoice: '+inv.invoiceNo+'*\nClient: '+inv.clientName+'\nAmount: '+fmt(inv.total)+'\nDate: '+fmtDate(inv.date)+'\nDue: '+fmtDate(inv.due)+'\n\n_'+(comp.name||'KIDV Invoice')+' \u00b7 '+(comp.phone||'')+'_';
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
+
+document.addEventListener('kidv:db-ready',async()=>{
+  try{invoices=await KIDV.list('invoices');}catch(e){invoices=[];}
+  if(!invoices.length) invoices=[DEMO];
+  const params=new URLSearchParams(location.search);
+  currentIdx=Math.max(0,Math.min(invoices.length-1,parseInt(params.get('idx')||'0')));
+  renderInvoice(invoices[currentIdx]);
+});
+setTimeout(()=>{if(document.getElementById('hInvNo').textContent==='—'){invoices=[DEMO];renderInvoice(DEMO);}},2000);
 </script>
 </body>
 </html>
