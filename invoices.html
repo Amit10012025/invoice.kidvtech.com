@@ -179,7 +179,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="form-group"><label>Due Date</label><input type="date" id="f-due"/></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Client *</label><select id="f-client" onchange="onClientChange()"><option value="">Select Client</option></select></div>
+        <div class="form-group"><label>Customer *</label><select id="f-client" onchange="onClientChange()"><option value="">Select Customer</option></select></div>
         <div class="form-group"><label>Supply Type</label><select id="f-supply" onchange="calcTotals()"><option value="intra">Intra-State (CGST+SGST)</option><option value="inter">Inter-State (IGST)</option></select></div>
       </div>
 
@@ -187,15 +187,15 @@ tr:hover td{background:rgba(255,255,255,0.02);}
       <div style="margin-bottom:14px">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)">
           <input type="checkbox" id="f-shipto-toggle" onchange="toggleShipTo()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"/>
-          <span>Shipping address different from billing address (Consignee / Ship To)</span>
+          <span>Customer Ship To address different from Bill To address</span>
         </label>
       </div>
       <div id="shipToSection" style="display:none;background:rgba(47,129,247,0.04);border:1px solid rgba(47,129,247,0.15);border-radius:12px;padding:16px;margin-bottom:16px;">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">📦 Consignee / Ship To</div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">📦 Customer Ship To / Consignee</div>
         <div class="form-group">
-          <label>Select Consignee (from Clients)</label>
+          <label>Select Customer (Ship To)</label>
           <select id="f-shipclient" onchange="onShipClientChange()">
-            <option value="">— Select Client as Consignee —</option>
+            <option value="">— Select Customer as Consignee —</option>
           </select>
         </div>
         <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:12px;color:var(--muted);line-height:1.7" id="shipPreview" style="display:none"></div>
@@ -296,7 +296,7 @@ function openModal(idx=-1){
   editIdx=idx;
   // Populate clients dropdown
   const sel=document.getElementById('f-client');
-  sel.innerHTML='<option value="">Select Client</option>'+clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
+  sel.innerHTML='<option value="">Select Customer</option>'+clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
   // Auto invoice number
   if(idx<0){
     const next='INV-'+String(invoices.length+1).padStart(3,'0');
