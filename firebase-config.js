@@ -135,6 +135,10 @@ function initApp(){
         window.KIDV._user=user;
         window.KIDV._uid=user.uid;
         window.KIDV._ready=true;
+        // Check admin
+        const adminEmails=['amit@kidvtech.com'];
+        window.KIDV.isAdmin = adminEmails.includes(user.email.toLowerCase());
+        if(window.KIDV.isAdmin) console.log('[KIDV] ADMIN MODE ✅');
         console.log('[KIDV] Logged in: '+user.email);
         updateNavUser(user);
         updateFirebaseBadge(true);
@@ -163,3 +167,31 @@ function updateFirebaseBadge(ok){
   badge.className=ok?'firebase-badge connected':'firebase-badge';
   badge.innerHTML=ok?'<div class="dot"></div> Firebase: Connected':'<div class="dot"></div> Firebase: Offline';
 }
+
+// ── Admin helpers ─────────────────────────────────────────
+window.KIDV.isAdmin = false;
+window.KIDV.adminEmails = ['amit@kidvtech.com']; // tamaro email
+
+// Admin: list ALL users' data
+window.KIDV.adminListAll = async function(col){
+  if(!this._ready||!this.isAdmin) return [];
+  try{
+    // Get all user IDs from users collection
+    const usersSnap = await this._db.collection('users').get();
+    let allDocs = [];
+    for(const userDoc of usersSnap.docs){
+      const snap = await this._db.collection('users/'+userDoc.id+'/'+col).get();
+      const docs = snap.docs.map(d=>({
+        _id:d.id,
+        _userId:userDoc.id,
+        _userEmail:userDoc.data().email||'',
+        ...d.data()
+      }));
+      allDocs = allDocs.concat(docs);
+    }
+    return allDocs;
+  }catch(e){ console.warn('[KIDV] adminListAll error:',e); return []; }
+};
+
+// Override initApp to check admin
+const _origInit = window.initApp || function(){};
