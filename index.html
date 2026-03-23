@@ -112,7 +112,7 @@
   <div class="rail-item" data-section="payments" onclick="openFlyout('payments',this)"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
   <div class="rail-spacer"></div>
   <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
-  <div class="rail-item" data-section="settings" onclick="openFlyout('settings',this)"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
 
@@ -177,7 +177,7 @@ const flyoutData={
   invoices:{title:'Invoices',colorClass:'c-invoices',links:[{icon:'receipt_long',label:'All Invoices',href:'invoices.html'},{icon:'add_circle',label:'New Invoice',href:'invoices.html'}]},
   quotations:{title:'Quotations',colorClass:'c-quotes',links:[{icon:'request_quote',label:'All Quotations',href:'quotations.html'},{icon:'add_circle',label:'New Quotation',href:'quotations.html'}]},
   payments:{title:'Payments',colorClass:'c-payments',links:[{icon:'payments',label:'All Payments',href:'payments.html'},{icon:'add_card',label:'Record Payment',href:'payments.html'}]},
-  settings:{title:'Settings',colorClass:'c-settings',links:[{icon:'store',label:'Company Profile',href:'settings.html'},{icon:'badge',label:'GST Settings',href:'settings.html'},{icon:'account_balance',label:'Bank Details',href:'settings.html'},{icon:'local_fire_department',label:'Firebase Config',href:'settings.html'}]},
+  // settings handled by direct link
 };
 
 let flyoutOpen=false,currentSection='dashboard';
