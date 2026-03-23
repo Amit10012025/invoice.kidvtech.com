@@ -271,6 +271,13 @@ function convertToInvoice(i){
   location.href='invoices.html';
 }
 renderQuotes();
+
+document.addEventListener('kidv:db-ready', ()=>{
+  if(window.KIDV && KIDV.isAdmin){
+    const b = document.getElementById('adminBtn');
+    if(b) b.style.display = '';
+  }
+});
 </script>
 </body>
 </html>
