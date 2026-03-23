@@ -100,7 +100,7 @@ document.addEventListener('kidv:db-ready', async()=>{
 async function loadUsers(){
   document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
   try {
-    const snap = await KIDV._db.collection('users').orderBy('createdAt','desc').get();
+    const snap = await KIDV._db.collection('users').get();
     allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderUsers(allUsers);
   } catch(e){
