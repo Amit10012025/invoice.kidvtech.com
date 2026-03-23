@@ -123,6 +123,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
       <div class="snav-item" onclick="showPanel('bank',this)"><span class="material-icons-round">account_balance</span>Bank Details</div>
       <div class="snav-item" onclick="showPanel('firebase',this)"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
       <div class="snav-item" onclick="showPanel('invoice',this)"><span class="material-icons-round">palette</span>Invoice Settings</div>
+      <div class="snav-item" onclick="showPanel('account',this)"><span class="material-icons-round">manage_accounts</span>My Account</div>
       <div class="snav-item" onclick="showPanel('danger',this)"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
     </div>
 
@@ -324,7 +325,7 @@ function clearData(key,label){if(confirm('Clear all '+label+'?')){localStorage.r
 function resetAll(){if(confirm('⚠️ This will delete ALL data. Are you sure?')){['kidv-clients','kidv-products','kidv-invoices','kidv-quotes','kidv-payments','kidv-company','kidv-gst','kidv-bank','kidv-firebase-config'].forEach(k=>localStorage.removeItem(k));showToast('All data cleared!');}}
 
 // Toast
-function showToast(msg){
+function showToast(msg,type='success'){
   let t=document.getElementById('toast');
   if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}
   t.innerHTML='<span class="material-icons-round" style="color:#3fb950;font-size:18px">check_circle</span>'+msg;
@@ -334,6 +335,144 @@ function showToast(msg){
 
 document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
 document.addEventListener('kidv:db-ready',loadAll);
+
+// ── My Account Functions ─────────────────────────────
+async function loadAccountInfo(){
+  const user = firebase.auth().currentUser;
+  if(!user) return;
+  document.getElementById('accAvatar').textContent = (user.displayName||user.email||'U').charAt(0).toUpperCase();
+  document.getElementById('accName').textContent = user.displayName||'—';
+  document.getElementById('accEmail').textContent = user.email||'—';
+  document.getElementById('acc-name').value = user.displayName||'';
+  document.getElementById('acc-email').value = user.email||'';
+
+  // Sub status
+  try{
+    const doc = await KIDV._db.collection('users').doc(user.uid).get();
+    const data = doc.exists ? doc.data() : {};
+    const now = new Date();
+    let statusHtml = '';
+    if(data.subscriptionStatus==='active'){
+      const exp = data.subscriptionExpiry ? new Date(data.subscriptionExpiry) : null;
+      const plan = (data.subscriptionPlan||'').toUpperCase();
+      statusHtml = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">✅ Active — ${plan}</span>
+        ${exp?`<span style="font-size:12px;color:#6b7a90">Expires: ${exp.toLocaleDateString('en-IN')}</span>`:'<span style="font-size:12px;color:#16a34a">Lifetime</span>'}
+      </div>`;
+      document.getElementById('accStatus').textContent = '✅ Active Subscription';
+    } else {
+      const reg = data.createdAt ? new Date(data.createdAt) : now;
+      const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+      const daysLeft = Math.max(0,Math.ceil((trialEnd-now)/(24*60*60*1000)));
+      if(daysLeft>0){
+        statusHtml = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="background:#fff7ed;color:#d97706;border:1px solid #fed7aa;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">⏳ Trial — ${daysLeft} day${daysLeft===1?'':'s'} left</span>
+          <a href="subscribe.html" style="font-size:12px;color:#2f81f7;font-weight:600">Upgrade now →</a>
+        </div>`;
+        document.getElementById('accStatus').textContent = `⏳ Trial: ${daysLeft} days left`;
+      } else {
+        statusHtml = `<div><span style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">🔴 Trial Expired</span> <a href="subscribe.html" style="font-size:12px;color:#2f81f7;font-weight:600;margin-left:10px">Subscribe now →</a></div>`;
+        document.getElementById('accStatus').textContent = '🔴 Trial Expired';
+      }
+    }
+    document.getElementById('subStatusBox').innerHTML = statusHtml;
+  }catch(e){}
+}
+
+async function saveDisplayName(){
+  const name = document.getElementById('acc-name').value.trim();
+  if(!name){ showToast('Name cannot be empty','error'); return; }
+  try{
+    await firebase.auth().currentUser.updateProfile({displayName:name});
+    document.getElementById('accName').textContent = name;
+    document.getElementById('accAvatar').textContent = name.charAt(0).toUpperCase();
+    showToast('Name updated! ✅');
+  }catch(e){ showToast('Error: '+e.message,'error'); }
+}
+
+function togglePwd(id, icon){
+  const input = document.getElementById(id);
+  if(input.type==='password'){ input.type='text'; icon.textContent='visibility_off'; }
+  else { input.type='password'; icon.textContent='visibility'; }
+}
+
+// Password strength checker
+document.addEventListener('DOMContentLoaded',()=>{
+  const newPwd = document.getElementById('pwd-new');
+  if(newPwd){
+    newPwd.addEventListener('input', function(){
+      const val = this.value;
+      const bar = document.getElementById('strengthBar');
+      const fill = document.getElementById('strengthFill');
+      const text = document.getElementById('strengthText');
+      if(!val){ bar.style.display='none'; return; }
+      bar.style.display='';
+      let score = 0;
+      if(val.length>=6) score++;
+      if(val.length>=10) score++;
+      if(/[A-Z]/.test(val)) score++;
+      if(/[0-9]/.test(val)) score++;
+      if(/[^A-Za-z0-9]/.test(val)) score++;
+      const levels = [{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}];
+      const lvl = levels[Math.min(score,4)];
+      fill.style.width=lvl.w; fill.style.background=lvl.c;
+      text.textContent='Password strength: '+lvl.t; text.style.color=lvl.c;
+    });
+  }
+});
+
+async function changePassword(){
+  const current = document.getElementById('pwd-current').value;
+  const newPwd  = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+
+  if(!current){ showToast('Enter current password','error'); return; }
+  if(!newPwd||newPwd.length<6){ showToast('New password must be at least 6 characters','error'); return; }
+  if(newPwd!==confirm){ showToast('Passwords do not match!','error'); return; }
+
+  const btn = document.getElementById('changePwdBtn');
+  btn.disabled=true; btn.innerHTML='<span class="material-icons-round">hourglass_top</span>Changing...';
+
+  try{
+    const user = firebase.auth().currentUser;
+    // Re-authenticate first
+    const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
+    await user.reauthenticateWithCredential(cred);
+    // Change password
+    await user.updatePassword(newPwd);
+    // Clear fields
+    document.getElementById('pwd-current').value='';
+    document.getElementById('pwd-new').value='';
+    document.getElementById('pwd-confirm').value='';
+    document.getElementById('strengthBar').style.display='none';
+    showToast('✅ Password changed successfully!');
+  }catch(e){
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'){
+      showToast('Current password is incorrect!','error');
+    } else {
+      showToast('Error: '+e.message,'error');
+    }
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<span class="material-icons-round">lock_reset</span>Change Password';
+  }
+}
+
+async function sendResetEmail(){
+  const user = firebase.auth().currentUser;
+  if(!user){ return; }
+  try{
+    await firebase.auth().sendPasswordResetEmail(user.email);
+    showToast('✅ Reset email sent to '+user.email);
+  }catch(e){ showToast('Error: '+e.message,'error'); }
+}
+
+// Load account info when panel opened
+const _origShowPanel = showPanel;
+window.showPanel = function(id, el){
+  _origShowPanel(id, el);
+  if(id==='account' && KIDV._ready) loadAccountInfo();
+};
 </script>
 </body>
 </html>
