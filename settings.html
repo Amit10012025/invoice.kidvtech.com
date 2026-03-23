@@ -120,7 +120,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
     <div class="settings-content">
 
       <!-- Company -->
-      <div class="settings-panel active" id="panel-company">
+      <div class="settings-panel active" id="panel-company" style="display:flex;flex-direction:column;gap:20px;">
         <div class="card">
           <div class="card-header"><div><div class="card-title">Company Profile</div><div class="card-desc">Your business details shown on invoices</div></div></div>
           <div class="card-body">
@@ -285,12 +285,23 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 
 <script>
 function showPanel(id, el){
-  document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
+  // Hide all panels with inline style (guaranteed)
+  document.querySelectorAll('.settings-panel').forEach(p=>{
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  // Deactivate nav
   document.querySelectorAll('.snav-item').forEach(i=>i.classList.remove('active'));
-  const panel = document.getElementById('panel-'+id);
-  if(panel) panel.classList.add('active');
+  // Show selected panel
+  const panel = document.getElementById('panel-' + id);
+  if(panel){
+    panel.classList.add('active');
+    panel.style.display = 'flex';
+    panel.style.flexDirection = 'column';
+    panel.style.gap = '20px';
+  }
   if(el) el.classList.add('active');
-  if(id==='account' && window.KIDV && KIDV._ready) setTimeout(loadAccountInfo, 100);
+  if(id === 'account' && window.KIDV && KIDV._ready) setTimeout(loadAccountInfo, 100);
 }
 
 async function loadAll(){
@@ -388,10 +399,21 @@ document.addEventListener('kidv:db-ready', ()=>{
 });
 document.addEventListener('kidv:db-ready', loadAll);
 
-// Ensure first panel visible on load
+// Force show first panel on load
 window.addEventListener('DOMContentLoaded', ()=>{
-  const firstPanel = document.getElementById('panel-company');
-  if(firstPanel) firstPanel.classList.add('active');
+  document.querySelectorAll('.settings-panel').forEach(p=>{
+    p.style.display = 'none';
+  });
+  const first = document.getElementById('panel-company');
+  if(first){
+    first.style.display = 'flex';
+    first.style.flexDirection = 'column';
+    first.style.gap = '20px';
+    first.classList.add('active');
+  }
+  // Set first nav item active
+  const firstNav = document.querySelector('.snav-item');
+  if(firstNav) firstNav.classList.add('active');
 });
 
 // ── My Account Functions ─────────────────────────────
