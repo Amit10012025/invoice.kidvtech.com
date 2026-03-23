@@ -13,7 +13,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
 .rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
 .rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.rail-item:hover{background:#f0f4f8;color:#fff;}
 .rail-item.active{background:rgba(88,166,255,0.15);color:var(--c-payment);border-color:rgba(88,166,255,0.3);}
 .rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
 .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
@@ -24,7 +24,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-payment);}
 .flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
 .flyout-link .material-icons-round{font-size:18px;}
-.flyout-link:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
 .flyout-link.active{color:var(--text);background:rgba(88,166,255,0.1);border-left-color:var(--c-payment);}
 .overlay{display:none;position:fixed;inset:0;z-index:180;}
 .overlay.show{display:block;}
@@ -44,21 +44,21 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:14px 20px;display:flex;align-items:center;gap:12px;flex:1;}
 .ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
 .ms-val{font-size:20px;font-weight:700;}.ms-label{font-size:12px;color:var(--muted);}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
 .card-title{font-size:14px;font-weight:600;}
 table{width:100%;border-collapse:collapse;}
 th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
 td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,0.02);}
+tr:hover td{background:#f8faff;}
 .badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
 .badge-received{background:rgba(63,185,80,0.12);color:#3fb950;}
 .badge-partial{background:rgba(240,136,62,0.12);color:#f0883e;}
 .badge-refunded{background:rgba(88,166,255,0.12);color:var(--c-payment);}
 .pay-method{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
 .action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
-.action-btn:hover{color:var(--text);background:rgba(255,255,255,0.07);}
+.action-btn:hover{color:var(--text);background:#f5f7fa;}
 .action-btn .material-icons-round{font-size:18px;}
 /* Modal */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}

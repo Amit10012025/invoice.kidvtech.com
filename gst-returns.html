@@ -13,7 +13,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
 .rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
 .rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.rail-item:hover{background:#f0f4f8;color:#fff;}
 .rail-item.active{background:rgba(57,208,216,0.15);color:var(--c-gst);border-color:rgba(57,208,216,0.3);}
 .rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
 .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
@@ -24,7 +24,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-gst);}
 .flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
 .flyout-link .material-icons-round{font-size:18px;}
-.flyout-link:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
 .flyout-link.active{color:var(--text);background:rgba(57,208,216,0.08);border-left-color:var(--c-gst);}
 .overlay{display:none;position:fixed;inset:0;z-index:180;}
 .overlay.show{display:block;}
@@ -44,7 +44,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
 .filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
 .filter-select{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;cursor:pointer;}
-.filter-select option{background:var(--surface2);}
+.filter-select option{background:#ffffff;color:#1a2332;}
 .tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
 .tab{padding:7px 20px;border-radius:7px;font-size:13.5px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;}
 .tab.active{background:var(--surface2);color:var(--text);}
@@ -62,7 +62,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .gst-box-val{font-size:24px;font-weight:700;}
 .gst-box-sub{font-size:12px;color:var(--muted);margin-top:4px;}
 /* Card */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;margin-bottom:20px;}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
 .card-title{font-size:14px;font-weight:600;}
 .card-subtitle{font-size:12px;color:var(--muted);margin-top:1px;}
@@ -70,7 +70,7 @@ table{width:100%;border-collapse:collapse;}
 th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
 td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,0.02);}
+tr:hover td{background:#f8faff;}
 .rate-pill{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600;background:rgba(57,208,216,0.1);color:var(--c-gst);border:1px solid rgba(57,208,216,0.15);}
 /* 3B specific */
 .form-3b{padding:20px;}
@@ -200,7 +200,7 @@ tr:hover td{background:rgba(255,255,255,0.02);}
         <div class="form-3b-row total-row-3b"><div class="form-3b-label">Total Outward Tax Liability</div><div class="form-3b-cell" id="3b-tot-taxable">₹0.00</div><div class="form-3b-cell" id="3b-tot-igst">₹0.00</div><div class="form-3b-cell" id="3b-tot-cgst">₹0.00</div><div class="form-3b-cell" id="3b-tot-sgst">₹0.00</div></div>
         <!-- 4 -->
         <div class="form-3b-section"><div class="form-3b-section-label">4. Eligible ITC (Input Tax Credit)</div></div>
-        <div class="form-3b-row"><div class="form-3b-label">(A) ITC Available<div class="form-3b-sub">Enter manually</div></div><div class="form-3b-cell">—</div><div class="form-3b-cell"><input type="number" id="itc-igst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-cgst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-sgst" placeholder="0.00" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div></div>
+        <div class="form-3b-row"><div class="form-3b-label">(A) ITC Available<div class="form-3b-sub">Enter manually</div></div><div class="form-3b-cell">—</div><div class="form-3b-cell"><input type="number" id="itc-igst" placeholder="0.00" style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-cgst" placeholder="0.00" style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div><div class="form-3b-cell"><input type="number" id="itc-sgst" placeholder="0.00" style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit';font-size:13px;width:100px;outline:none;text-align:right" oninput="calcPayable()"/></div></div>
         <!-- 5 -->
         <div class="form-3b-section"><div class="form-3b-section-label">5. Net Tax Payable</div></div>
         <div class="form-3b-row total-row-3b" style="background:rgba(248,81,73,0.04)"><div class="form-3b-label" style="color:#f85149">Net GST Payable (after ITC)</div><div class="form-3b-cell">—</div><div class="form-3b-cell" id="pay-igst" style="color:#f85149">₹0.00</div><div class="form-3b-cell" id="pay-cgst" style="color:#f85149">₹0.00</div><div class="form-3b-cell" id="pay-sgst" style="color:#f85149">₹0.00</div></div>
@@ -384,7 +384,7 @@ function exportHSN(){
   const inv=getFiltered();buildHSNSummary(inv);
   showToast('HSN Summary exported!');
 }
-function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
+function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
 build();
 </script>
 </body>
