@@ -39,8 +39,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .snav-item.active{background:#eff6ff;color:#2f81f7;border-left-color:#2f81f7;font-weight:600;}
 .snav-item.active .material-icons-round{color:#2f81f7;}
 .settings-content{display:flex;flex-direction:column;gap:20px;min-height:400px;}
-.settings-panel{display:none !important;}
-.settings-panel.active{display:flex !important;flex-direction:column;gap:20px;}
+.settings-panel{display:none;}
+.settings-panel.active{display:flex;flex-direction:column;gap:20px;}
 .card{background:#ffffff;border:1.5px solid #dde3ed;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1.5px solid #f0f4f8;}
 .card-title{font-size:15px;font-weight:700;color:#1a2332;}
@@ -285,22 +285,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 
 <script>
 function showPanel(id, el){
-  // Hide all panels
-  document.querySelectorAll('.settings-panel').forEach(p=>{
-    p.classList.remove('active');
-    p.style.display='none';
-  });
-  // Deactivate all nav items
+  document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.snav-item').forEach(i=>i.classList.remove('active'));
-  // Show selected panel
   const panel = document.getElementById('panel-'+id);
-  if(panel){
-    panel.classList.add('active');
-    panel.style.display='flex';
-  }
-  // Activate nav item
+  if(panel) panel.classList.add('active');
   if(el) el.classList.add('active');
-  // Load account info if needed
   if(id==='account' && window.KIDV && KIDV._ready) setTimeout(loadAccountInfo, 100);
 }
 
@@ -402,7 +391,7 @@ document.addEventListener('kidv:db-ready', loadAll);
 // Ensure first panel visible on load
 window.addEventListener('DOMContentLoaded', ()=>{
   const firstPanel = document.getElementById('panel-company');
-  if(firstPanel){ firstPanel.style.display='flex'; firstPanel.classList.add('active'); }
+  if(firstPanel) firstPanel.classList.add('active');
 });
 
 // ── My Account Functions ─────────────────────────────
