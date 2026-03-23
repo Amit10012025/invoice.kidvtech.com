@@ -111,10 +111,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
       <div class="snav-item active" onclick="showPanel('company',this)"><span class="material-icons-round">store</span>Company Profile</div>
       <div class="snav-item" onclick="showPanel('gst',this)"><span class="material-icons-round">badge</span>GST Settings</div>
       <div class="snav-item" onclick="showPanel('bank',this)"><span class="material-icons-round">account_balance</span>Bank Details</div>
-      <div class="snav-item" onclick="showPanel('firebase',this)"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
+      <div class="snav-item admin-only" onclick="showPanel('firebase',this)" style="display:none"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
       <div class="snav-item" onclick="showPanel('invoice',this)"><span class="material-icons-round">palette</span>Invoice Settings</div>
       <div class="snav-item" onclick="showPanel('account',this)"><span class="material-icons-round">manage_accounts</span>My Account</div>
-      <div class="snav-item" onclick="showPanel('danger',this)"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
+      <div class="snav-item admin-only" onclick="showPanel('danger',this)" style="display:none"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
     </div>
 
     <div class="settings-content">
@@ -395,7 +395,13 @@ function showToast(msg,type='success'){
 }
 
 document.addEventListener('kidv:db-ready', ()=>{ 
-  if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; }
+  if(window.KIDV && KIDV.isAdmin){
+    // Show admin rail button
+    const b = document.getElementById('adminBtn');
+    if(b) b.style.display = '';
+    // Show admin-only nav items
+    document.querySelectorAll('.snav-item.admin-only').forEach(el => el.style.display = '');
+  }
 });
 document.addEventListener('kidv:db-ready', loadAll);
 
