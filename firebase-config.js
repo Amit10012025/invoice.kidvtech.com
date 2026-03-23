@@ -1,6 +1,6 @@
 /**
- * KIDV Invoice — Firebase Config v2
- * Auth + Firestore + Multi-tenant + WhatsApp
+ * KIDV Invoice — Firebase Config v3
+ * 3-Layer Cache: Memory → localStorage → Firestore
  */
 
 const FIREBASE_CONFIG = {
@@ -26,7 +26,6 @@ const FIREBASE_CONFIG = {
     s.src = src;
     s.onload = () => { if(++loaded === sdks.length) initApp(); };
     s.onerror = () => {
-      console.warn('[KIDV] SDK load failed — offline mode');
       window.KIDV._ready = false;
       document.dispatchEvent(new Event('kidv:db-ready'));
     };
@@ -35,208 +34,293 @@ const FIREBASE_CONFIG = {
 })();
 
 window.KIDV = {
-  _ready:false, _auth:null, _db:null, _user:null, _uid:null,
-  _col(name){ return 'users/'+this._uid+'/'+name; },
-  currentUser(){ return this._auth?.currentUser||null; },
-  async logout(){ await this._auth?.signOut(); location.href='login.html'; },
+  _ready: false,
+  _auth:  null,
+  _db:    null,
+  _user:  null,
+  _uid:   null,
+  isAdmin: false,
+  adminEmails: ['amit@kidvtech.com'],
 
+  // ── In-memory cache (fastest) ──
+  _mem: {},
+  _memTs: {},
+  MEM_TTL: 60000, // 1 min in memory
+
+  // ── localStorage TTL ──
+  LS_TTL: 5 * 60 * 1000, // 5 min
+
+  _col(name){ return 'users/' + this._uid + '/' + name; },
+
+  currentUser(){ return this._auth?.currentUser || null; },
+  async logout(){ await this._auth?.signOut(); location.href = 'login.html'; },
+
+  // ────────────────────────────────────────────────────────
+  // LIST — 3-layer: Memory → localStorage → Firestore
+  // ────────────────────────────────────────────────────────
   async list(col){
-    const cacheKey = 'kidv-cache-'+col;
-    const cacheTimeKey = 'kidv-cache-ts-'+col;
+    const uid = this._uid;
+    const memKey = uid + '/' + col;
+    const lsKey  = 'kidv-cache-' + uid + '-' + col;
+    const lsTsKey = lsKey + '-ts';
 
-    // ── Step 1: Return cache INSTANTLY if available ──
-    const cached = localStorage.getItem(cacheKey);
-    const cacheTs = parseInt(localStorage.getItem(cacheTimeKey)||'0');
-    const cacheAge = Date.now() - cacheTs; // ms
-
-    if(cached && cacheAge < 5*60*1000){ // < 5 min = use as-is
-      // If Firebase ready, refresh in background silently
-      if(this._ready && this._uid && cacheAge > 30000){
-        this._db.collection(this._col(col)).orderBy('createdAt','desc').get()
-          .then(snap=>{
-            const fresh=snap.docs.map(d=>({_id:d.id,...d.data()}));
-            localStorage.setItem(cacheKey, JSON.stringify(fresh));
-            localStorage.setItem(cacheTimeKey, Date.now().toString());
-            console.log('[KIDV] Background refresh: '+col);
-          }).catch(()=>{});
-      }
-      return JSON.parse(cached);
+    // Layer 1: Memory (< 1 min old) — instant, 0ms
+    if(this._mem[memKey] && (Date.now() - this._memTs[memKey]) < this.MEM_TTL){
+      return this._mem[memKey];
     }
 
-    // ── Step 2: Load from Firestore ──
-    if(this._ready&&this._uid){
+    // Layer 2: localStorage (< 5 min old) — ~1ms
+    const lsData = localStorage.getItem(lsKey);
+    const lsTs   = parseInt(localStorage.getItem(lsTsKey) || '0');
+    if(lsData && (Date.now() - lsTs) < this.LS_TTL){
+      const data = JSON.parse(lsData);
+      // Save to memory
+      this._mem[memKey] = data;
+      this._memTs[memKey] = lsTs;
+      // Background refresh from Firestore if > 30s old
+      if(this._ready && (Date.now() - lsTs) > 30000){
+        this._bgRefresh(col, memKey, lsKey, lsTsKey);
+      }
+      return data;
+    }
+
+    // Layer 3: Firestore — network call
+    if(this._ready && uid){
       try{
-        const snap=await this._db.collection(this._col(col)).orderBy('createdAt','desc').get();
-        const data=snap.docs.map(d=>({_id:d.id,...d.data()}));
-        localStorage.setItem(cacheKey, JSON.stringify(data));
-        localStorage.setItem(cacheTimeKey, Date.now().toString());
+        const snap = await this._db
+          .collection(this._col(col))
+          .orderBy('createdAt', 'desc')
+          .get();
+        const data = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        this._saveCache(memKey, lsKey, lsTsKey, data);
         return data;
-      }catch(e){
-        console.warn('[KIDV] list error, using cache:',e);
-        if(cached) return JSON.parse(cached);
+      } catch(e){
+        console.warn('[KIDV] Firestore error, using stale cache:', e);
+        if(lsData) return JSON.parse(lsData);
       }
     }
 
-    // ── Step 3: Fallback ──
-    if(cached) return JSON.parse(cached);
-    return JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
+    // Fallback: stale localStorage
+    if(lsData) return JSON.parse(lsData);
+    return [];
+  },
+
+  // Background refresh — don't block UI
+  _bgRefresh(col, memKey, lsKey, lsTsKey){
+    const uid = this._uid;
+    this._db.collection(this._col(col))
+      .orderBy('createdAt', 'desc')
+      .get()
+      .then(snap => {
+        const data = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        this._saveCache(memKey, lsKey, lsTsKey, data);
+        console.log('[KIDV] BG refresh:', col, data.length, 'records');
+      })
+      .catch(() => {});
+  },
+
+  _saveCache(memKey, lsKey, lsTsKey, data){
+    this._mem[memKey] = data;
+    this._memTs[memKey] = Date.now();
+    try{
+      localStorage.setItem(lsKey, JSON.stringify(data));
+      localStorage.setItem(lsTsKey, Date.now().toString());
+    }catch(e){
+      // localStorage full — clear old cache
+      this._clearOldCache();
+    }
+  },
+
+  _clearOldCache(){
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('kidv-cache-'));
+    keys.forEach(k => localStorage.removeItem(k));
   },
 
   _clearCache(col){
-    localStorage.removeItem('kidv-cache-'+col);
-    localStorage.removeItem('kidv-cache-ts-'+col);
+    const uid = this._uid;
+    if(!uid) return;
+    const memKey = uid + '/' + col;
+    const lsKey  = 'kidv-cache-' + uid + '-' + col;
+    delete this._mem[memKey];
+    delete this._memTs[memKey];
+    localStorage.removeItem(lsKey);
+    localStorage.removeItem(lsKey + '-ts');
   },
-  async add(col,data){
-    const clean={...data,createdAt:data.createdAt||new Date().toISOString()};
+
+  // ── ADD ──────────────────────────────────────────────────
+  async add(col, data){
+    const clean = { ...data, createdAt: data.createdAt || new Date().toISOString() };
     delete clean._id;
-    if(this._ready&&this._uid){
-      try{ const ref=await this._db.collection(this._col(col)).add(clean); this._clearCache(col); return ref.id; }
-      catch(e){console.warn('[KIDV] add error:',e);}
+    let id;
+    if(this._ready && this._uid){
+      try{
+        const ref = await this._db.collection(this._col(col)).add(clean);
+        id = ref.id;
+        this._clearCache(col);
+        return id;
+      } catch(e){ console.warn('[KIDV] add error:', e); }
     }
-    const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
-    const id=Date.now().toString();
-    arr.unshift({_id:id,...clean});
-    localStorage.setItem('kidv-'+col,JSON.stringify(arr));
+    // Offline fallback
+    id = Date.now().toString();
+    this._clearCache(col);
     return id;
   },
 
-  async set(col,id,data){
-    const clean={...data}; delete clean._id;
-    if(this._ready&&this._uid){
-      try{ await this._db.collection(this._col(col)).doc(String(id)).set(clean,{merge:true}); this._clearCache(col); return; }
-      catch(e){console.warn('[KIDV] set error:',e);}
-    }
-    const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
-    const idx=arr.findIndex(x=>x._id===id);
-    if(idx>=0) arr[idx]={_id:id,...clean}; else arr.unshift({_id:id,...clean});
-    localStorage.setItem('kidv-'+col,JSON.stringify(arr));
-  },
-
-  async delete(col,id){
-    if(this._ready&&this._uid){
-      try{ await this._db.collection(this._col(col)).doc(String(id)).delete(); this._clearCache(col); return; }
-      catch(e){console.warn('[KIDV] delete error:',e);}
-    }
-    const arr=JSON.parse(localStorage.getItem('kidv-'+col)||'[]');
-    localStorage.setItem('kidv-'+col,JSON.stringify(arr.filter(x=>x._id!==id)));
-  },
-
-  async getSettings(key){
-    if(this._ready&&this._uid){
+  // ── SET ──────────────────────────────────────────────────
+  async set(col, id, data){
+    const clean = { ...data }; delete clean._id;
+    if(this._ready && this._uid){
       try{
-        const doc=await this._db.collection('users/'+this._uid+'/settings').doc(key).get();
-        const data = doc.exists?doc.data():{};
-        // Cache for instant load
-        localStorage.setItem('kidv-cache-'+key, JSON.stringify(data));
+        await this._db.collection(this._col(col)).doc(String(id)).set(clean, { merge: true });
+        this._clearCache(col);
+        return;
+      } catch(e){ console.warn('[KIDV] set error:', e); }
+    }
+    this._clearCache(col);
+  },
+
+  // ── DELETE ───────────────────────────────────────────────
+  async delete(col, id){
+    if(this._ready && this._uid){
+      try{
+        await this._db.collection(this._col(col)).doc(String(id)).delete();
+        this._clearCache(col);
+        return;
+      } catch(e){ console.warn('[KIDV] delete error:', e); }
+    }
+    this._clearCache(col);
+  },
+
+  // ── SETTINGS (with memory cache) ─────────────────────────
+  async getSettings(key){
+    const memKey = 'settings/' + key;
+    // Memory cache
+    if(this._mem[memKey] && (Date.now() - this._memTs[memKey]) < this.MEM_TTL){
+      return this._mem[memKey];
+    }
+    // localStorage
+    const lsVal = localStorage.getItem('kidv-' + key) || localStorage.getItem('kidv-cache-' + key);
+    if(this._ready && this._uid){
+      try{
+        const doc = await this._db
+          .collection('users/' + this._uid + '/settings')
+          .doc(key).get();
+        const data = doc.exists ? doc.data() : {};
+        this._mem[memKey] = data;
+        this._memTs[memKey] = Date.now();
+        localStorage.setItem('kidv-' + key, JSON.stringify(data));
+        localStorage.setItem('kidv-cache-' + key, JSON.stringify(data));
         return data;
-      }catch(e){
-        // Return cache on error
-        const cached = localStorage.getItem('kidv-cache-'+key);
-        if(cached) return JSON.parse(cached);
+      } catch(e){
+        if(lsVal) return JSON.parse(lsVal);
       }
     }
-    return JSON.parse(localStorage.getItem('kidv-cache-'+key)||localStorage.getItem('kidv-'+key)||'{}');
+    return lsVal ? JSON.parse(lsVal) : {};
   },
 
-  async saveSettings(key,data){
-    // Always update cache immediately
-    localStorage.setItem('kidv-cache-'+key, JSON.stringify(data));
-    if(this._ready&&this._uid){
-      try{ await this._db.collection('users/'+this._uid+'/settings').doc(key).set(data,{merge:true}); return; }
-      catch(e){}
+  async saveSettings(key, data){
+    // Always save to localStorage + memory immediately
+    localStorage.setItem('kidv-' + key, JSON.stringify(data));
+    localStorage.setItem('kidv-cache-' + key, JSON.stringify(data));
+    this._mem['settings/' + key] = data;
+    this._memTs['settings/' + key] = Date.now();
+    if(this._ready && this._uid){
+      try{
+        await this._db
+          .collection('users/' + this._uid + '/settings')
+          .doc(key).set(data, { merge: true });
+      } catch(e){ console.warn('[KIDV] saveSettings error:', e); }
     }
-    localStorage.setItem('kidv-'+key,JSON.stringify(data));
   },
 
   async nextInvoiceNo(){
-    const s=await this.getSettings('invoice-settings');
-    const prefix=s.prefix||'INV-';
-    const invoices=await this.list('invoices');
-    return prefix+String(invoices.length+1).padStart(3,'0');
+    const s = await this.getSettings('invoice-settings');
+    const prefix = s.prefix || 'INV-';
+    const invoices = await this.list('invoices');
+    return prefix + String(invoices.length + 1).padStart(3, '0');
   },
 
-  shareWhatsApp(invoice,phone=''){
-    const comp=JSON.parse(localStorage.getItem('kidv-company')||'{}');
-    const amt=parseFloat(invoice.total||0).toLocaleString('en-IN',{minimumFractionDigits:2});
-    const msg='*Invoice: '+invoice.invoiceNo+'*\nClient: '+invoice.clientName+'\nAmount: \u20b9'+amt+'\nDate: '+(invoice.date||'--')+'\nDue: '+(invoice.due||'--')+'\nStatus: '+(invoice.status||'Pending')+'\n\n_'+(comp.name||'KIDV Invoice')+' \u00b7 '+(comp.phone||'')+'_';
-    const url=phone?'https://wa.me/91'+phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg):'https://wa.me/?text='+encodeURIComponent(msg);
-    window.open(url,'_blank');
+  shareWhatsApp(invoice, phone = ''){
+    const comp = JSON.parse(localStorage.getItem('kidv-company') || '{}');
+    const amt  = parseFloat(invoice.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    const msg  = `*Invoice: ${invoice.invoiceNo}*\nClient: ${invoice.clientName}\nAmount: ₹${amt}\nDate: ${invoice.date || '—'}\nDue: ${invoice.due || '—'}\nStatus: ${invoice.status || 'Pending'}\n\n_${comp.name || 'KIDV Invoice'} · ${comp.phone || ''}_`;
+    const url  = phone
+      ? `https://wa.me/91${phone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`
+      : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  },
+
+  // Admin: list all users' data
+  adminListAll: async function(col){
+    if(!this._ready || !this.isAdmin) return [];
+    try{
+      const usersSnap = await this._db.collection('users').get();
+      let all = [];
+      for(const u of usersSnap.docs){
+        const snap = await this._db.collection('users/' + u.id + '/' + col).get();
+        snap.docs.forEach(d => all.push({ _id: d.id, _userId: u.id, _userEmail: u.data().email || '', ...d.data() }));
+      }
+      return all;
+    } catch(e){ return []; }
   },
 };
 
 window.DB = window.KIDV;
 
+// ── Init ──────────────────────────────────────────────────
 function initApp(){
   try{
     if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    window.KIDV._auth=firebase.auth();
-    window.KIDV._db=firebase.firestore();
+    window.KIDV._auth = firebase.auth();
+    window.KIDV._db   = firebase.firestore();
 
-    firebase.auth().onAuthStateChanged(user=>{
-      const page=location.pathname.split('/').pop()||'index.html';
-      const isPublic=page.includes('login.html');
-      if(!user&&!isPublic){ location.href='login.html'; return; }
+    // Enable Firestore offline persistence — loads from local cache instantly!
+    window.KIDV._db.enablePersistence({ synchronizeTabs: true })
+      .then(() => console.log('[KIDV] Firestore offline persistence enabled ✅'))
+      .catch(err => {
+        if(err.code === 'failed-precondition'){
+          // Multiple tabs — ok
+        } else if(err.code === 'unimplemented'){
+          console.log('[KIDV] Persistence not supported');
+        }
+      });
+
+    firebase.auth().onAuthStateChanged(user => {
+      const page = location.pathname.split('/').pop() || 'index.html';
+      const isPublic = ['login.html','subscribe.html','expired.html'].some(p => page.includes(p));
+      if(!user && !isPublic){ location.href = 'login.html'; return; }
       if(user){
-        window.KIDV._user=user;
-        window.KIDV._uid=user.uid;
-        window.KIDV._ready=true;
-        // Check admin
-        const adminEmails=['amit@kidvtech.com'];
-        window.KIDV.isAdmin = adminEmails.includes(user.email.toLowerCase());
-        if(window.KIDV.isAdmin) console.log('[KIDV] ADMIN MODE ✅');
-        console.log('[KIDV] Logged in: '+user.email);
+        window.KIDV._user  = user;
+        window.KIDV._uid   = user.uid;
+        window.KIDV._ready = true;
+        window.KIDV.isAdmin = window.KIDV.adminEmails.includes(user.email.toLowerCase());
+        console.log('[KIDV] ✅ Auth:', user.email, window.KIDV.isAdmin ? '| ADMIN' : '');
         updateNavUser(user);
         updateFirebaseBadge(true);
       }
       document.dispatchEvent(new Event('kidv:db-ready'));
     });
-  }catch(e){
-    console.error('[KIDV] Init error:',e);
+  } catch(e){
+    console.error('[KIDV] Init error:', e);
     document.dispatchEvent(new Event('kidv:db-ready'));
   }
 }
 
 function updateNavUser(user){
-  document.querySelectorAll('.avatar').forEach(el=>{
-    const name=user.displayName||user.email||'U';
-    el.textContent=name.charAt(0).toUpperCase();
-    el.title=(user.displayName||user.email)+' — Click to logout';
-    el.style.cursor='pointer';
-    el.onclick=()=>{ if(confirm('Logout?\n\n'+user.email)) window.KIDV.logout(); };
+  document.querySelectorAll('.avatar').forEach(el => {
+    const name = user.displayName || user.email || 'U';
+    el.textContent = name.charAt(0).toUpperCase();
+    el.title = (user.displayName || user.email) + ' — Click to logout';
+    el.style.cursor = 'pointer';
+    el.onclick = () => { if(confirm('Logout?\n\n' + user.email)) window.KIDV.logout(); };
   });
 }
 
 function updateFirebaseBadge(ok){
-  const badge=document.getElementById('fbBadge');
+  const badge = document.getElementById('fbBadge');
   if(!badge) return;
-  badge.className=ok?'firebase-badge connected':'firebase-badge';
-  badge.innerHTML=ok?'<div class="dot"></div> Firebase: Connected':'<div class="dot"></div> Firebase: Offline';
+  badge.className = ok ? 'firebase-badge connected' : 'firebase-badge';
+  badge.innerHTML = ok
+    ? '<div class="dot"></div> Firebase: Connected'
+    : '<div class="dot"></div> Firebase: Offline';
 }
-
-// ── Admin helpers ─────────────────────────────────────────
-window.KIDV.isAdmin = false;
-window.KIDV.adminEmails = ['amit@kidvtech.com']; // tamaro email
-
-// Admin: list ALL users' data
-window.KIDV.adminListAll = async function(col){
-  if(!this._ready||!this.isAdmin) return [];
-  try{
-    // Get all user IDs from users collection
-    const usersSnap = await this._db.collection('users').get();
-    let allDocs = [];
-    for(const userDoc of usersSnap.docs){
-      const snap = await this._db.collection('users/'+userDoc.id+'/'+col).get();
-      const docs = snap.docs.map(d=>({
-        _id:d.id,
-        _userId:userDoc.id,
-        _userEmail:userDoc.data().email||'',
-        ...d.data()
-      }));
-      allDocs = allDocs.concat(docs);
-    }
-    return allDocs;
-  }catch(e){ console.warn('[KIDV] adminListAll error:',e); return []; }
-};
-
-// Override initApp to check admin
-const _origInit = window.initApp || function(){};
