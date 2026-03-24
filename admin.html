@@ -110,6 +110,7 @@ async function loadUsers(){
 
 function getStatus(u){
   if(u.isAdmin) return 'admin';
+  if(u.subscriptionStatus==='suspended') return 'suspended';
   if(u.subscriptionStatus==='active'){
     const exp = u.subscriptionExpiry ? new Date(u.subscriptionExpiry) : null;
     if(!exp || exp > new Date()) return 'active';
@@ -134,6 +135,7 @@ function renderUsers(users){
     if(st==='admin'){ badge='<span class="badge badge-admin">Admin</span>'; }
     else if(st==='active'){ badge='<span class="badge badge-active">Active</span>'; active++; expInfo=u.subscriptionExpiry?new Date(u.subscriptionExpiry).toLocaleDateString('en-IN'):'Lifetime'; }
     else if(st.startsWith('trial')){ const d=st.split(':')[1]; badge=`<span class="badge badge-trial">Trial (${d}d left)</span>`; trial++; expInfo=d+' days left'; }
+    else if(st==='suspended'){ badge='<span class="badge" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca">🚫 Suspended</span>'; expInfo='Account suspended'; }
     else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
 
     return `<tr>
@@ -144,10 +146,14 @@ function renderUsers(users){
       <td style="font-size:12px;color:#6b7a90">${expInfo}</td>
       <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
       <td><div class="actions">
-        <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','monthly')" title="Activate Monthly"><span class="material-icons-round">calendar_month</span></button>
-        <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
-        <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','lifetime')" title="Activate Lifetime"><span class="material-icons-round">all_inclusive</span></button>
-        <button class="btn btn-danger btn-sm" onclick="suspendUser('${u.id}')" title="Suspend"><span class="material-icons-round">block</span></button>
+        <button class="btn btn-sm" style="background:#f0f4f8;color:#1a2332;border:1px solid #e2e8f0" onclick="showDetail('${u.id}')" title="View Details"><span class="material-icons-round">info</span></button>
+        <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','quarterly')" title="Activate 3 Months"><span class="material-icons-round">calendar_month</span></button>
+        <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','halfyearly')" title="Activate 6 Months"><span class="material-icons-round">date_range</span></button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
+        ${st==='suspended'
+          ? `<button class="btn btn-sm" style="background:#16a34a;color:#fff" onclick="unsuspendUser('${u.id}')" title="Unsuspend"><span class="material-icons-round">lock_open</span></button>`
+          : `<button class="btn btn-danger btn-sm" onclick="suspendUser('${u.id}')" title="Suspend"><span class="material-icons-round">block</span></button>`
+        }
       </div></td>
     </tr>`;
   }).join('');
@@ -157,31 +163,155 @@ function renderUsers(users){
   document.getElementById('statExpired').textContent = expired;
 }
 
-async function activateUser(uid, plan){
-  const now = new Date();
-  const expiry = plan==='monthly'
-    ? new Date(now.getTime()+30*24*60*60*1000)
-    : plan==='yearly'
-    ? new Date(now.getTime()+365*24*60*60*1000)
-    : new Date('2099-12-31');
+const PLAN_MONTHS = {'3month':3,'6month':6,'12month':12};
+const PLAN_AMOUNTS = {'3month':1299,'6month':2399,'12month':3999};
+const PLAN_LABELS = {'3month':'3 Months','6month':'6 Months','12month':'12 Months'};
+let _activateUid = '';
 
-  await KIDV._db.collection('users').doc(uid).set({
-    subscriptionStatus:'active',
-    subscriptionPlan:plan,
-    subscriptionExpiry:expiry.toISOString(),
-    subscriptionActivatedAt:now.toISOString(),
-    activatedByAdmin:KIDV._user.email,
+function openActivate(uid, plan){
+  _activateUid = uid;
+  // Find user info
+  const u = allUsers.find(x=>x.id===uid);
+  document.getElementById('activateSubtitle').textContent = u ? (u.name||u.email) + ' — ' + PLAN_LABELS[plan] : plan;
+  document.getElementById('act-plan').value = plan;
+  document.getElementById('act-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('act-txn').value = '';
+  document.getElementById('act-notes').value = '';
+  updateAmount();
+  document.getElementById('activateModal').style.display = 'flex';
+}
+
+function closeActivate(){
+  document.getElementById('activateModal').style.display = 'none';
+  _activateUid = '';
+}
+
+function updateAmount(){
+  const plan = document.getElementById('act-plan').value;
+  document.getElementById('act-amount').value = PLAN_AMOUNTS[plan];
+  // Show expiry preview
+  const months = PLAN_MONTHS[plan];
+  const exp = new Date();
+  exp.setMonth(exp.getMonth() + months);
+  document.getElementById('expiryPreview').textContent =
+    '📅 Subscription active until: ' + exp.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+async function confirmActivate(){
+  if(!_activateUid) return;
+  const plan    = document.getElementById('act-plan').value;
+  const amount  = document.getElementById('act-amount').value;
+  const method  = document.getElementById('act-method').value;
+  const txn     = document.getElementById('act-txn').value.trim();
+  const date    = document.getElementById('act-date').value;
+  const notes   = document.getElementById('act-notes').value.trim();
+  const months  = PLAN_MONTHS[plan];
+  const now     = new Date();
+  const expiry  = new Date();
+  expiry.setMonth(expiry.getMonth() + months);
+
+  await KIDV._db.collection('users').doc(_activateUid).set({
+    subscriptionStatus: 'active',
+    subscriptionPlan: plan,
+    subscriptionExpiry: expiry.toISOString(),
+    subscriptionActivatedAt: now.toISOString(),
+    activatedByAdmin: KIDV._user.email,
+    payment: {
+      amount: parseFloat(amount),
+      method: method,
+      txn: txn,
+      date: date,
+      notes: notes,
+      recordedAt: now.toISOString(),
+    }
   },{merge:true});
 
-  alert(`✅ Activated: ${plan} plan\nExpiry: ${expiry.toLocaleDateString('en-IN')}`);
+  closeActivate();
+  alert('✅ Activated: ' + PLAN_LABELS[plan] + '\nExpiry: ' + expiry.toLocaleDateString('en-IN') + '\nAmount: ₹' + amount);
   loadUsers();
 }
 
+async function activateUser(uid, plan){ openActivate(uid, plan); }
+
 async function suspendUser(uid){
-  if(!confirm('Suspend this user?')) return;
-  await KIDV._db.collection('users').doc(uid).set({subscriptionStatus:'suspended'},{merge:true});
-  alert('User suspended');
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(user.isAdmin){ alert('Cannot suspend admin!'); return; }
+  if(!confirm('Suspend user: '+user.email+'?
+
+They will be blocked from accessing the app.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'suspended',
+    suspendedAt: new Date().toISOString(),
+    suspendedBy: KIDV._user.email,
+  },{merge:true});
+  alert('✅ User suspended: '+user.email);
   loadUsers();
+}
+
+async function unsuspendUser(uid){
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(!confirm('Unsuspend user: '+user.email+'?
+
+They will regain access.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'trial',
+    suspendedAt: null,
+  },{merge:true});
+  alert('✅ User unsuspended: '+user.email);
+  loadUsers();
+}
+
+function showDetail(uid){
+  const u = allUsers.find(x=>x.id===uid);
+  if(!u) return;
+
+  const planMap = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
+  const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+  document.getElementById('dAvatar').textContent = (u.name||u.email||'U').charAt(0).toUpperCase();
+  document.getElementById('dName').textContent = u.name || u.displayName || '—';
+  document.getElementById('dEmail').textContent = u.email || '—';
+
+  // Status
+  const st = getStatus(u);
+  let statusHtml = '—';
+  if(st==='admin') statusHtml = '<span style="color:#7c3aed">👑 Admin</span>';
+  else if(st==='active') statusHtml = '<span style="color:#16a34a">✅ Active</span>';
+  else if(st==='suspended') statusHtml = '<span style="color:#ef4444">🚫 Suspended</span>';
+  else if(st.startsWith('trial')) statusHtml = '<span style="color:#d97706">⏳ Trial ('+st.split(':')[1]+' days)</span>';
+  else statusHtml = '<span style="color:#ef4444">🔴 Expired</span>';
+  document.getElementById('dStatus').innerHTML = statusHtml;
+
+  // Plan & Amount
+  document.getElementById('dPlan').textContent = planMap[u.subscriptionPlan] || (u.subscriptionStatus==='trial'?'Free Trial':'—');
+  document.getElementById('dAmount').textContent = u.subscriptionAmount ? '₹'+parseInt(u.subscriptionAmount).toLocaleString('en-IN') : '—';
+  document.getElementById('dExpiry').textContent = u.subscriptionExpiry ? fmt(u.subscriptionExpiry) : (st.startsWith('trial')?'Trial period':'—');
+
+  // Payment
+  document.getElementById('dActivated').textContent = fmt(u.subscriptionActivatedAt);
+  document.getElementById('dActivatedBy').textContent = u.activatedByAdmin || (u.razorpayPaymentId?'Razorpay Auto':'—');
+  document.getElementById('dPaymentId').textContent = u.razorpayPaymentId || 'Manual / Not available';
+
+  // Account
+  document.getElementById('dRegistered').textContent = fmt(u.createdAt);
+  document.getElementById('dLastLogin').textContent = fmt(u.lastLogin);
+
+  // WA button
+  document.getElementById('dWaBtn').setAttribute('data-email', u.email||'');
+
+  document.getElementById('detailModal').style.display = 'flex';
+}
+
+function closeDetail(){
+  document.getElementById('detailModal').style.display = 'none';
+}
+
+function contactUserWA(){
+  const email = document.getElementById('dWaBtn').getAttribute('data-email');
+  const msg = 'Hi, this is KIDV Invoice support. Regarding your account: '+email;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
 function filterUsers(q){
@@ -189,5 +319,159 @@ function filterUsers(q){
   renderUsers(filtered);
 }
 </script>
+
+<!-- Activate + Payment Modal -->
+<div id="activateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:480px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
+    <div style="font-size:18px;font-weight:700;color:#1a2332;margin-bottom:6px">Activate Subscription</div>
+    <div style="font-size:13px;color:#6b7a90;margin-bottom:24px" id="activateSubtitle">User activation</div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Plan</label>
+        <select id="act-plan" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none" onchange="updateAmount()">
+          <option value="3month">3 Months — ₹1,299</option>
+          <option value="6month">6 Months — ₹2,399</option>
+          <option value="12month">12 Months — ₹3,999</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Amount Paid (₹)</label>
+        <input type="number" id="act-amount" value="1299" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Method</label>
+        <select id="act-method" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none">
+          <option>UPI</option>
+          <option>Bank Transfer</option>
+          <option>Cash</option>
+          <option>Cheque</option>
+          <option>Razorpay</option>
+          <option>PhonePe</option>
+          <option>Google Pay</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Transaction / UTR No.</label>
+        <input type="text" id="act-txn" placeholder="TXN123456789" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Date</label>
+      <input type="date" id="act-date" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Notes (optional)</label>
+      <input type="text" id="act-notes" placeholder="Any notes about this payment..." style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <!-- Expiry preview -->
+    <div id="expiryPreview" style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0369a1;font-weight:500"></div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeActivate()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;font-family:Outfit,sans-serif;font-size:14px;cursor:pointer;color:#6b7a90">Cancel</button>
+      <button onclick="confirmActivate()" style="padding:10px 24px;border:none;border-radius:10px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">✅ Activate Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- User Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;width:520px;max-width:95vw;box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;">
+    <!-- Header -->
+    <div style="background:#1e293b;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="dAvatar" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;">A</div>
+        <div>
+          <div id="dName" style="font-size:15px;font-weight:700;color:#fff;">—</div>
+          <div id="dEmail" style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">—</div>
+        </div>
+      </div>
+      <button onclick="closeDetail()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px;">
+
+      <!-- Subscription Status -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">📦 Subscription</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Status</div>
+              <div id="dStatus" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Plan</div>
+              <div id="dPlan" style="font-size:14px;font-weight:700;color:#2f81f7;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Amount Paid</div>
+              <div id="dAmount" style="font-size:14px;font-weight:700;color:#16a34a;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Expiry Date</div>
+              <div id="dExpiry" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">💳 Payment Details</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated On</div>
+              <div id="dActivated" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated By</div>
+              <div id="dActivatedBy" style="font-size:12px;color:#6b7a90;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Razorpay Payment ID</div>
+              <div id="dPaymentId" style="font-size:12px;font-family:monospace;color:#374151;word-break:break-all;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Info -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">👤 Account Info</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Registered On</div>
+              <div id="dRegistered" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Last Login</div>
+              <div id="dLastLogin" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 24px;border-top:1.5px solid #f0f4f8;display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeDetail()" style="padding:9px 20px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f0f4f8;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Close</button>
+      <button id="dWaBtn" onclick="contactUserWA()" style="padding:9px 20px;border-radius:10px;border:none;background:#25d366;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        <span class="material-icons-round" style="font-size:16px">whatsapp</span>WhatsApp User
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
