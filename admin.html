@@ -92,19 +92,27 @@ tr:last-child td{border-bottom:none;}
 let allUsers = [];
 
 document.addEventListener('kidv:db-ready', async()=>{
-  if(!KIDV._ready){ alert('Not logged in'); location.href='login.html'; return; }
+  if(!KIDV._ready){ location.href='login.html'; return; }
   if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
-  loadUsers();
+  // Small delay to ensure Firestore is fully ready
+  setTimeout(loadUsers, 300);
 });
 
 async function loadUsers(){
-  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading users...</td></tr>';
   try {
-    const snap = await KIDV._db.collection('users').get();
+    // Use firebase directly — most reliable
+    const db = KIDV._db || firebase.firestore();
+    const snap = await db.collection('users').get();
+    if(snap.empty){
+      document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">No users found in database</td></tr>';
+      return;
+    }
     allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderUsers(allUsers);
   } catch(e){
-    document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Error loading users</td></tr>';
+    console.error('loadUsers error:', e);
+    document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Error: '+e.message+'</td></tr>';
   }
 }
 
