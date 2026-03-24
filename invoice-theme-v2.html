@@ -112,6 +112,7 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
   @page{size:A4;margin:6mm;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 <div class="toolbar">
@@ -404,6 +405,34 @@ function downloadPDF(){
   document.title = filename;
   window.print();
   setTimeout(()=> document.title = origTitle, 100);
+}
+
+async function downloadPDF(){
+  const btn = document.getElementById('pdfBtn');
+  btn.innerHTML = '<span class="material-icons-round">hourglass_top</span>Generating...';
+  btn.disabled = true;
+
+  const inv = invoices[currentIdx] || {};
+  const filename = (inv.invoiceNo || 'invoice') + '.pdf';
+
+  const element = document.getElementById('invoicePaper');
+  const opt = {
+    margin:       [5, 5, 5, 5],
+    filename:     filename,
+    image:        { type:'jpeg', quality:0.98 },
+    html2canvas:  { scale:2, useCORS:true, letterRendering:true },
+    jsPDF:        { unit:'mm', format:'a4', orientation:'portrait' }
+  };
+
+  try{
+    await html2pdf().set(opt).from(element).save();
+  }catch(e){
+    // Fallback to print
+    window.print();
+  }
+
+  btn.innerHTML = '<span class="material-icons-round" style="color:#ef4444">picture_as_pdf</span>Download PDF';
+  btn.disabled = false;
 }
 
 function shareWA(){
