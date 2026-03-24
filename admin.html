@@ -147,6 +147,7 @@ function renderUsers(users){
       <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
       <td><div class="actions">
         <button class="btn btn-sm" style="background:#f0f4f8;color:#1a2332;border:1px solid #e2e8f0" onclick="showDetail('${u.id}')" title="View Details"><span class="material-icons-round">info</span></button>
+        <button class="btn btn-sm" style="background:#eff6ff;color:#2f81f7;border:1px solid #bfdbfe" onclick="viewUserData('${u.id}')" title="View Data"><span class="material-icons-round">folder_open</span></button>
         <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','quarterly')" title="Activate 3 Months"><span class="material-icons-round">calendar_month</span></button>
         <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','halfyearly')" title="Activate 6 Months"><span class="material-icons-round">date_range</span></button>
         <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
@@ -261,6 +262,10 @@ They will regain access.')) return;
   },{merge:true});
   alert('✅ User unsuspended: '+user.email);
   loadUsers();
+}
+
+function viewUserData(uid){
+  window.open('admin-user-data.html?uid='+uid, '_blank');
 }
 
 function showDetail(uid){
