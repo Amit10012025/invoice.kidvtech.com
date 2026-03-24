@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – User Data Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
+.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
+.topbar-title{font-size:15px;font-weight:700;color:#fff;}
+.user-chip{background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.3);color:#60a5fa;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
+.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.btn-ghost:hover{background:rgba(255,255,255,0.2);}
+.btn .material-icons-round{font-size:16px;}
+
+.main{padding:24px 28px;}
+
+/* User info card */
+.user-card{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
+.user-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-info{flex:1;}
+.user-name{font-size:18px;font-weight:700;color:#1a2332;}
+.user-email{font-size:13px;color:#6b7a90;margin-top:3px;}
+.user-meta{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
+.meta-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;width:fit-content;}
+.tab{padding:8px 20px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;display:flex;align-items:center;gap:6px;}
+.tab .material-icons-round{font-size:16px;}
+.tab.active{background:#2f81f7;color:#fff;box-shadow:0 2px 8px rgba(47,129,247,0.3);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1.5px solid #e2e8f0;}
+.stat-val{font-size:26px;font-weight:800;color:#1a2332;}
+.stat-lbl{font-size:12px;color:#6b7a90;margin-top:4px;}
+
+/* Table */
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
+.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:700;color:#1a2332;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;font-size:10.5px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #f0f4f8;}
+td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;color:#374151;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-paid{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.badge-pending{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
+.badge-draft{background:#f8faff;color:#6b7a90;border:1px solid #e2e8f0;}
+.badge-overdue{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+.empty{text-align:center;padding:40px;color:#9ca3af;font-size:13px;}
+.inv-no{font-weight:700;color:#2f81f7;font-size:12.5px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">KI</div>
+    <div class="topbar-title">User Data Viewer</div>
+    <div class="user-chip" id="topUserEmail">Loading...</div>
+  </div>
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-ghost" onclick="location.href='admin.html'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- User Info -->
+  <div class="user-card">
+    <div class="user-avatar" id="uAvatar">A</div>
+    <div class="user-info">
+      <div class="user-name" id="uName">Loading...</div>
+      <div class="user-email" id="uEmail">—</div>
+      <div class="user-meta">
+        <span class="meta-badge" id="uStatus" style="background:#f0fdf4;color:#16a34a">—</span>
+        <span class="meta-badge" id="uPlan" style="background:#eff6ff;color:#2f81f7">—</span>
+        <span class="meta-badge" id="uExpiry" style="background:#f8faff;color:#6b7a90">—</span>
+        <span class="meta-badge" id="uRegistered" style="background:#f8faff;color:#6b7a90">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="sInvoices">0</div><div class="stat-lbl">Total Invoices</div></div>
+    <div class="stat"><div class="stat-val" id="sClients">0</div><div class="stat-lbl">Customers</div></div>
+    <div class="stat"><div class="stat-val" id="sProducts">0</div><div class="stat-lbl">Products</div></div>
+    <div class="stat"><div class="stat-val" id="sRevenue">₹0</div><div class="stat-lbl">Total Revenue</div></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('invoices',this)"><span class="material-icons-round">receipt_long</span>Invoices</button>
+    <button class="tab" onclick="showTab('clients',this)"><span class="material-icons-round">people_alt</span>Customers</button>
+    <button class="tab" onclick="showTab('products',this)"><span class="material-icons-round">inventory_2</span>Products</button>
+    <button class="tab" onclick="showTab('payments',this)"><span class="material-icons-round">payments</span>Payments</button>
+  </div>
+
+  <!-- Invoices Tab -->
+  <div class="tab-content active" id="tab-invoices">
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Invoices</div><span id="invCount" style="font-size:12px;color:#6b7a90"></span></div>
+      <table>
+        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Date</th><th>Due Date</th><th>Amount</th><th>GST</th><th>Status</th></tr></thead>
+        <tbody id="invoicesTable"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Clients Tab -->
+  <div class="tab-content" id="tab-clients">
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Customers</div><span id="clientCount" style="font-size:12px;color:#6b7a90"></span></div>
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Added On</th></tr></thead>
+        <tbody id="clientsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Products Tab -->
+  <div class="tab-content" id="tab-products">
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Products / Services</div><span id="productCount" style="font-size:12px;color:#6b7a90"></span></div>
+      <table>
+        <thead><tr><th>#</th><th>Name</th><th>HSN/SAC</th><th>Price (₹)</th><th>GST%</th><th>Category</th></tr></thead>
+        <tbody id="productsTable"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Payments Tab -->
+  <div class="tab-content" id="tab-payments">
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Payments</div><span id="paymentCount" style="font-size:12px;color:#6b7a90"></span></div>
+      <table>
+        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Amount</th><th>Method</th><th>Date</th><th>Reference</th></tr></thead>
+        <tbody id="paymentsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
+const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const planNames = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
+
+let targetUid = '';
+
+function showTab(id, el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+document.addEventListener('kidv:db-ready', async()=>{
+  if(!KIDV._ready){ location.href='login.html'; return; }
+  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index.html'; return; }
+
+  // Get UID from URL
+  const params = new URLSearchParams(location.search);
+  targetUid = params.get('uid');
+  if(!targetUid){ alert('No user selected'); location.href='admin.html'; return; }
+
+  await loadUserData();
+});
+
+async function loadUserData(){
+  const db = KIDV._db;
+
+  // Load user info
+  const userDoc = await db.collection('users').doc(targetUid).get();
+  const u = userDoc.exists ? userDoc.data() : {};
+
+  // Update header
+  const name = u.name||u.displayName||u.email||'Unknown';
+  document.getElementById('topUserEmail').textContent = u.email||'—';
+  document.getElementById('uAvatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('uName').textContent = name;
+  document.getElementById('uEmail').textContent = u.email||'—';
+
+  // Status badge
+  const now = new Date();
+  let statusText='', planText='', expiryText='';
+  if(u.subscriptionStatus==='active'){
+    statusText = '✅ Active';
+    planText = '📦 '+( planNames[u.subscriptionPlan]||u.subscriptionPlan||'—');
+    expiryText = u.subscriptionExpiry ? '⏰ Expires: '+fmtDate(u.subscriptionExpiry) : '♾️ Lifetime';
+  } else if(u.subscriptionStatus==='suspended'){
+    statusText = '🚫 Suspended';
+  } else {
+    const reg = u.createdAt ? new Date(u.createdAt) : now;
+    const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+    const daysLeft = Math.max(0,Math.ceil((trialEnd-now)/(24*60*60*1000)));
+    statusText = daysLeft>0 ? `⏳ Trial (${daysLeft}d left)` : '🔴 Trial Expired';
+    expiryText = daysLeft>0 ? '⏰ Trial ends: '+fmtDate(trialEnd) : '';
+  }
+  document.getElementById('uStatus').textContent = statusText;
+  document.getElementById('uPlan').textContent = planText||'No Plan';
+  document.getElementById('uExpiry').textContent = expiryText;
+  document.getElementById('uRegistered').textContent = u.createdAt ? '📅 Joined: '+fmtDate(u.createdAt) : '';
+
+  // Load collections
+  const [invoices, clients, products, payments] = await Promise.all([
+    db.collection('users/'+targetUid+'/invoices').get(),
+    db.collection('users/'+targetUid+'/clients').get(),
+    db.collection('users/'+targetUid+'/products').get(),
+    db.collection('users/'+targetUid+'/payments').get(),
+  ]);
+
+  const invList = invoices.docs.map(d=>({_id:d.id,...d.data()}));
+  const cliList = clients.docs.map(d=>({_id:d.id,...d.data()}));
+  const proList = products.docs.map(d=>({_id:d.id,...d.data()}));
+  const payList = payments.docs.map(d=>({_id:d.id,...d.data()}));
+
+  // Stats
+  const totalRev = invList.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
+  document.getElementById('sInvoices').textContent = invList.length;
+  document.getElementById('sClients').textContent = cliList.length;
+  document.getElementById('sProducts').textContent = proList.length;
+  document.getElementById('sRevenue').textContent = '₹'+totalRev.toLocaleString('en-IN');
+
+  // Invoices table
+  document.getElementById('invCount').textContent = invList.length+' invoices';
+  document.getElementById('invoicesTable').innerHTML = invList.length
+    ? invList.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).map((inv,i)=>`<tr>
+        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+        <td><span class="inv-no">${inv.invoiceNo||'—'}</span></td>
+        <td style="font-weight:500">${inv.clientName||'—'}</td>
+        <td style="font-size:12px">${fmtDate(inv.date)}</td>
+        <td style="font-size:12px">${fmtDate(inv.due)}</td>
+        <td style="font-weight:700">${fmt(inv.total)}</td>
+        <td style="color:#d97706">${fmt(inv.totalGST)}</td>
+        <td><span class="badge badge-${inv.status||'draft'}">${inv.status||'Draft'}</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" class="empty">No invoices found</td></tr>';
+
+  // Clients table
+  document.getElementById('clientCount').textContent = cliList.length+' customers';
+  document.getElementById('clientsTable').innerHTML = cliList.length
+    ? cliList.map((cl,i)=>`<tr>
+        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+        <td style="font-weight:600">${cl.name||'—'}</td>
+        <td style="font-size:12px">${cl.phone||'—'}</td>
+        <td><span style="font-family:monospace;font-size:11px;background:#eff6ff;color:#2f81f7;padding:2px 8px;border-radius:5px">${cl.gstin||'—'}</span></td>
+        <td style="font-size:12px">${cl.state||'—'}</td>
+        <td><span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">${cl.gstcat||'—'}</span></td>
+        <td style="font-size:12px">${fmtDate(cl.createdAt)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" class="empty">No customers found</td></tr>';
+
+  // Products table
+  document.getElementById('productCount').textContent = proList.length+' products';
+  document.getElementById('productsTable').innerHTML = proList.length
+    ? proList.map((p,i)=>`<tr>
+        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+        <td style="font-weight:600">${p.name||'—'}</td>
+        <td style="font-family:monospace;font-size:11px">${p.hsn||'—'}</td>
+        <td style="font-weight:700">${fmt(p.price)}</td>
+        <td><span class="badge" style="background:#fff7ed;color:#d97706;border:1px solid #fed7aa">${p.gst||0}%</span></td>
+        <td style="font-size:12px;color:#6b7a90">${p.category||'—'}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="empty">No products found</td></tr>';
+
+  // Payments table
+  document.getElementById('paymentCount').textContent = payList.length+' payments';
+  document.getElementById('paymentsTable').innerHTML = payList.length
+    ? payList.map((p,i)=>`<tr>
+        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+        <td><span class="inv-no">${p.invoiceNo||'—'}</span></td>
+        <td style="font-weight:500">${p.clientName||'—'}</td>
+        <td style="font-weight:700;color:#16a34a">${fmt(p.amount)}</td>
+        <td><span class="badge badge-paid">${p.method||'—'}</span></td>
+        <td style="font-size:12px">${fmtDate(p.date||p.createdAt)}</td>
+        <td style="font-size:11px;font-family:monospace;color:#6b7a90">${p.ref||p.utr||'—'}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" class="empty">No payments found</td></tr>';
+}
+</script>
+</body>
+</html>
