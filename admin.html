@@ -155,6 +155,13 @@ function getStatus(u){
   return 'expired';
 }
 
+function getSuspendBtn(st, uid){
+  if(st==='suspended'){
+    return '<button class="btn btn-sm" style="background:#16a34a;color:#fff" onclick="unsuspendUser(\''+uid+'\')"><span class="material-icons-round">lock_open</span></button>';
+  }
+  return '<button class="btn btn-danger btn-sm" onclick="suspendUser(\''+uid+'\')"><span class="material-icons-round">block</span></button>';
+}
+
 function renderUsers(users){
   const now = new Date();
   let trial=0,active=0,expired=0;
@@ -184,10 +191,7 @@ function renderUsers(users){
         <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','quarterly')" title="Activate 3 Months"><span class="material-icons-round">calendar_month</span></button>
         <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','halfyearly')" title="Activate 6 Months"><span class="material-icons-round">date_range</span></button>
         <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
-        ${st==='suspended'
-          ? `<button class="btn btn-sm" style="background:#16a34a;color:#fff" onclick="unsuspendUser('${u.id}')" title="Unsuspend"><span class="material-icons-round">lock_open</span></button>`
-          : `<button class="btn btn-danger btn-sm" onclick="suspendUser('${u.id}')" title="Suspend"><span class="material-icons-round">block</span></button>`
-        }
+        ${getSuspendBtn(st, u.id)}
       </div></td>
     </tr>`;
   }).join('');
@@ -271,9 +275,7 @@ async function suspendUser(uid){
   const user = allUsers.find(u=>u.id===uid);
   if(!user) return;
   if(user.isAdmin){ alert('Cannot suspend admin!'); return; }
-  if(!confirm('Suspend user: '+user.email+'?
-
-They will be blocked from accessing the app.')) return;
+  if(!confirm('Suspend user: '+user.email+'?\n\nThey will be blocked from accessing the app.')) return;
   await KIDV._db.collection('users').doc(uid).set({
     subscriptionStatus:'suspended',
     suspendedAt: new Date().toISOString(),
@@ -286,9 +288,7 @@ They will be blocked from accessing the app.')) return;
 async function unsuspendUser(uid){
   const user = allUsers.find(u=>u.id===uid);
   if(!user) return;
-  if(!confirm('Unsuspend user: '+user.email+'?
-
-They will regain access.')) return;
+  if(!confirm('Unsuspend user: '+user.email+'?\n\nThey will regain access.')) return;
   await KIDV._db.collection('users').doc(uid).set({
     subscriptionStatus:'trial',
     suspendedAt: null,
