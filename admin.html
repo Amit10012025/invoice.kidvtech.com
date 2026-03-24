@@ -92,27 +92,52 @@ tr:last-child td{border-bottom:none;}
 let allUsers = [];
 
 document.addEventListener('kidv:db-ready', async()=>{
+  console.log('[Admin] db-ready fired. KIDV._ready:', KIDV._ready, 'isAdmin:', KIDV.isAdmin);
   if(!KIDV._ready){ location.href='login.html'; return; }
   if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
-  // Small delay to ensure Firestore is fully ready
-  setTimeout(loadUsers, 300);
+  loadUsers();
 });
 
+// Fallback: if db-ready never fires, try after 3 seconds
+setTimeout(()=>{
+  if(allUsers.length === 0 && document.getElementById('usersTable').innerHTML.includes('Loading')){
+    console.log('[Admin] Fallback load triggered');
+    if(firebase.apps.length && firebase.auth().currentUser) loadUsers();
+  }
+}, 3000);
+
 async function loadUsers(){
-  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading users...</td></tr>';
+  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+  
+  // Wait for firebase to be ready
+  let attempts = 0;
+  while(!firebase.apps.length && attempts < 20){
+    await new Promise(r=>setTimeout(r,200));
+    attempts++;
+  }
+  
   try {
-    // Use firebase directly — most reliable
-    const db = KIDV._db || firebase.firestore();
+    const db = firebase.firestore();
+    console.log('[Admin] Loading users from Firestore...');
     const snap = await db.collection('users').get();
+    console.log('[Admin] Users found:', snap.size);
+    
     if(snap.empty){
-      document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">No users found in database</td></tr>';
+      document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">No users registered yet</td></tr>';
+      document.getElementById('statTotal').textContent = '0';
       return;
     }
+    
     allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
     renderUsers(allUsers);
   } catch(e){
-    console.error('loadUsers error:', e);
-    document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Error: '+e.message+'</td></tr>';
+    console.error('[Admin] Error:', e.code, e.message);
+    let errMsg = e.message;
+    if(e.code === 'permission-denied'){
+      errMsg = 'Firestore permission denied. Check Rules.';
+    }
+    document.getElementById('usersTable').innerHTML = 
+      '<tr><td colspan="7" class="empty" style="color:#ef4444">❌ Error: '+errMsg+'<br/><small>Check browser console (F12) for details</small></td></tr>';
   }
 }
 
