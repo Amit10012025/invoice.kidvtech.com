@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Privacy Policy</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+:root{--rail-w:68px;--bg:#f0f4f8;--surface:#ffffff;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);cursor:pointer;}
+.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:22px;}
+.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.rail-item.active{background:rgba(47,129,247,0.2);color:#2f81f7;border-color:rgba(47,129,247,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
+.main{margin-left:var(--rail-w);flex:1;}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,#0f1f3d,#1a3a6b);padding:48px 60px 40px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(47,129,247,0.1);}
+.hero-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;position:relative;z-index:1;}
+.logo-box{width:46px;height:46px;background:var(--gradient);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;}
+.logo-name{font-size:18px;font-weight:700;color:#fff;}
+.logo-by{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.3);color:#60a5fa;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em;position:relative;z-index:1;}
+.hero-tag .material-icons-round{font-size:13px;}
+.hero-title{font-size:34px;font-weight:800;color:#fff;margin-bottom:10px;position:relative;z-index:1;letter-spacing:-0.5px;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.55);position:relative;z-index:1;line-height:1.6;}
+.hero-sub strong{color:rgba(255,255,255,0.8);}
+.update-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(57,208,216,0.15);border:1px solid rgba(57,208,216,0.25);color:#39d0d8;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-top:16px;position:relative;z-index:1;}
+
+/* CONTENT */
+.content-wrap{display:grid;grid-template-columns:240px 1fr;gap:0;max-width:1200px;margin:0 auto;}
+
+/* TOC */
+.toc{position:sticky;top:0;height:100vh;overflow-y:auto;padding:32px 20px;border-right:1.5px solid #e2e8f0;background:#fff;}
+.toc-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+.toc-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;border-left:2px solid transparent;text-decoration:none;}
+.toc-item:hover{background:#f0f4f8;color:var(--text);}
+.toc-item.active{color:var(--accent);background:#eff6ff;border-left-color:var(--accent);font-weight:600;}
+.toc-item .material-icons-round{font-size:15px;}
+
+/* DOC */
+.doc{padding:40px 48px;max-width:760px;}
+.doc-section{margin-bottom:40px;scroll-margin-top:20px;}
+.sec-num{display:inline-flex;width:28px;height:28px;background:rgba(47,129,247,0.1);color:var(--accent);border-radius:8px;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:10px;}
+.sec-title{font-size:20px;font-weight:700;color:#1a2332;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.sec-title .material-icons-round{font-size:20px;color:var(--accent);}
+.sec-text{font-size:14.5px;color:#4b5563;line-height:1.85;}
+.sec-text p{margin-bottom:12px;}
+.sec-text p:last-child{margin-bottom:0;}
+.sec-text ul{padding-left:20px;margin:10px 0;}
+.sec-text ul li{margin-bottom:8px;}
+.sec-text strong{color:#1a2332;}
+.highlight-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:16px 20px;margin:16px 0;font-size:13.5px;color:#0369a1;line-height:1.7;}
+.highlight-box .material-icons-round{font-size:16px;vertical-align:middle;margin-right:4px;}
+.warn-box{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:16px 20px;margin:16px 0;font-size:13.5px;color:#92400e;line-height:1.7;}
+.divider{height:1px;background:#f0f4f8;margin:40px 0;}
+
+/* FOOTER */
+.page-footer{background:#1e293b;padding:20px 60px;display:flex;align-items:center;justify-content:space-between;}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.45);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#fff;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3);}
+
+@media(max-width:900px){.content-wrap{grid-template-columns:1fr;}.toc{display:none;}.doc{padding:24px 20px;}.hero{padding:32px 20px;}}
+</style>
+</head>
+<body>
+
+<nav class="rail">
+  <div class="rail-logo" onclick="location.href='index.html'" title="KIDV Invoice">KI</div>
+  <div class="rail-item" onclick="location.href='index.html'"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item" onclick="location.href='clients.html'"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
+  <div class="rail-item" onclick="location.href='invoices.html'"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item active"><span class="material-icons-round">privacy_tip</span><div class="rail-tooltip">Privacy Policy</div></div>
+  <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+</nav>
+
+<main class="main">
+  <div class="hero">
+    <div class="hero-logo">
+      <div class="logo-box">KI</div>
+      <div>
+        <div class="logo-name">KIDV Invoice</div>
+        <div class="logo-by">by KIDV Tech · kidvtech.com</div>
+      </div>
+    </div>
+    <div class="hero-tag"><span class="material-icons-round">privacy_tip</span>Legal</div>
+    <div class="hero-title">Privacy Policy</div>
+    <div class="hero-sub">We take your privacy seriously. This policy explains what data we collect, how we use it, and how we protect it.<br/><strong>KIDV Tech, Ahmedabad, Gujarat, India</strong></div>
+    <div class="update-badge"><span class="material-icons-round" style="font-size:14px">update</span>Last Updated: March 25, 2026</div>
+  </div>
+
+  <div class="content-wrap">
+    <div class="toc">
+      <div class="toc-title">Contents</div>
+      <a class="toc-item active" href="#s1"><span class="material-icons-round">info</span>Information We Collect</a>
+      <a class="toc-item" href="#s2"><span class="material-icons-round">storage</span>How We Use Data</a>
+      <a class="toc-item" href="#s3"><span class="material-icons-round">local_fire_department</span>Firebase & Cloud</a>
+      <a class="toc-item" href="#s4"><span class="material-icons-round">share</span>Data Sharing</a>
+      <a class="toc-item" href="#s5"><span class="material-icons-round">security</span>Data Security</a>
+      <a class="toc-item" href="#s6"><span class="material-icons-round">manage_accounts</span>Your Rights</a>
+      <a class="toc-item" href="#s7"><span class="material-icons-round">child_care</span>Children's Privacy</a>
+      <a class="toc-item" href="#s8"><span class="material-icons-round">cookie</span>Cookies</a>
+      <a class="toc-item" href="#s9"><span class="material-icons-round">update</span>Policy Changes</a>
+      <a class="toc-item" href="#s10"><span class="material-icons-round">contact_mail</span>Contact Us</a>
+    </div>
+
+    <div class="doc">
+      <div class="highlight-box">
+        <span class="material-icons-round">shield</span>
+        <strong>Summary:</strong> KIDV Invoice stores your business data (invoices, clients, products) securely on Google Firebase. We never sell your data. You own your data and can delete it anytime.
+      </div>
+
+      <div class="doc-section" id="s1">
+        <div class="sec-num">1</div>
+        <div class="sec-title"><span class="material-icons-round">info</span>Information We Collect</div>
+        <div class="sec-text">
+          <p>When you use KIDV Invoice, we collect the following types of information:</p>
+          <ul>
+            <li><strong>Account Information:</strong> Your name, email address, and password (encrypted by Firebase Auth).</li>
+            <li><strong>Business Data:</strong> Company name, GSTIN, PAN, address, bank details that you enter in Settings.</li>
+            <li><strong>Invoice Data:</strong> Invoices, quotations, payments, client records, and product/service lists that you create.</li>
+            <li><strong>Client Data:</strong> Names, phone numbers, email addresses, GSTIN numbers of your clients.</li>
+            <li><strong>Usage Data:</strong> Login timestamps and basic usage patterns (no tracking of specific actions).</li>
+            <li><strong>Payment Data:</strong> Subscription plan details and payment status (actual payment processing is handled by Razorpay).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s2">
+        <div class="sec-num">2</div>
+        <div class="sec-title"><span class="material-icons-round">storage</span>How We Use Your Data</div>
+        <div class="sec-text">
+          <p>We use the information we collect for the following purposes:</p>
+          <ul>
+            <li><strong>To Provide the Service:</strong> Generate GST invoices, manage clients, track payments, and produce reports.</li>
+            <li><strong>Account Management:</strong> Create and manage your KIDV Invoice account, subscription, and settings.</li>
+            <li><strong>Customer Support:</strong> Respond to your queries via WhatsApp, email, or phone.</li>
+            <li><strong>Service Improvement:</strong> Understand how the app is used to fix bugs and add new features.</li>
+            <li><strong>Legal Compliance:</strong> Maintain records as required under Indian GST and tax laws.</li>
+          </ul>
+          <p>We do <strong>NOT</strong> use your data for advertising, profiling, or selling to third parties.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s3">
+        <div class="sec-num">3</div>
+        <div class="sec-title"><span class="material-icons-round">local_fire_department</span>Firebase & Cloud Storage</div>
+        <div class="sec-text">
+          <p>KIDV Invoice uses <strong>Google Firebase</strong> (Firestore) for cloud data storage and <strong>Firebase Authentication</strong> for login. This means:</p>
+          <ul>
+            <li>Your data is stored on Google's secure servers (data centers in Mumbai/Asia region).</li>
+            <li>All data transmission is encrypted using HTTPS/TLS.</li>
+            <li>Firebase's security rules ensure only you can access your own data.</li>
+            <li>Google Firebase complies with GDPR, SOC 2, ISO 27001 and other international security standards.</li>
+          </ul>
+          <div class="warn-box">
+            <span class="material-icons-round">warning_amber</span>
+            Firebase is a Google product. By using KIDV Invoice, your data is also subject to <a href="https://firebase.google.com/support/privacy" target="_blank" style="color:#92400e">Google Firebase's Privacy Policy</a>.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s4">
+        <div class="sec-num">4</div>
+        <div class="sec-title"><span class="material-icons-round">share</span>Data Sharing</div>
+        <div class="sec-text">
+          <p>We <strong>never sell, rent, or trade</strong> your personal or business data. We only share data in these limited situations:</p>
+          <ul>
+            <li><strong>Google Firebase:</strong> For cloud storage and authentication (as described above).</li>
+            <li><strong>Razorpay:</strong> For payment processing. Only payment-related information is shared with Razorpay, subject to their privacy policy.</li>
+            <li><strong>EmailJS:</strong> If you use the email notification feature, your subscription confirmation details may be processed by EmailJS.</li>
+            <li><strong>Legal Requirements:</strong> If required by Indian law, court order, or government authority.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s5">
+        <div class="sec-num">5</div>
+        <div class="sec-title"><span class="material-icons-round">security</span>Data Security</div>
+        <div class="sec-text">
+          <p>We implement multiple layers of security to protect your data:</p>
+          <ul>
+            <li>All data is encrypted in transit using HTTPS/TLS encryption.</li>
+            <li>Passwords are never stored in plain text — handled by Firebase Auth with industry-standard hashing.</li>
+            <li>Firestore Security Rules ensure each user can only access their own data.</li>
+            <li>Regular security reviews of Firestore rules and access policies.</li>
+            <li>Admin-only access for support operations, logged and audited.</li>
+          </ul>
+          <p>However, no system is 100% secure. We encourage you to use a strong password and keep your login credentials confidential.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s6">
+        <div class="sec-num">6</div>
+        <div class="sec-title"><span class="material-icons-round">manage_accounts</span>Your Rights</div>
+        <div class="sec-text">
+          <p>You have the following rights regarding your data:</p>
+          <ul>
+            <li><strong>Access:</strong> View all your data at any time within the app.</li>
+            <li><strong>Export:</strong> Download all your data as JSON from Settings → Data & Reset → Export JSON.</li>
+            <li><strong>Delete:</strong> Delete individual records or clear all data from Settings → Data & Reset.</li>
+            <li><strong>Account Deletion:</strong> Contact us at amit@kidvtech.com to permanently delete your account and all associated data.</li>
+            <li><strong>Correction:</strong> Update your information at any time via Settings.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s7">
+        <div class="sec-num">7</div>
+        <div class="sec-title"><span class="material-icons-round">child_care</span>Children's Privacy</div>
+        <div class="sec-text">
+          <p>KIDV Invoice is a business tool intended for use by adults (18 years and older) and registered businesses. We do not knowingly collect personal information from children under the age of 18.</p>
+          <p>If you believe that a child under 18 has provided us with personal information, please contact us immediately at <strong>amit@kidvtech.com</strong> and we will delete such information.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s8">
+        <div class="sec-num">8</div>
+        <div class="sec-title"><span class="material-icons-round">cookie</span>Cookies & Local Storage</div>
+        <div class="sec-text">
+          <p>KIDV Invoice uses <strong>browser localStorage</strong> (not tracking cookies) to:</p>
+          <ul>
+            <li>Cache your settings and data locally for faster loading.</li>
+            <li>Store your Firebase configuration.</li>
+            <li>Remember your invoice settings and preferences.</li>
+          </ul>
+          <p>Firebase may set authentication session cookies. These are essential for the app to function and cannot be disabled. We do not use any advertising or tracking cookies.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s9">
+        <div class="sec-num">9</div>
+        <div class="sec-title"><span class="material-icons-round">update</span>Changes to This Policy</div>
+        <div class="sec-text">
+          <p>We may update this Privacy Policy from time to time. When we make significant changes, we will:</p>
+          <ul>
+            <li>Update the "Last Updated" date at the top of this page.</li>
+            <li>Notify you via the app or email if the changes are material.</li>
+          </ul>
+          <p>Continued use of KIDV Invoice after changes constitutes acceptance of the updated policy. We encourage you to review this policy periodically.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="doc-section" id="s10">
+        <div class="sec-num">10</div>
+        <div class="sec-title"><span class="material-icons-round">contact_mail</span>Contact Us</div>
+        <div class="sec-text">
+          <p>For any privacy-related questions, concerns, or requests:</p>
+          <ul>
+            <li>📧 <strong>Email:</strong> amit@kidvtech.com</li>
+            <li>📱 <strong>WhatsApp:</strong> +91 79844 86885</li>
+            <li>🌐 <strong>Website:</strong> kidvtech.com</li>
+            <li>📍 <strong>Address:</strong> KIDV Tech, Ahmedabad, Gujarat – 380001, India</li>
+          </ul>
+          <p>We aim to respond to all privacy inquiries within 3 business days.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;background:var(--gradient);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">KI</div>
+      <div class="footer-copy">© 2026 KIDV Tech. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms & Conditions</a>
+      <a href="https://wa.me/917984486885" target="_blank">Support</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
