@@ -346,5 +346,6 @@ function exportCSV(){const rows=[['EWB No','Invoice','From','To','Vehicle','Vali
 function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
 renderTable();
 </script>
+  <script src="kidv-common.js"></script>
 </body>
 </html>
