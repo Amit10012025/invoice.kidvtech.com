@@ -135,6 +135,7 @@ tr:hover td{background:#f8faff;}
   <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
   <div class="rail-item" onclick="location.href='quotations.html'"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
   <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-spacer"></div>
   <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
   <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
@@ -226,6 +227,38 @@ tr:hover td{background:#f8faff;}
       <div class="form-row full">
         <div class="form-group"><label>Notes</label><input type="text" id="f-notes" placeholder="Thank you for your business!"/></div>
       </div>
+
+      <!-- Transport Details -->
+      <div class="section-label" style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+        <span>Transport Details</span>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:400;color:var(--muted);cursor:pointer;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="f-transport-toggle" onchange="toggleTransport()" style="width:14px;height:14px;cursor:pointer"/>
+          Add transport info
+        </label>
+      </div>
+      <div id="transportSection" style="display:none;">
+        <div class="form-row">
+          <div class="form-group"><label>Transporter Name</label><input type="text" id="f-transporter" placeholder="e.g. Allcargo Logistics Ltd"/></div>
+          <div class="form-group"><label>GST Transporter ID</label><input type="text" id="f-transporter-id" placeholder="88AACCA2894D1ZS" style="text-transform:uppercase;font-family:monospace"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Vehicle No</label><input type="text" id="f-vehicle-no" placeholder="GJ01HT8376" style="text-transform:uppercase"/></div>
+          <div class="form-group"><label>Mode of Transport</label>
+            <select id="f-transport-mode">
+              <option value="">Select Mode</option>
+              <option>Road</option><option>Rail</option><option>Air</option><option>Ship</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Destination</label><input type="text" id="f-destination" placeholder="DOOR DELIVERY / City name"/></div>
+          <div class="form-group"><label>LR No / Doc No</label><input type="text" id="f-lr-no" placeholder="LR number"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>LR Date</label><input type="date" id="f-lr-date"/></div>
+          <div class="form-group"><label>E-Way Bill No</label><input type="text" id="f-eway-no" placeholder="E-way bill number"/></div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
@@ -311,8 +344,22 @@ function openModal(idx=-1){
     document.getElementById('f-notes').value='Thank you for your business!';
     document.getElementById('f-shipto-toggle').checked = false;
     document.getElementById('shipToSection').style.display = 'none';
+    document.getElementById('f-transport-toggle').checked = false;
+    document.getElementById('transportSection').style.display = 'none';
+    ['f-transporter','f-transporter-id','f-vehicle-no','f-destination','f-lr-no','f-lr-date','f-eway-no'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    const tm = document.getElementById('f-transport-mode'); if(tm) tm.value='';
     document.getElementById('f-shipclient').value = '';
     document.getElementById('shipPreview').innerHTML = '';
+    // Transport restore
+    if(inv.transport){
+      document.getElementById('f-transport-toggle').checked = true;
+      document.getElementById('transportSection').style.display = '';
+      const t = inv.transport;
+      ['transporter','transporter-id','vehicle-no','destination','lr-no','lr-date','eway-no'].forEach(k=>{
+        const el=document.getElementById('f-'+k); if(el) el.value=t[k.replace('-','')]||t[k]||'';
+      });
+      const tm=document.getElementById('f-transport-mode'); if(tm&&t.mode) tm.value=t.mode;
+    }
     document.getElementById('lineItems').innerHTML='';
     addLine();
   } else {
@@ -405,6 +452,11 @@ function getLines(){
   }));
 }
 
+function toggleTransport(){
+  const on = document.getElementById('f-transport-toggle').checked;
+  document.getElementById('transportSection').style.display = on ? '' : 'none';
+}
+
 function toggleShipTo(){
   const on = document.getElementById('f-shipto-toggle').checked;
   document.getElementById('shipToSection').style.display = on ? '' : 'none';
@@ -470,6 +522,17 @@ async function saveInvoice(status){
     status:status||document.getElementById('f-status').value,
     notes:document.getElementById('f-notes').value,
     createdAt:new Date().toISOString(),
+    // Transport
+    transport: document.getElementById('f-transport-toggle').checked ? {
+      transporter:   document.getElementById('f-transporter').value,
+      transporterId: document.getElementById('f-transporter-id').value,
+      vehicleNo:     document.getElementById('f-vehicle-no').value,
+      mode:          document.getElementById('f-transport-mode').value,
+      destination:   document.getElementById('f-destination').value,
+      lrNo:          document.getElementById('f-lr-no').value,
+      lrDate:        document.getElementById('f-lr-date').value,
+      ewayNo:        document.getElementById('f-eway-no').value,
+    } : null,
     // Ship To from client
     shipName:    shipClient ? shipClient.name    : '',
     shipGSTIN:   shipClient ? shipClient.gstin   : '',

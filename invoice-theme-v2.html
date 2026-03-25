@@ -152,7 +152,7 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
         <tr><td class="ml">Due Date</td><td class="mv" id="hDueDate">—</td></tr>
         <tr><td class="ml">Payment Terms</td><td class="mv" id="hTerms">—</td></tr>
         <tr><td class="ml">Place of Supply</td><td class="mv" id="hPos">Gujarat (24)</td></tr>
-        <tr><td class="ml">Supply Type</td><td class="mv" id="hSupply">Intra-State</td></tr>
+
       </table>
     </div>
   </div>
@@ -188,18 +188,64 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
     </div>
   </div>
 
+  <!-- TRANSPORT DETAILS -->
+  <div class="parties-section" id="transportSection" style="display:none;background:#f8faff;">
+    <div class="party-block" style="border-right:1.5px solid #111;">
+      <div class="party-type" style="background:#2563eb;">Transport Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Transporter Name</div>
+          <div style="font-size:11px;font-weight:600;color:#111" id="tTransporter">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">GST Transporter ID</div>
+          <div style="font-size:11px;font-family:monospace;color:#111" id="tTransporterId">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Vehicle No</div>
+          <div style="font-size:11px;font-weight:700;color:#111" id="tVehicleNo">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Mode of Transport</div>
+          <div style="font-size:11px;color:#111" id="tMode">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="party-block">
+      <div class="party-type" style="background:#2563eb;opacity:0">.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Destination</div>
+          <div style="font-size:11px;font-weight:600;color:#111" id="tDestination">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">LR No / Doc No</div>
+          <div style="font-size:11px;color:#111" id="tLrNo">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">LR Date</div>
+          <div style="font-size:11px;color:#111" id="tLrDate">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">E-Way Bill No</div>
+          <div style="font-size:11px;font-family:monospace;color:#111" id="tEwayNo">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ITEMS TABLE -->
   <table class="items-table">
     <thead>
       <tr>
         <th style="width:30px">Sr.</th>
-        <th class="left" style="width:36%">Description of Goods / Services</th>
-        <th style="width:65px">HSN/SAC</th>
-        <th style="width:40px">Qty</th>
-        <th style="width:38px">UOM</th>
-        <th style="width:80px">Rate (₹)</th>
-        <th style="width:48px">GST%</th>
-        <th style="width:90px">Amount (₹)</th>
+        <th class="left" style="width:28%">Description of Goods / Services</th>
+        <th style="width:60px">HSN/<br/>SAC</th>
+        <th style="width:38px">Qty</th>
+        <th style="width:35px">UOM</th>
+        <th style="width:75px">Rate (₹)</th>
+        <th style="width:45px">GST%</th>
+        <th style="width:85px">Amount (₹)</th>
       </tr>
     </thead>
     <tbody id="itemsBody"></tbody>
@@ -347,14 +393,32 @@ function renderInvoice(inv){
     document.getElementById('toGSTINSingle').textContent = inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
   }
 
+  // Transport section
+  const transport = inv.transport;
+  const tSection = document.getElementById('transportSection');
+  if(transport && (transport.transporter || transport.vehicleNo)){
+    tSection.style.display = '';
+    const set2 = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v||'—'; };
+    set2('tTransporter', transport.transporter);
+    set2('tTransporterId', transport.transporterId);
+    set2('tVehicleNo', transport.vehicleNo);
+    set2('tMode', transport.mode);
+    set2('tDestination', transport.destination);
+    set2('tLrNo', transport.lrNo);
+    set2('tLrDate', transport.lrDate ? fmtDate(transport.lrDate) : '—');
+    set2('tEwayNo', transport.ewayNo);
+  } else {
+    tSection.style.display = 'none';
+  }
+
   const lines=inv.lines||[];
   let totalQty=0;
   document.getElementById('itemsBody').innerHTML=lines.map((l,i)=>{
     totalQty+=parseFloat(l.qty||1);
     return`<tr>
       <td class="c">${i+1}</td>
-      <td><div class="item-desc">${l.desc||'—'}</div><div class="item-hsn">${l.hsn?'HSN: '+l.hsn:''}</div></td>
-      <td class="c" style="font-family:monospace;font-size:9.5px">${l.hsn||'—'}</td>
+      <td><div class="item-desc">${l.desc||'—'}</div></td>
+      <td class="c" style="font-family:monospace;font-size:9.5px;font-weight:600">${l.hsn||'—'}</td>
       <td class="c">${l.qty}</td>
       <td class="c">Nos</td>
       <td class="r">₹${parseFloat(l.rate||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
