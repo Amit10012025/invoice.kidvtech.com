@@ -224,5 +224,6 @@ async function savePayment(){
 }
 async function deletePayment(i){if(confirm('Delete?')){const id=payments[i]._id||i;await KIDV.delete('payments',id);payments.splice(i,1);renderPayments();}}
 </script>
+  <script src="kidv-common.js"></script>
 </body>
 </html>
