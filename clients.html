@@ -173,14 +173,15 @@ tr:hover td{background:#f8faff;}
 <nav class="rail">
   <div class="rail-logo">KI</div>
   <div class="rail-item" onclick="location.href='index.html'"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
+  <div class="rail-item" onclick="location.href='clients.html'"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Clients</div></div>
   <div class="rail-item" onclick="location.href='products.html'"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
   <div class="rail-item" onclick="location.href='invoices.html'"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
   <div class="rail-item" onclick="location.href='quotations.html'"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
   <div class="rail-item" onclick="location.href='payments.html'"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-item" onclick="location.href='reports.html'"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item active" onclick="toggleFlyout()"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
   <div class="rail-item" onclick="location.href='settings.html'"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item"><span class="material-icons-round">account_circle</span><div class="rail-tooltip">Profile</div></div>
 </nav>
