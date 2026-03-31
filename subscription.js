@@ -117,5 +117,5 @@ window.SUB = {
 
 // Run check after Firebase auth is ready
 document.addEventListener('kidv:db-ready', () => {
-  if (KIDV._ready) setTimeout(() => SUB.check(), 500);
+  if (KIDV._ready) setTimeout(() => SUB.check(), 100);
 });

@@ -356,15 +356,60 @@ async function loadAll(){
     document.getElementById('fb-appid').value=fb.appId||'';
     setFbStatus(true);
   }
+
+  // ── Registration Lock — non-admin users ──────────────────
+  if(!KIDV.isAdmin){
+    const isCompanySaved = !!(comp.name && comp.name.trim());
+    const isGSTSaved     = !!(gst.gstin && gst.gstin.trim());
+
+    if(isCompanySaved){
+      // Lock Company Name and Display Name
+      ['c-name','c-display'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el){ el.readOnly=true; el.classList.add('locked-field'); }
+      });
+      const notice = document.getElementById('companyLockNotice');
+      if(notice) notice.style.display='flex';
+    }
+
+    if(isGSTSaved){
+      // Lock GSTIN and PAN
+      ['g-gstin','g-pan'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el){ el.readOnly=true; el.classList.add('locked-field'); }
+      });
+      const notice = document.getElementById('gstLockNotice');
+      if(notice) notice.style.display='flex';
+    }
+  }
 }
 
 async function saveCompany(){
-  const c={name:document.getElementById('c-name').value,display:document.getElementById('c-display').value,email:document.getElementById('c-email').value,phone:document.getElementById('c-phone').value,web:document.getElementById('c-web').value,city:document.getElementById('c-city').value,address:document.getElementById('c-address').value};
+  const existing = await KIDV.getSettings('company');
+  const locked = !KIDV.isAdmin && existing.name && existing.name.trim();
+  const c={
+    name:    locked ? existing.name    : document.getElementById('c-name').value,
+    display: locked ? existing.display : document.getElementById('c-display').value,
+    email:document.getElementById('c-email').value,
+    phone:document.getElementById('c-phone').value,
+    web:document.getElementById('c-web').value,
+    city:document.getElementById('c-city').value,
+    address:document.getElementById('c-address').value
+  };
   await KIDV.saveSettings('company',c);
   showToast('Company profile saved! ✅');
 }
 async function saveGST(){
-  const g={gstin:document.getElementById('g-gstin').value.toUpperCase(),pan:document.getElementById('g-pan').value.toUpperCase(),state:document.getElementById('g-state').value,statecode:document.getElementById('g-statecode').value,type:document.getElementById('g-type').value,rate:document.getElementById('g-rate').value};
+  const existing = await KIDV.getSettings('gst');
+  const locked = !KIDV.isAdmin && existing.gstin && existing.gstin.trim();
+  const g={
+    gstin:    locked ? existing.gstin : document.getElementById('g-gstin').value.toUpperCase(),
+    pan:      locked ? existing.pan   : document.getElementById('g-pan').value.toUpperCase(),
+    state:document.getElementById('g-state').value,
+    statecode:document.getElementById('g-statecode').value,
+    type:document.getElementById('g-type').value,
+    rate:document.getElementById('g-rate').value
+  };
   await KIDV.saveSettings('gst',g);
   showToast('GST settings saved! ✅');
 }

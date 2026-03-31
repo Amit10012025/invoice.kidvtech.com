@@ -176,8 +176,19 @@ function renderUsers(users){
     const st = getStatus(u);
     let badge='', expInfo='';
     if(st==='admin'){ badge='<span class="badge badge-admin">Admin</span>'; }
-    else if(st==='active'){ badge='<span class="badge badge-active">Active</span>'; active++; expInfo=u.subscriptionExpiry?new Date(u.subscriptionExpiry).toLocaleDateString('en-IN'):'Lifetime'; }
-    else if(st.startsWith('trial')){ const d=st.split(':')[1]; badge=`<span class="badge badge-trial">Trial (${d}d left)</span>`; trial++; expInfo=d+' days left'; }
+    else if(st==='active'){
+      badge='<span class="badge badge-active">✅ Active</span>'; active++;
+      const actDate = u.subscriptionActivatedAt ? new Date(u.subscriptionActivatedAt).toLocaleDateString('en-IN') : null;
+      const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('en-IN') : null;
+      const planLabel = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly'}[u.subscriptionPlan]||u.subscriptionPlan||'';
+      expInfo = (planLabel?'<b>'+planLabel+'</b><br/>':'')+(actDate?'From: '+actDate+'<br/>':'')+(expDate?'Upto: '+expDate:'Lifetime');
+    }
+    else if(st.startsWith('trial')){
+      const d=st.split(':')[1];
+      badge=`<span class="badge badge-trial">⏳ Trial (${d}d left)</span>`; trial++;
+      const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : null;
+      expInfo = d+' days left'+(regDate?'<br/><span style="font-size:11px;color:#9ca3af">Joined: '+regDate+'</span>':'');
+    }
     else if(st==='suspended'){ badge='<span class="badge" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca">🚫 Suspended</span>'; expInfo='Account suspended'; }
     else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
 

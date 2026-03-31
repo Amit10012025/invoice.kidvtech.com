@@ -586,11 +586,27 @@ async function saveClient(){
   showToast(editIdx>=0?'Customer updated! ✅':'Customer saved! ✅');
 }
 async function deleteClient(i){
-  if(confirm('Delete?')){
-    const id=clients[i]._id||i;
+  const client = clients[i];
+  if(!client) return;
+  
+  // Check if client is used in invoices
+  const allInvoices = await KIDV.list('invoices');
+  const usedIn = allInvoices.filter(inv => 
+    inv.clientName === client.name || 
+    inv.clientId === client._id
+  );
+  
+  if(usedIn.length > 0){
+    alert('⚠️ Cannot delete!\n\n"'+client.name+'" is used in '+usedIn.length+' invoice(s).\n\nInvoices: '+usedIn.map(i=>i.invoiceNo||'—').join(', ')+'\n\nPlease delete or update those invoices first.');
+    return;
+  }
+  
+  if(confirm('Delete customer "'+client.name+'"?\n\nThis action cannot be undone.')){
+    const id=client._id||i;
     await DB.delete('clients',id);
     clients.splice(i,1);
     renderClients(clients);
+    showToast('Customer deleted.');
   }
 }
 function editClient(i){openModal(i);}
