@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Account Suspended – KIDV Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.card{background:#fff;border-radius:24px;padding:48px 40px;max-width:480px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);}
+.icon{width:72px;height:72px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+.icon .material-icons-round{font-size:36px;color:#ef4444;}
+h1{font-size:24px;font-weight:800;color:#1a2332;margin-bottom:10px;}
+p{font-size:14px;color:#6b7a90;line-height:1.7;margin-bottom:28px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;margin-bottom:12px;width:100%;}
+.btn-wa{background:#25d366;color:#fff;}
+.btn-ghost{background:#f0f4f8;color:#1a2332;}
+</style>
+<script src="firebase-config.js"></script>
+</head>
+<body>
+<div class="card">
+  <div class="icon"><span class="material-icons-round">block</span></div>
+  <h1>Account Suspended</h1>
+  <p>Your account has been suspended. Please contact us on WhatsApp to resolve this issue and restore access.</p>
+  <a href="https://wa.me/917984486885?text=Hi, my KIDV Invoice account (${email}) has been suspended. Please help." class="btn btn-wa">
+    <span class="material-icons-round">whatsapp</span>Contact Support: +91 79844 86885
+  </a>
+  <button onclick="firebase.auth().signOut().then(()=>location.href='login.html')" class="btn btn-ghost">
+    <span class="material-icons-round">logout</span>Sign Out
+  </button>
+</div>
+</body>
+</html>

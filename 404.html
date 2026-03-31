@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>KIDV Invoice</title>
+<script>
+// GitHub Pages clean URL redirect
+var path = window.location.pathname;
+var search = window.location.search;
+// If path doesn't have extension, add .html
+if(path.split('/').pop().indexOf('.') === -1 && path.slice(-1) !== '/'){
+  window.location.replace(path + '.html' + search);
+} else {
+  window.location.replace('/');
+}
+</script>
+</head>
+<body>Redirecting...</body>
+</html>

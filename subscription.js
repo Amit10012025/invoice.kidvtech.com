@@ -11,7 +11,7 @@ window.SUB = {
   async check() {
     if (!KIDV._ready || !KIDV._uid) return;
     const page = location.pathname.split('/').pop() || 'index.html';
-    const publicPages = ['login.html', 'subscribe.html', 'expired.html'];
+    const publicPages = ['login.html', 'subscribe.html', 'expired.html', 'suspended.html'];
     if (publicPages.some(p => page.includes(p))) return;
 
     try {
@@ -29,7 +29,14 @@ window.SUB = {
         return;
       }
 
-      // Check subscription status
+      // 1. Check if suspended
+      if (data.subscriptionStatus === 'suspended') {
+        this.plan = 'suspended';
+        this._redirectSuspended();
+        return;
+      }
+
+      // 2. Check subscription status
       if (data.subscriptionStatus === 'active') {
         const expiry = data.subscriptionExpiry ? new Date(data.subscriptionExpiry) : null;
         if (!expiry || expiry > now) {
@@ -45,16 +52,9 @@ window.SUB = {
       const msLeft = trialEnd - now;
       this.daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
 
-      if (msLeft > 0) {
-        this.plan = 'trial';
-        this._showBadge('trial', trialEnd);
-        // Show trial warning if <= 3 days
-        if (this.daysLeft <= 3) this._showTrialWarning();
-      } else {
-        // Trial expired
-        this.plan = 'expired';
-        this._redirectExpired();
-      }
+      // No trial - redirect all non-paid users to subscribe
+      this.plan = 'expired';
+      this._redirectExpired();
 
     } catch (e) {
       console.warn('[SUB] Check error:', e);
@@ -99,8 +99,18 @@ window.SUB = {
   },
 
   _redirectExpired() {
-    if (!location.pathname.includes('expired.html') && !location.pathname.includes('subscribe.html')) {
+    const page = location.pathname.split('/').pop() || '';
+    const safe = ['expired.html','subscribe.html','login.html','suspended.html'];
+    if (!safe.some(p => page.includes(p))) {
       location.href = 'expired.html';
+    }
+  },
+
+  _redirectSuspended() {
+    const page = location.pathname.split('/').pop() || '';
+    const safe = ['suspended.html','login.html'];
+    if (!safe.some(p => page.includes(p))) {
+      location.href = 'suspended.html';
     }
   }
 };
