@@ -5,6 +5,9 @@
 <title>KIDV Invoice – Customer Ledger</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">  
 <style>
 :root{--rail-w:68px;--bg:#f0f4f8;--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -53,7 +56,7 @@ tr:hover td{background:#f8faff;}
 </head>
 <body>
 <nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" onerror="this.parentElement.innerHTML='KI'" style="width:42px;height:42px;border-radius:12px;object-fit:cover"/></div>
+  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
   <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
   <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
   <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
