@@ -85,7 +85,118 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .section-label{font-size:11px;font-weight:600;color:var(--c-products);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
-<script src="firebase-config.js"></script>
+<script src="firebase-config.js">
+// ── HSN/SAC Master Data (Common Codes) ───────────────────────────────────
+const HSN_DATA = [
+  // Services (SAC)
+  {code:'9954',desc:'Construction Services'},
+  {code:'9963',desc:'Accommodation, food & beverage services'},
+  {code:'9971',desc:'Financial and related services'},
+  {code:'9972',desc:'Real estate services'},
+  {code:'9973',desc:'Leasing or rental services'},
+  {code:'9981',desc:'Research and development services'},
+  {code:'9982',desc:'Legal and accounting services'},
+  {code:'9983',desc:'Other professional, technical and business services'},
+  {code:'9984',desc:'Telecommunications, broadcasting services'},
+  {code:'9985',desc:'Support services'},
+  {code:'9986',desc:'Support services to agriculture'},
+  {code:'9987',desc:'Maintenance, repair and installation services'},
+  {code:'9988',desc:'Manufacturing services on physical inputs'},
+  {code:'9989',desc:'Other manufacturing services'},
+  {code:'9991',desc:'Public administration and other government services'},
+  {code:'9992',desc:'Education services'},
+  {code:'9993',desc:'Human health and social care services'},
+  {code:'9994',desc:'Sewage and waste collection services'},
+  {code:'9995',desc:'Services of membership organisations'},
+  {code:'9996',desc:'Recreational, cultural and sporting services'},
+  {code:'9997',desc:'Other services'},
+  {code:'9998',desc:'Domestic services'},
+  {code:'9999',desc:'Services provided by extraterritorial organisations'},
+  // Goods (HSN)
+  {code:'0101',desc:'Live horses, asses, mules and hinnies'},
+  {code:'0201',desc:'Meat of bovine animals, fresh or chilled'},
+  {code:'1001',desc:'Wheat and meslin'},
+  {code:'1006',desc:'Rice'},
+  {code:'1701',desc:'Cane or beet sugar'},
+  {code:'2201',desc:'Waters, including natural or artificial mineral waters'},
+  {code:'2710',desc:'Petroleum oils and oils from bituminous minerals'},
+  {code:'3004',desc:'Medicaments for retail sale'},
+  {code:'3204',desc:'Synthetic organic colouring matter'},
+  {code:'3301',desc:'Essential oils and resinoids'},
+  {code:'3401',desc:'Soap; organic surface-active products for washing the skin'},
+  {code:'3406',desc:'Candles, tapers and the like'},
+  {code:'3601',desc:'Propellent powders'},
+  {code:'3701',desc:'Photographic plates, film, paper'},
+  {code:'3901',desc:'Polymers of ethylene, in primary forms'},
+  {code:'3920',desc:'Other plates, sheets, film, foil and strip of plastics'},
+  {code:'4001',desc:'Natural rubber, balata, gutta-percha'},
+  {code:'4011',desc:'New pneumatic tyres, of rubber'},
+  {code:'4901',desc:'Printed books, brochures, leaflets'},
+  {code:'5001',desc:'Silk-worm cocoons suitable for reeling'},
+  {code:'5201',desc:'Cotton, not carded or combed'},
+  {code:'5208',desc:'Woven fabrics of cotton'},
+  {code:'6101',desc:'Men's overcoats, raincoats of knitted fabric'},
+  {code:'6109',desc:'T-shirts, singlets and other vests, knitted'},
+  {code:'6203',desc:'Men's suits, ensembles, jackets'},
+  {code:'6401',desc:'Waterproof footwear with outer soles and uppers of rubber'},
+  {code:'7101',desc:'Pearls, natural or cultured'},
+  {code:'7108',desc:'Gold (including gold plated with platinum)'},
+  {code:'7113',desc:'Articles of jewellery and parts thereof'},
+  {code:'8414',desc:'Air or vacuum pumps, compressors, fans'},
+  {code:'8415',desc:'Air conditioning machines'},
+  {code:'8418',desc:'Refrigerators, freezers'},
+  {code:'8471',desc:'Automatic data processing machines (computers)'},
+  {code:'8481',desc:'Taps, cocks, valves, fittings for pipes'},
+  {code:'8483',desc:'Transmission shafts, cranks, bearing housings'},
+  {code:'8501',desc:'Electric motors and generators'},
+  {code:'8502',desc:'Electric generating sets and rotary converters'},
+  {code:'8504',desc:'Electrical transformers, static converters'},
+  {code:'8517',desc:'Telephone sets, smartphones'},
+  {code:'8525',desc:'Transmission apparatus for radio-broadcasting'},
+  {code:'8536',desc:'Electrical apparatus for switching/protecting circuits'},
+  {code:'8544',desc:'Insulated wire, cable, other insulated electric conductors'},
+  {code:'8703',desc:'Motor cars and other motor vehicles'},
+  {code:'8711',desc:'Motorcycles and cycles fitted with an auxiliary motor'},
+  {code:'9401',desc:'Seats (other than those of heading 9402)'},
+  {code:'9403',desc:'Other furniture and parts thereof'},
+  {code:'9405',desc:'Lamps and lighting fittings'},
+  {code:'9503',desc:'Tricycles, scooters, pedal cars and similar wheeled toys'},
+  {code:'9504',desc:'Video game consoles and machines'},
+  {code:'9506',desc:'Articles and equipment for sports'},
+  {code:'9619',desc:'Sanitary towels, tampons, nappies'},
+];
+
+function searchHSN(val){
+  const drop = document.getElementById('hsnDropdown');
+  if(!val || val.length < 2){ drop.style.display='none'; return; }
+  const q = val.toLowerCase();
+  const matches = HSN_DATA.filter(h => h.code.startsWith(val) || h.desc.toLowerCase().includes(q)).slice(0,8);
+  if(!matches.length){ drop.style.display='none'; return; }
+  drop.innerHTML = matches.map(h => 
+    `<div onclick="selectHSN('${h.code}','${h.desc.replace(/'/g,"\'")}')" 
+     style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:12.5px" 
+     onmouseover="this.style.background='#f0f4f8'" onmouseout="this.style.background=''">
+      <span style="font-weight:700;color:#2f81f7;font-family:monospace">${h.code}</span>
+      <span style="color:#6b7a90;margin-left:8px">${h.desc}</span>
+    </div>`
+  ).join('');
+  drop.style.display='';
+}
+
+function selectHSN(code, desc){
+  document.getElementById('f-hsn').value = code;
+  document.getElementById('hsnDropdown').style.display='none';
+  // Optionally fill description if empty
+  const descEl = document.getElementById('f-desc');
+  if(descEl && !descEl.value) descEl.value = desc;
+}
+
+document.addEventListener('click', e=>{ 
+  if(!e.target.closest('#hsnDropdown') && e.target.id!=='f-hsn')
+    document.getElementById('hsnDropdown').style.display='none'; 
+});
+
+</script>
 <script src="subscription.js"></script>
 </head>
 <body>
@@ -145,7 +256,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
       <div class="form-row"><div class="form-group"><label>Item Name *</label><input type="text" id="f-name" placeholder="e.g. Web Development" /></div><div class="form-group"><label>Type *</label><select id="f-type"><option value="service">Service</option><option value="goods">Goods</option></select></div></div>
       <div class="form-row full"><div class="form-group"><label>Description</label><input type="text" id="f-desc" placeholder="Brief description" /></div></div>
       <div class="section-label" style="margin-top:20px">GST & Pricing</div>
-      <div class="form-row"><div class="form-group"><label>HSN / SAC Code</label><input type="text" id="f-hsn" placeholder="998314" /></div><div class="form-group"><label>GST Rate (%)</label><select id="f-gst"><option value="0">0% (Exempt)</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label>HSN / SAC Code</label>
+          <div style="position:relative">
+            <input type="text" id="f-hsn" placeholder="Type or search HSN/SAC..." maxlength="8" oninput="searchHSN(this.value)" autocomplete="off"/>
+            <div id="hsnDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:0 0 10px 10px;z-index:100;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
+          </div>
+        </div><div class="form-group"><label>GST Rate (%)</label><select id="f-gst"><option value="0">0% (Exempt)</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div></div>
       <div class="form-row"><div class="form-group"><label>Unit Price (₹) *</label><input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" /></div><div class="form-group"><label>Unit</label><select id="f-unit"><option>Nos</option><option>Hrs</option><option>Days</option><option>Months</option><option>Kg</option><option>Ltr</option><option>Mtr</option><option>Sq.Ft</option></select></div></div>
     </div>
     <div class="modal-footer">

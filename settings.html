@@ -159,6 +159,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
             <div class="form-row"><div class="form-group"><label>GSTIN *</label><input type="text" id="g-gstin" placeholder="24XXXXX0000X1ZX" maxlength="15" style="text-transform:uppercase;font-family:monospace"/></div><div class="form-group"><label>PAN</label><input type="text" id="g-pan" placeholder="XXXXX0000X" maxlength="10" style="text-transform:uppercase;font-family:monospace"/></div></div>
             <div class="form-row three"><div class="form-group"><label>State</label><select id="g-state"><option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option><option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option><option>Other</option></select></div><div class="form-group"><label>State Code</label><input type="text" id="g-statecode" placeholder="24" maxlength="2"/></div><div class="form-group"><label>Default GST Type</label><select id="g-type"><option value="intra">Intra-State (CGST+SGST)</option><option value="inter">Inter-State (IGST)</option></select></div></div>
             <div class="form-row"><div class="form-group"><label>Default GST Rate</label><select id="g-rate"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></div><div class="form-group"><label>Composition Dealer?</label><select id="g-comp"><option>No</option><option>Yes</option></select></div></div>
+            <div class="form-row full" style="margin-top:4px">
+              <div class="form-group">
+                <label>Jurisdiction (shown on invoice footer)</label>
+                <input type="text" id="g-jurisdiction" placeholder="e.g. Ahmedabad" />
+                <div style="font-size:11px;color:#9ca3af;margin-top:4px">Invoice par "SUBJECT TO [CITY] JURISDICTION" dikhashe</div>
+              </div>
+            </div>
             <div class="save-row"><button class="btn btn-primary" onclick="saveGST()"><span class="material-icons-round">save</span>Save GST Settings</button></div>
           </div>
         </div>
@@ -337,6 +344,7 @@ async function loadAll(){
   if(gst.pan) document.getElementById('g-pan').value=gst.pan;
   if(gst.state) document.getElementById('g-state').value=gst.state;
   if(gst.statecode) document.getElementById('g-statecode').value=gst.statecode;
+  if(gst.jurisdiction) document.getElementById('g-jurisdiction').value=gst.jurisdiction;
 
   const bank=await KIDV.getSettings('bank');
   if(bank.name) document.getElementById('b-name').value=bank.name;
@@ -408,7 +416,8 @@ async function saveGST(){
     state:document.getElementById('g-state').value,
     statecode:document.getElementById('g-statecode').value,
     type:document.getElementById('g-type').value,
-    rate:document.getElementById('g-rate').value
+    rate:document.getElementById('g-rate').value,
+    jurisdiction: document.getElementById('g-jurisdiction').value.trim()
   };
   await KIDV.saveSettings('gst',g);
   showToast('GST settings saved! ✅');

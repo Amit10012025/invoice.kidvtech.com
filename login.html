@@ -211,27 +211,31 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;display:flex;overflow:hidd
 
     <!-- Register -->
     <div id="registerForm" style="display:none">
-      <div class="admin-badge"><span class="material-icons-round">admin_panel_settings</span>Full access — 14-day free trial included</div>
+      <div class="admin-badge" style="background:rgba(47,129,247,0.12);border-color:rgba(47,129,247,0.3);color:#2f81f7"><span class="material-icons-round">workspace_premium</span>Register to get full access</div>
       <div class="form-group">
-        <label>Full Name</label>
-        <div class="input-wrap"><span class="material-icons-round">person</span><input type="text" id="regName" placeholder="Your name"/></div>
+        <label>Full Name *</label>
+        <div class="input-wrap"><span class="material-icons-round">person</span><input type="text" id="regName" placeholder="Your full name" required/></div>
       </div>
       <div class="form-group">
-        <label>Email</label>
-        <div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="regEmail" placeholder="your@email.com"/></div>
+        <label>Email *</label>
+        <div class="input-wrap"><span class="material-icons-round">mail</span><input type="email" id="regEmail" placeholder="your@email.com" required/></div>
       </div>
       <div class="form-group">
-        <label>Password</label>
+        <label>Mobile Number *</label>
+        <div class="input-wrap"><span class="material-icons-round">phone</span><input type="tel" id="regMobile" placeholder="+91 9999999999" maxlength="13" required/></div>
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
         <div class="input-wrap"><span class="material-icons-round">lock</span><input type="password" id="regPass" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"/></div>
       </div>
       <button class="btn-login" id="regBtn" onclick="doRegister()">
         <span class="loading-spinner" id="regSpinner"></span>
         <span class="material-icons-round" id="regIcon">person_add</span>
-        <span id="regTxt">Start Free Trial</span>
+        <span id="regTxt">Create Account</span>
       </button>
-      <div class="trial-note">
+      <div class="trial-note" style="color:#6b7a90">
         <span class="material-icons-round">info</span>
-        14-day free trial · No credit card required · Cancel anytime
+        Contact admin after registration to activate your account.
       </div>
     </div>
 
@@ -254,7 +258,13 @@ const ADMIN_EMAILS=['amit@kidvtech.com'];
 auth.onAuthStateChanged(async user=>{
   if(user){
     const isAdmin=ADMIN_EMAILS.includes(user.email.toLowerCase());
-    await db.collection('users').doc(user.uid).set({email:user.email,name:user.displayName||'',isAdmin:isAdmin,lastLogin:new Date().toISOString()},{merge:true});
+    const mobileVal = document.getElementById('regMobile') ? document.getElementById('regMobile').value.trim() : '';
+    await db.collection('users').doc(user.uid).set({
+      email:user.email, name:user.displayName||'',
+      mobile: mobileVal || '',
+      isAdmin:isAdmin, lastLogin:new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    },{merge:true});
     location.href='index.html';
   }
 });
@@ -297,6 +307,8 @@ async function doRegister(){
   hideError();
   setLoading('regBtn','regSpinner','regIcon','regTxt',true,'Start Free Trial');
   try{
+    const mobile=document.getElementById('regMobile').value.trim();
+    if(!mobile || mobile.replace(/\D/g,'').length < 10){ showError('regError','Please enter a valid mobile number (min 10 digits)'); return; }
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
     await db.collection('users').doc(cred.user.uid).set({email:email,name:name,createdAt:new Date().toISOString(),subscriptionStatus:'trial'},{merge:true});

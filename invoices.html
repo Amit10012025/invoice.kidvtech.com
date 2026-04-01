@@ -400,7 +400,7 @@ function closeModal(){document.getElementById('modalBg').classList.remove('open'
 function addLine(data){
   const tbody=document.getElementById('lineItems');
   const tr=document.createElement('tr');
-  const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}" data-hsn="${p.hsn}">${p.name}</option>`).join('');
+  const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}" data-hsn="${p.hsn}" data-uom="${p.uom||'Nos'}" data-desc="${p.description||p.name}">${p.name}</option>`).join('');
   tr.innerHTML=`
     <td><select class="li-input li-prod" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" value="${data?data.desc||'':''}" data-field="desc"/></td>
     <td><input class="li-input" placeholder="HSN" value="${data?data.hsn||'':''}" data-field="hsn"/></td>
@@ -416,9 +416,13 @@ function fillLine(sel){
   const opt=sel.options[sel.selectedIndex];
   if(!opt.value) return;
   const tr=sel.closest('tr');
+  // Auto-fill description from product name (editable)
+  const descInput = tr.querySelector('[data-field="desc"]');
+  if(descInput && !descInput.value) descInput.value = opt.text;
   tr.querySelector('[data-field="rate"]').value=opt.dataset.price||'';
   tr.querySelector('[data-field="hsn"]').value=opt.dataset.hsn||'';
   tr.querySelector('[data-field="gst"]').value=opt.dataset.gst||'18';
+  tr.querySelector('[data-field="uom"]') && (tr.querySelector('[data-field="uom"]').value=opt.dataset.uom||'Nos');
   calcTotals();
 }
 

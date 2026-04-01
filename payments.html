@@ -144,7 +144,14 @@ tr:hover td{background:#f8faff;}
     </div>
     <div class="modal-body">
       <div class="form-row">
-        <div class="form-group"><label>Invoice *</label><select id="f-invoice"><option value="">Select Invoice</option></select></div>
+        <div class="form-group"><label>Payment Type *</label>
+          <select id="f-paytype" onchange="onPayTypeChange()">
+            <option value="against">Against Invoice</option>
+            <option value="advance">Advance Payment</option>
+          </select>
+        </div>
+        <div id="invoiceRow"><div class="form-group"><label>Invoice *</label><select id="f-invoice"><option value="">Select Invoice</option></select></div></div>
+        <div id="advanceRow" style="display:none"><div class="form-group"><label>Advance Ref / Purpose</label><input type="text" id="f-advance-ref" placeholder="e.g. Order #123 advance deposit"/></div></div>
         <div class="form-group"><label>Payment Date *</label><input type="date" id="f-date"/></div>
       </div>
       <div class="form-row">
@@ -184,7 +191,7 @@ function renderPayments(){
   if(!payments.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No payments recorded yet. <a href="#" onclick="openModal()" style="color:var(--c-payment)">Record first payment →</a></td></tr>`;return;}
   tbody.innerHTML=payments.map((p,i)=>`
     <tr>
-      <td style="font-weight:600;color:var(--c-payment)">${p.invoiceNo||'—'}</td>
+      <td style="font-weight:600;color:${p.payType==='advance'?'#7c3aed':'var(--c-payment)'}">${p.payType==='advance'?'<span style="background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;border-radius:10px;padding:2px 8px;font-size:11px">Advance</span> '+(p.advanceRef||'—'):(p.invoiceNo||'—')}</td>
       <td>${p.clientName||'—'}</td>
       <td>${p.date||'—'}</td>
       <td style="font-weight:600;color:#3fb950">${fmt(p.amount)}</td>
@@ -217,7 +224,22 @@ async function savePayment(){
   const amount=document.getElementById('f-amount').value;
   if(iIdx===''||!amount){alert('Invoice and amount required');return;}
   const inv=invoices[iIdx];
-  const p={invoiceIdx:iIdx,invoiceNo:inv?.invoiceNo||'',clientName:inv?.clientName||'',date:document.getElementById('f-date').value,amount:parseFloat(amount),method:document.getElementById('f-method').value,ref:document.getElementById('f-ref').value,status:document.getElementById('f-status').value,remarks:document.getElementById('f-remarks').value};
+  const payType = document.getElementById('f-paytype').value;
+  const advRef  = document.getElementById('f-advance-ref')?.value||'';
+  const p={
+    payType: payType,
+    invoiceIdx:payType==='against'?iIdx:'',
+    invoiceNo: payType==='against'?(inv?.invoiceNo||''):'',
+    clientName: payType==='against'?(inv?.clientName||''):
+                (document.getElementById('f-client')?.options[document.getElementById('f-client')?.selectedIndex]?.text||'Advance'),
+    advanceRef: advRef,
+    date:document.getElementById('f-date').value,
+    amount:parseFloat(amount),
+    method:document.getElementById('f-method').value,
+    ref:document.getElementById('f-ref').value,
+    status:document.getElementById('f-status').value,
+    remarks:document.getElementById('f-remarks').value
+  };
   const pid=await KIDV.add('payments',p);
   payments.push({...p,_id:pid});
   if(inv&&parseFloat(amount)>=parseFloat(inv.total||0)){

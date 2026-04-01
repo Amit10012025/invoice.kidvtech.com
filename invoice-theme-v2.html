@@ -108,6 +108,7 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
 .inv-footer{padding:5px 14px;text-align:center;font-size:9.5px;font-weight:800;color:#fff;background:#1a3a6b;letter-spacing:.12em;text-transform:uppercase;}
 /* Print */
 @media print{
+  .copy-label{ display:block !important; }
   body{background:#fff;}
   .toolbar{display:none!important;}
   .preview-outer{padding:0;background:#fff;}
@@ -458,7 +459,9 @@ function renderInvoice(inv){
     set('bUpi',bank.upi||'—');
   }
   set('sigFor','For '+cname);
-  set('invFooter','SUBJECT TO '+(comp.city||'AHMEDABAD').toUpperCase()+' JURISDICTION');
+  const gstData = await KIDV.getSettings('gst');
+  const city = gstData.jurisdiction || comp.city || 'Ahmedabad';
+  set('invFooter','SUBJECT TO '+city.toUpperCase()+' JURISDICTION');
 }
 
 function navigate(dir){if(!invoices.length)return;currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));renderInvoice(invoices[currentIdx]);}
@@ -500,6 +503,32 @@ async function downloadPDF(){
 
   btn.innerHTML = '<span class="material-icons-round" style="color:#ef4444">picture_as_pdf</span>Download PDF';
   btn.disabled = false;
+}
+
+function printCopy(){
+  const type = document.getElementById('copyType').value;
+  const label = document.getElementById('copyLabel');
+  
+  if(type === 'all'){
+    // Print all 4 copies
+    const copies = ['ORIGINAL COPY','DUPLICATE COPY','TRIPLICATE COPY','EXTRA COPY'];
+    let idx = 0;
+    function printNext(){
+      if(idx >= copies.length){ label.style.display='none'; return; }
+      label.textContent = copies[idx];
+      label.style.display = 'block';
+      idx++;
+      window.print();
+      setTimeout(printNext, 800);
+    }
+    printNext();
+  } else {
+    const labels = {original:'ORIGINAL COPY',duplicate:'DUPLICATE COPY',triplicate:'TRIPLICATE COPY',extra:'EXTRA COPY'};
+    label.textContent = labels[type]||'ORIGINAL COPY';
+    label.style.display = 'block';
+    window.print();
+    setTimeout(()=>{ label.style.display='none'; }, 1000);
+  }
 }
 
 function shareWA(){
