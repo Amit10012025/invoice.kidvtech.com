@@ -7,8 +7,7 @@
 (function () {
   'use strict';
 
-  // ── 1. Inject Footer on every page ───────────────────────
-  }
+  // ── 1. (Footer injection placeholder) ────────────────────
 
   // ── 2. Add logo tooltip to rail-logo ─────────────────────
   function enhanceRailLogo() {

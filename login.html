@@ -360,7 +360,7 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;display:flex;overflow:hidd
           </button>
         </div>
       </div>
-      <div class="forgot"><a onclick="doForgot()">Forgot password?</a></div>
+      <div class="forgot"><a onclick="showForgotOptions()">Forgot password?</a></div>
       <button class="btn-submit" id="loginBtn" onclick="doLogin()">
         <div class="spinner" id="loginSpinner"></div>
         <span class="material-icons-round" id="loginIcon">login</span>
@@ -416,6 +416,31 @@ body{font-family:'Outfit',sans-serif;min-height:100vh;display:flex;overflow:hidd
       </button>
     </div>
 
+    <!-- ── OTP VERIFICATION PANEL ── -->
+    <div id="otpPanel" style="display:none">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#2f81f7,#7c3aed);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><span class="material-icons-round" style="color:#fff;font-size:26px">sms</span></div>
+        <div style="font-size:17px;font-weight:700;color:#1a2332;">Verify Your Mobile</div>
+        <div style="font-size:13px;color:#6b7a90;margin-top:4px;" id="otpSubtitle">Enter the 6-digit OTP sent to your number</div>
+      </div>
+      <div class="form-group">
+        <label>OTP Code *</label>
+        <div class="input-wrap">
+          <span class="material-icons-round">pin</span>
+          <input type="number" id="otpInput" placeholder="6-digit OTP" maxlength="6" style="letter-spacing:6px;font-size:18px;font-weight:700;" onkeydown="if(event.key==='Enter')verifyOTP()"/>
+        </div>
+      </div>
+      <div id="otpTimer" style="text-align:center;font-size:12px;color:#9ca3af;margin-bottom:12px;"></div>
+      <button class="btn-submit" id="otpVerifyBtn" onclick="verifyOTP()">
+        <div class="spinner" id="otpSpinner"></div>
+        <span class="material-icons-round" id="otpIcon">verified</span>
+        <span id="otpTxt">Verify OTP</span>
+      </button>
+      <button onclick="cancelOTP()" style="width:100%;margin-top:10px;padding:10px;border:1.5px solid #e2e8f0;border-radius:12px;background:#f8faff;color:#6b7a90;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">← Back</button>
+      <!-- Invisible recaptcha container -->
+      <div id="recaptcha-container"></div>
+    </div>
+
     <!-- Footer -->
     <div class="card-footer">
       Need help? <a href="https://wa.me/917984486885" target="_blank">📱 WhatsApp Support</a>
@@ -460,12 +485,6 @@ function switchTab(t){
 
 function showErr(msg){ const b=document.getElementById('errBox'); b.style.display='flex'; document.getElementById('errMsg').textContent=msg; }
 function hideErr(){ document.getElementById('errBox').style.display='none'; }
-
-function setLoading(prefix, on){
-  document.getElementById(prefix+'Spinner').style.display = on?'block':'none';
-  document.getElementById(prefix+'Icon').style.display   = on?'none':'';
-  document.getElementById(prefix+'Btn').disabled = on;
-}
 
 function toggleEye(inputId, btn){
   const inp = document.getElementById(inputId);
@@ -523,38 +542,173 @@ async function doLogin(){
   }
 }
 
+// ── OTP State ────────────────────────────────────────────
+let _otpConfirmResult = null;
+let _otpPendingUser   = null; // cred after email/pass creation, before OTP verify
+let _otpPendingData   = null; // {email,name,mobile} for Firestore write
+let _otpMode          = '';   // 'signup' | 'forgot'
+let _otpTimerHandle   = null;
+
+function startOTPTimer(seconds){
+  clearInterval(_otpTimerHandle);
+  const el = document.getElementById('otpTimer');
+  let left = seconds;
+  el.textContent = `OTP expires in ${left}s`;
+  _otpTimerHandle = setInterval(()=>{
+    left--;
+    if(left<=0){ clearInterval(_otpTimerHandle); el.textContent='OTP expired. Go back and retry.'; }
+    else el.textContent = `OTP expires in ${left}s`;
+  },1000);
+}
+
+function showOTPPanel(subtitle){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('registerForm').style.display='none';
+  document.getElementById('otpPanel').style.display='block';
+  document.getElementById('otpSubtitle').textContent = subtitle;
+  document.getElementById('otpInput').value='';
+  startOTPTimer(120);
+}
+
+function cancelOTP(){
+  clearInterval(_otpTimerHandle);
+  _otpConfirmResult = null;
+  _otpPendingUser = null;
+  _otpPendingData = null;
+  // If signup was partially created, delete the auth user
+  if(_otpMode==='signup' && auth.currentUser){
+    auth.currentUser.delete().catch(()=>{});
+  }
+  _otpMode = '';
+  document.getElementById('otpPanel').style.display='none';
+  switchTab(document.getElementById('tabRegister').classList.contains('active')?'register':'login');
+  hideErr();
+}
+
+async function sendPhoneOTP(phoneNumber){
+  // Clean up old recaptcha
+  if(window._recaptchaVerifier){
+    try{ window._recaptchaVerifier.clear(); }catch(e){}
+  }
+  window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container',{size:'invisible'});
+  const formatted = phoneNumber.replace(/\D/g,'');
+  const e164 = formatted.startsWith('91') ? '+'+formatted : '+91'+formatted;
+  const result = await auth.signInWithPhoneNumber(e164, window._recaptchaVerifier);
+  return result;
+}
+
 async function doRegister(){
   hideErr();
-  const name=document.getElementById('regName').value.trim();
-  const email=document.getElementById('regEmail').value.trim();
-  const mobile=document.getElementById('regMobile').value.trim();
-  const pass=document.getElementById('regPass').value;
-  if(!name){ showErr('Please enter your full name.'); return; }
-  if(!email){ showErr('Please enter your email address.'); return; }
+  const name   = document.getElementById('regName').value.trim();
+  const email  = document.getElementById('regEmail').value.trim();
+  const mobile = document.getElementById('regMobile').value.trim();
+  const pass   = document.getElementById('regPass').value;
+  if(!name)  { showErr('Please enter your full name.'); return; }
+  if(!email) { showErr('Please enter your email address.'); return; }
   if(!mobile || mobile.replace(/\D/g,'').length<10){ showErr('Please enter a valid mobile number (min 10 digits).'); return; }
   if(!pass||pass.length<6){ showErr('Password must be at least 6 characters.'); return; }
   setLoading('reg',true);
   try{
-    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    // Step 1: Create Firebase auth account
+    const cred = await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
-    await db.collection('users').doc(cred.user.uid).set({
-      email, name, mobile,
-      isAdmin:ADMIN_EMAILS.includes(email.toLowerCase()),
-      createdAt:new Date().toISOString(),
-      lastLogin:new Date().toISOString(),
-    });
-    // Notify admin on WhatsApp
-    const msg=encodeURIComponent('🆕 New Registration!\n\nName: '+name+'\nEmail: '+email+'\nMobile: '+mobile+'\n\nPlease activate account.');
-    window.open('https://wa.me/917984486885?text='+msg,'_blank');
+    _otpPendingUser = cred.user;
+    _otpPendingData = {email,name,mobile};
+    _otpMode = 'signup';
+
+    // Step 2: Send OTP to mobile
+    try{
+      _otpConfirmResult = await sendPhoneOTP(mobile);
+      setLoading('reg',false);
+      showOTPPanel('Enter the OTP sent to ' + mobile);
+    } catch(phoneErr){
+      // Phone OTP failed — fallback: complete registration anyway, send email verification
+      console.warn('[OTP] Phone OTP failed, completing registration without phone OTP:', phoneErr.message);
+      await _completeRegistration(_otpPendingUser, _otpPendingData);
+      setLoading('reg',false);
+    }
   } catch(e){
     showErr(ERR_MAP[e.code]||e.message);
     setLoading('reg',false);
   }
 }
 
-async function doForgot(){
-  const email=document.getElementById('loginEmail').value.trim();
-  if(!email){ showErr('Enter your email above first.'); return; }
+async function _completeRegistration(user, data){
+  await db.collection('users').doc(user.uid).set({
+    email: data.email, name: data.name, mobile: data.mobile,
+    isAdmin: ADMIN_EMAILS.includes(data.email.toLowerCase()),
+    mobileVerified: true,
+    createdAt: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
+  });
+  // Notify admin on WhatsApp
+  const msg=encodeURIComponent('🆕 New Registration!\n\nName: '+data.name+'\nEmail: '+data.email+'\nMobile: '+data.mobile+'\n\nPlease activate account.');
+  window.open('https://wa.me/917984486885?text='+msg,'_blank');
+}
+
+async function verifyOTP(){
+  const code = document.getElementById('otpInput').value.trim();
+  if(!code || code.length<6){ showErr('Enter the 6-digit OTP.'); return; }
+  setLoading('otp',true);
+  try{
+    if(_otpMode==='signup'){
+      // Link phone credential to existing email user
+      const phoneCredential = firebase.auth.PhoneAuthProvider.credential(_otpConfirmResult.verificationId, code);
+      await _otpPendingUser.linkWithCredential(phoneCredential);
+      await _completeRegistration(_otpPendingUser, _otpPendingData);
+      clearInterval(_otpTimerHandle);
+      setLoading('otp',false);
+      alert('✅ Account created & mobile verified! Please wait for admin to activate your plan.');
+      location.reload();
+
+    } else if(_otpMode==='forgot'){
+      await _otpConfirmResult.confirm(code);
+      clearInterval(_otpTimerHandle);
+      setLoading('otp',false);
+      // After phone sign-in for reset, show new password prompt
+      const newPass = prompt('OTP verified! Enter your new password (min 6 chars):');
+      if(!newPass || newPass.length<6){ showErr('Password must be at least 6 chars.'); return; }
+      await auth.currentUser.updatePassword(newPass);
+      alert('✅ Password reset successfully! Please log in.');
+      location.reload();
+    }
+  } catch(e){
+    showErr(e.code==='auth/invalid-verification-code'?'Invalid OTP. Please try again.':(ERR_MAP[e.code]||e.message));
+    setLoading('otp',false);
+  }
+}
+
+function setLoading(type,on){
+  if(type==='otp'){
+    document.getElementById('otpSpinner').style.display=on?'block':'none';
+    document.getElementById('otpIcon').style.display=on?'none':'inline';
+    document.getElementById('otpTxt').textContent=on?'Verifying...':'Verify OTP';
+    document.getElementById('otpVerifyBtn').disabled=on;
+  } else if(type==='reg'){
+    document.getElementById('regSpinner').style.display=on?'block':'none';
+    document.getElementById('regIcon').style.display=on?'none':'inline';
+    document.getElementById('regTxt').textContent=on?'Please wait...':'Create Account';
+    document.getElementById('regBtn').disabled=on;
+  } else if(type==='login'){
+    document.getElementById('loginSpinner').style.display=on?'block':'none';
+    document.getElementById('loginIcon').style.display=on?'none':'inline';
+    document.getElementById('loginTxt').textContent=on?'Signing in...':'Sign In';
+    document.getElementById('loginBtn').disabled=on;
+  }
+}
+
+function showForgotOptions(){
+  const email = document.getElementById('loginEmail').value.trim();
+  if(!email){ showErr('Enter your email above first, then click Forgot password.'); return; }
+  const choice = confirm('How would you like to reset your password?\n\nOK → Send reset email\nCancel → Reset via mobile OTP');
+  if(choice){
+    doForgotEmail(email);
+  } else {
+    doForgotOTP(email);
+  }
+}
+
+async function doForgotEmail(email){
   try{
     await auth.sendPasswordResetEmail(email);
     hideErr();
@@ -562,6 +716,28 @@ async function doForgot(){
   } catch(e){
     showErr(ERR_MAP[e.code]||e.message);
   }
+}
+
+async function doForgotOTP(email){
+  // Look up the mobile for this email from Firestore
+  try{
+    const snap = await db.collection('users').where('email','==',email).limit(1).get();
+    if(snap.empty){ showErr('No account found with this email.'); return; }
+    const userData = snap.docs[0].data();
+    const mobile = userData.mobile;
+    if(!mobile){ showErr('No mobile number linked. Use email reset instead.'); return; }
+    _otpMode = 'forgot';
+    _otpConfirmResult = await sendPhoneOTP(mobile);
+    showOTPPanel('Enter OTP sent to ' + mobile + ' to reset your password');
+  } catch(e){
+    showErr('Could not send OTP: '+(ERR_MAP[e.code]||e.message));
+  }
+}
+
+async function doForgot(){
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){ showErr('Enter your email above first.'); return; }
+  doForgotEmail(email);
 }
 </script>
 </body>

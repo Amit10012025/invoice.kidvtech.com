@@ -65,8 +65,8 @@ tr:last-child td{border-bottom:none;}
   <!-- Stats -->
   <div class="stats-row">
     <div class="stat"><div class="stat-icon">👥</div><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total Users</div></div>
-    
     <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="statActive">—</div><div class="stat-lbl">Active Subscriptions</div></div>
+    <div class="stat"><div class="stat-icon">⏳</div><div class="stat-val" id="statTrial">—</div><div class="stat-lbl">On Trial</div></div>
     <div class="stat"><div class="stat-icon">🔴</div><div class="stat-val" id="statExpired">—</div><div class="stat-lbl">Trial Expired</div></div>
   </div>
 
@@ -80,8 +80,8 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
     <table>
-      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Trial / Expiry</th><th>Registered</th><th>Actions</th></tr></thead>
-      <tbody id="usersTable"><tr><td colspan="7" class="empty">Loading users...</td></tr></tbody>
+      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Trial / Expiry</th><th>License Key</th><th>Registered</th><th>Actions</th></tr></thead>
+      <tbody id="usersTable"><tr><td colspan="8" class="empty">Loading users...</td></tr></tbody>
     </table>
   </div>
 
@@ -169,7 +169,7 @@ function renderUsers(users){
   const now = new Date();
   let trial=0,active=0,expired=0;
   if(!users.length){
-    document.getElementById('usersTable').innerHTML='<tr><td colspan="7" class="empty">No users found</td></tr>';
+    document.getElementById('usersTable').innerHTML='<tr><td colspan="8" class="empty">No users found</td></tr>';
     return;
   }
   document.getElementById('usersTable').innerHTML = users.map((u,i)=>{
@@ -192,12 +192,18 @@ function renderUsers(users){
     else if(st==='suspended'){ badge='<span class="badge" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca">🚫 Suspended</span>'; expInfo='Account suspended'; }
     else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
 
+    // License key display
+    const keyHtml = u.licenseKey
+      ? `<span style="font-family:monospace;font-size:11px;background:#f0f4f8;padding:2px 7px;border-radius:5px;color:#7c3aed;font-weight:700;letter-spacing:1px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${u.licenseKey}');this.textContent='Copied!';setTimeout(()=>this.textContent='${u.licenseKey}',1500)">${u.licenseKey}</span>`
+      : '<span style="color:#d1d5db;font-size:11px">—</span>';
+
     return `<tr>
       <td style="color:#9ca3af;font-size:12px">${i+1}</td>
       <td style="font-weight:500">${u.email||'—'}</td>
       <td>${u.name||u.displayName||'—'}</td>
       <td>${badge}</td>
       <td style="font-size:12px;color:#6b7a90">${expInfo}</td>
+      <td>${keyHtml}</td>
       <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
       <td><div class="actions">
         <button class="btn btn-sm" style="background:#f0f4f8;color:#1a2332;border:1px solid #e2e8f0" onclick="showDetail('${u.id}')" title="View Details"><span class="material-icons-round">info</span></button>
@@ -262,12 +268,22 @@ async function confirmActivate(){
   const expiry  = new Date();
   expiry.setMonth(expiry.getMonth() + months);
 
+  // Generate smart license key: KIDV-XXXX-XXXX-XXXX
+  function genKey(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    return `KIDV-${seg()}-${seg()}-${seg()}`;
+  }
+  const licenseKey = genKey();
+
   await KIDV._db.collection('users').doc(_activateUid).set({
     subscriptionStatus: 'active',
     subscriptionPlan: plan,
     subscriptionExpiry: expiry.toISOString(),
     subscriptionActivatedAt: now.toISOString(),
     activatedByAdmin: KIDV._user.email,
+    licenseKey: licenseKey,
+    licenseKeyGeneratedAt: now.toISOString(),
     payment: {
       amount: parseFloat(amount),
       method: method,
@@ -279,7 +295,7 @@ async function confirmActivate(){
   },{merge:true});
 
   closeActivate();
-  alert('✅ Activated: ' + PLAN_LABELS[plan] + '\nExpiry: ' + expiry.toLocaleDateString('en-IN') + '\nAmount: ₹' + amount);
+  alert('✅ Activated: ' + PLAN_LABELS[plan] + '\nExpiry: ' + expiry.toLocaleDateString('en-IN') + '\nAmount: ₹' + amount + '\n\n🔑 License Key: ' + licenseKey + '\n(Share this key with the user)');
   loadUsers();
 }
 
@@ -345,6 +361,20 @@ function showDetail(uid){
   document.getElementById('dActivated').textContent = fmt(u.subscriptionActivatedAt);
   document.getElementById('dActivatedBy').textContent = u.activatedByAdmin || (u.razorpayPaymentId?'Razorpay Auto':'—');
   document.getElementById('dPaymentId').textContent = u.razorpayPaymentId || 'Manual / Not available';
+
+  // License Key
+  const keyEl = document.getElementById('dLicenseKey');
+  const keyDateEl = document.getElementById('dLicenseKeyDate');
+  if(u.licenseKey){
+    keyEl.textContent = u.licenseKey;
+    keyEl.dataset.key = u.licenseKey;
+    keyEl.title = 'Click to copy';
+    keyDateEl.textContent = u.licenseKeyGeneratedAt ? 'Generated: ' + fmt(u.licenseKeyGeneratedAt) : '';
+  } else {
+    keyEl.textContent = '— Not generated yet';
+    keyEl.dataset.key = '';
+    keyDateEl.textContent = 'Key will be generated on next activation';
+  }
 
   // Account
   document.getElementById('dRegistered').textContent = fmt(u.createdAt);
@@ -492,6 +522,11 @@ function filterUsers(q){
             <div style="padding:14px 16px;grid-column:span 2;">
               <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Razorpay Payment ID</div>
               <div id="dPaymentId" style="font-size:12px;font-family:monospace;color:#374151;word-break:break-all;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;background:#faf5ff;border-top:1.5px solid #e9d5ff;">
+              <div style="font-size:10.5px;color:#7c3aed;text-transform:uppercase;font-weight:600;margin-bottom:6px;">🔑 License Key</div>
+              <div id="dLicenseKey" style="font-size:14px;font-family:monospace;color:#7c3aed;font-weight:800;letter-spacing:2px;word-break:break-all;cursor:pointer;" title="Click to copy" onclick="if(this.dataset.key){navigator.clipboard.writeText(this.dataset.key);const orig=this.textContent;this.textContent='✅ Copied!';setTimeout(()=>this.textContent=orig,1500);}">—</div>
+              <div id="dLicenseKeyDate" style="font-size:11px;color:#9ca3af;margin-top:4px;"></div>
             </div>
           </div>
         </div>

@@ -212,7 +212,7 @@ function loadLedger(){
     entries.push({
       date: pay.date || pay.createdAt,
       type: 'payment',
-      ref: pay.ref || pay.utr || pay._id,
+      ref: pay.ref || pay.utr || '',
       desc: 'Payment - ' + (pay.method||''),
       debit: 0,
       credit: parseFloat(pay.amount||0),
@@ -242,7 +242,7 @@ function loadLedger(){
     return `<tr style="${ri%2===1?'background:#fafbff':''}">
       <td style="font-size:12px;color:#374151">${fmtDate(e.date)}</td>
       <td><span style="font-size:11px;font-weight:700;color:${vchColor}">${vchType}</span></td>
-      <td style="font-size:12px;font-weight:700;color:#2f81f7;font-family:monospace">${e.ref||'—'}</td>
+      <td style="font-size:12px;font-weight:700;color:#2f81f7;font-family:monospace">${e.ref ? e.ref : (e.type==='payment' ? '<span style="color:#9ca3af;font-weight:400">No Ref</span>' : '—')}</td>
       <td>
         <div style="font-size:13px;font-weight:600;color:#1a2332">${e.desc}</div>
         ${e.method?'<div style="font-size:11px;color:#9ca3af">Via: '+e.method+'</div>':''}
