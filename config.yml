@@ -1,0 +1,12 @@
+# GitHub Pages — Remove .html from URLs
+permalink: pretty
+
+# Exclude unnecessary files
+exclude:
+  - main.py
+  - requirements.txt
+  - schema.sql
+  - env.example
+  - SETUP.md
+  - supabase-config.js
+  - "*.zip"
