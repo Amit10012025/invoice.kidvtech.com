@@ -287,7 +287,7 @@ function initApp(){
 
     firebase.auth().onAuthStateChanged(user => {
       const page = location.pathname.split('/').pop() || 'index.html';
-      const isPublic = ['login.html','subscribe.html','expired.html'].some(p => page.includes(p));
+      const isPublic = ['login.html','subscribe.html','expired.html','suspended.html'].some(p => page.includes(p));
       if(!user && !isPublic){ location.href = 'login.html'; return; }
       if(user){
         window.KIDV._user  = user;
