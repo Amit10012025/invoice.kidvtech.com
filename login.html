@@ -386,10 +386,19 @@ const ADMIN_EMAILS = ['amit@kidvtech.com'];
 // ── State ─────────────────────────────────────────────────
 let _inRegFlow = false, _regUser = null, _regData = null;
 let _phoneConfirm = null, _timerHandle = null;
+let _redirecting = false;
 
 // ── Auth redirect ─────────────────────────────────────────
 auth.onAuthStateChanged(async user => {
-  if (user && !_inRegFlow) {
+  if (_redirecting || _inRegFlow) return;
+  if (user) {
+    // Email/password user — check email verified
+    if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
+      // Not verified — sign out, let them login again after verifying
+      await auth.signOut();
+      return;
+    }
+    _redirecting = true;
     try {
       await db.collection('users').doc(user.uid).set({
         email: user.email,
