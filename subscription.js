@@ -52,7 +52,14 @@ window.SUB = {
       const msLeft = trialEnd - now;
       this.daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
 
-      // No trial - redirect all non-paid users to subscribe
+      if (this.daysLeft > 0) {
+        // Still in trial — allow access
+        this.plan = 'trial';
+        this._showBadge('trial', trialEnd);
+        return;
+      }
+
+      // Trial expired
       this.plan = 'expired';
       this._redirectExpired();
 
