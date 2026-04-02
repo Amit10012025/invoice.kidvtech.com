@@ -392,19 +392,12 @@ let _redirecting = false;
 auth.onAuthStateChanged(async user => {
   if (_redirecting || _inRegFlow) return;
   if (user) {
-    // Email/password user — check email verified
-    if (!user.emailVerified && user.providerData[0]?.providerId === 'password') {
-      // Not verified — sign out, let them login again after verifying
-      await auth.signOut();
-      return;
-    }
     _redirecting = true;
     try {
       await db.collection('users').doc(user.uid).set({
         email: user.email,
         name: user.displayName || '',
         isAdmin: ADMIN_EMAILS.includes((user.email || '').toLowerCase()),
-        emailVerified: user.emailVerified,
         lastLogin: new Date().toISOString(),
         createdAt: new Date().toISOString()
       }, { merge: true });
@@ -527,14 +520,24 @@ async function doRegister() {
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     await cred.user.updateProfile({ displayName: name });
-    _regUser = cred.user;
-    _regData = { name, email, mobile };
-    // Send email verification
-    try {
-      await _regUser.sendEmailVerification({ url: window.location.origin + '/login.html' });
-    } catch(ve) { console.warn('[EmailVerify]', ve); }
+
+    // Save to Firestore
+    await db.collection('users').doc(cred.user.uid).set({
+      email, name, mobile,
+      isAdmin: ADMIN_EMAILS.includes(email.toLowerCase()),
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    });
+
+    // Notify admin on WhatsApp
+    const msg = encodeURIComponent('🆕 New Registration!\n\nName: ' + name + '\nEmail: ' + email + '\nMobile: ' + mobile + '\n\nPlease activate their account.');
+    window.open('https://wa.me/917984486885?text=' + msg, '_blank');
+
     setLoad('reg', false);
-    showEmailVerifyPanel(email);
+    _inRegFlow = false;
+    showSucc('Account created! Admin will activate it shortly.');
+    setTimeout(() => switchTab('login'), 2000);
   } catch(e) {
     _inRegFlow = false;
     showErr(ERR_MAP[e.code] || e.message);
