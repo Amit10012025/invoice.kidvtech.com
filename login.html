@@ -1,704 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice — Sign In</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg"/>
+<link rel="icon" type="image/png" href="logo.jpg">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#070812;--o1:#f97316;--gold:#fbbf24;--blue:#3b82f6;--cyan:#22d3ee;--green:#10b981;--rose:#f43f5e;--text:#f1f3ff;--muted:rgba(241,243,255,0.38);--sub:rgba(241,243,255,0.55);--ink:#0c0f1e;--gray:#64748b;--border:#e4eaf5;--field:#f5f7fe;}
-html,body{height:100%;overflow:hidden;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);display:flex;}
-.ambient{position:fixed;inset:0;z-index:0;overflow:hidden;}
-.amb-g{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;}
-.ag1{width:700px;height:700px;background:radial-gradient(circle,rgba(249,115,22,0.11),transparent 70%);top:-250px;left:-200px;animation:ag1 20s ease-in-out infinite;}
-.ag2{width:550px;height:550px;background:radial-gradient(circle,rgba(59,130,246,0.09),transparent 70%);bottom:-180px;left:30%;animation:ag2 25s ease-in-out infinite;}
-.ag3{width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,0.07),transparent 70%);top:20%;right:5%;animation:ag3 18s ease-in-out infinite;}
-@keyframes ag1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,50px)}}
-@keyframes ag2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,-40px)}}
-@keyframes ag3{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,50px)}}
-.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(249,115,22,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(249,115,22,0.025) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 70% 80% at 30% 50%,black 0%,transparent 100%);}
-.wrap{position:relative;z-index:1;display:flex;width:100%;height:100vh;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0a0f1e;--ink2:#1e2740;--muted:#64748b;--border:#e4eaf4;
+  --surface:#f7f9ff;--white:#ffffff;
+  --accent:#1b6ef3;--accent2:#06b6d4;--accent3:#8b5cf6;
+  --green:#10b981;--amber:#f59e0b;--rose:#f43f5e;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;display:flex;background:#080e1f;overflow:hidden;}
 
 /* LEFT */
-.left{width:56%;flex-shrink:0;display:flex;flex-direction:column;position:relative;overflow:hidden;}
-.left::after{content:'';position:absolute;top:60px;right:0;bottom:60px;width:1px;background:linear-gradient(180deg,transparent,rgba(249,115,22,0.12) 20%,rgba(249,115,22,0.18) 50%,rgba(249,115,22,0.12) 80%,transparent);}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:28px 48px 0;}
-.brand{display:flex;align-items:center;gap:11px;}
-.brand-logo{width:42px;height:42px;border-radius:11px;overflow:hidden;background:linear-gradient(135deg,#f97316,#fbbf24);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 1px rgba(249,115,22,0.35),0 6px 20px rgba(249,115,22,0.22);}
-.brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:11px;}
-.brand-name{font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px;}
-.brand-tag{font-size:9.5px;color:rgba(255,255,255,0.28);letter-spacing:.08em;text-transform:uppercase;}
-.live-pill{display:flex;align-items:center;gap:7px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:100px;}
-.live-dot{width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.25);animation:ldp 2s ease-in-out infinite;}
-@keyframes ldp{0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,0.25)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0.08)}}
-.left-main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;padding:24px 48px 0;align-items:start;}
-.hero-col{display:flex;flex-direction:column;padding-right:20px;padding-top:8px;}
-.hero-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--o1);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.hero-eyebrow::before{content:'';display:inline-block;width:18px;height:2px;background:var(--o1);border-radius:1px;}
-.hero-title{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-1.5px;margin-bottom:16px;}
-.hero-title .hl{font-style:italic;background:linear-gradient(120deg,#f97316,#fbbf24 60%,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-desc{font-size:13.5px;line-height:1.75;color:var(--muted);margin-bottom:22px;font-weight:400;}
-.feat-list{display:flex;flex-direction:column;gap:9px;margin-bottom:24px;}
-.feat-item{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--sub);font-weight:500;}
-.feat-item .fi-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.feat-item .material-icons-round{font-size:13px;}
-.fi-o{background:rgba(249,115,22,0.15);color:#fdba74;}
-.fi-b{background:rgba(59,130,246,0.15);color:#93c5fd;}
-.fi-g{background:rgba(16,185,129,0.15);color:#6ee7b7;}
-.fi-c{background:rgba(34,211,238,0.15);color:#67e8f9;}
-.fi-a{background:rgba(251,191,36,0.15);color:#fde68a;}
-.fi-r{background:rgba(244,63,94,0.15);color:#fda4af;}
-.trust-row{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;margin-top:auto;}
-.trust-avatar-stack{display:flex;margin-right:4px;}
-.t-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);background:linear-gradient(135deg,#f97316,#fbbf24);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;margin-right:-8px;flex-shrink:0;}
-.t-av:last-child{margin-right:0;}
-.trust-text{font-size:11.5px;color:var(--muted);flex:1;}
-.trust-text strong{color:rgba(255,255,255,0.7);font-weight:700;}
-.trust-rating{display:flex;align-items:center;gap:4px;flex-shrink:0;}
-.stars{color:#fbbf24;font-size:11px;letter-spacing:1px;}
-.r-num{font-size:11px;font-weight:700;color:rgba(255,255,255,0.5);}
-.preview-col{position:relative;display:flex;flex-direction:column;gap:10px;padding-top:4px;}
-.inv-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:18px;padding:18px;backdrop-filter:blur(12px);animation:floatUp .8s cubic-bezier(.22,1,.36,1) both;}
-.inv-card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.inv-no{font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.35);letter-spacing:.08em;text-transform:uppercase;}
-.inv-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:100px;}
-.ib-paid{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25);}
-.inv-client{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;}
-.inv-client-sub{font-size:11px;color:var(--muted);}
-.inv-amount{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px;margin:12px 0 8px;}
-.inv-amount span{font-size:14px;font-weight:400;color:var(--muted);}
-.inv-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:12px;}
-.inv-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f97316,#fbbf24);}
-.inv-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;}
-.inv-row-l{color:var(--muted);}
-.inv-row-r{font-weight:600;color:rgba(255,255,255,0.6);}
-.mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.mini-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:13px 14px;animation:floatUp .8s cubic-bezier(.22,1,.36,1) both;}
-.mc-label{font-size:9.5px;font-weight:700;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
-.mc-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:2px;}
-.mc-change{font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px;}
-.mc-up{color:#10b981;}.mc-dn{color:#f43f5e;}
-.mc-change .material-icons-round{font-size:12px;}
-.activity{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 14px;animation:floatUp .8s cubic-bezier(.22,1,.36,1) .2s both;}
-.act-hd{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;}
-.act-items{display:flex;flex-direction:column;gap:7px;}
-.act-item{display:flex;align-items:center;gap:9px;}
-.act-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.act-dot-g{background:#10b981;box-shadow:0 0 5px rgba(16,185,129,0.5);}
-.act-dot-o{background:#f97316;box-shadow:0 0 5px rgba(249,115,22,0.5);}
-.act-dot-b{background:#3b82f6;box-shadow:0 0 5px rgba(59,130,246,0.5);}
-.act-txt{font-size:11px;color:var(--muted);flex:1;line-height:1.3;}
-.act-txt strong{color:rgba(255,255,255,0.6);font-weight:600;}
-.act-time{font-size:9.5px;color:rgba(255,255,255,0.2);flex-shrink:0;}
-@keyframes floatUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.bottom-bar{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,0.05);margin:16px 48px 0;padding:16px 0 24px;}
-.bstat{text-align:center;border-right:1px solid rgba(255,255,255,0.04);}
-.bstat:last-child{border-right:none;}
-.bsv{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-.5px;}
-.bsl{font-size:9px;color:rgba(255,255,255,0.22);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;}
+.left{width:55%;flex-shrink:0;position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.left-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 85% 10%,rgba(6,182,212,0.22) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 10% 90%,rgba(139,92,246,0.2) 0%,transparent 55%),radial-gradient(ellipse 80% 50% at 50% 50%,rgba(27,110,243,0.15) 0%,transparent 70%),linear-gradient(145deg,#050c1f 0%,#091528 35%,#0c1e3a 65%,#080f20 100%);}
+.mesh{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.024) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.024) 1px,transparent 1px);background-size:48px 48px;animation:meshDrift 20s linear infinite;}
+@keyframes meshDrift{from{background-position:0 0}to{background-position:48px 48px}}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;}
+.orb1{width:480px;height:480px;background:radial-gradient(circle,rgba(27,110,243,0.25),transparent 70%);top:-120px;right:-80px;animation:orb1 9s ease-in-out infinite;}
+.orb2{width:360px;height:360px;background:radial-gradient(circle,rgba(6,182,212,0.2),transparent 70%);bottom:-80px;left:-60px;animation:orb2 12s ease-in-out infinite;}
+.orb3{width:280px;height:280px;background:radial-gradient(circle,rgba(139,92,246,0.18),transparent 70%);top:38%;left:22%;animation:orb3 15s ease-in-out infinite;}
+@keyframes orb1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-40px,40px) scale(1.1)}}
+@keyframes orb2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(0.9)}}
+@keyframes orb3{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,25px)}}
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.p{position:absolute;border-radius:50%;animation:rise linear infinite;}
+@keyframes rise{from{transform:translateY(110vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.4}to{transform:translateY(-10vh) scale(1);opacity:0}}
+.left-content{position:relative;z-index:2;display:flex;flex-direction:column;height:100%;padding:44px 52px;}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:auto;}
+.brand-mark{width:46px;height:46px;border-radius:13px;overflow:hidden;background:linear-gradient(135deg,#1b6ef3,#06b6d4);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 8px 32px rgba(27,110,243,0.4);flex-shrink:0;}
+.brand-mark img{width:100%;height:100%;object-fit:cover;border-radius:13px;}
+.brand-name{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#fff;letter-spacing:-.2px;}
+.brand-tag{font-size:10.5px;color:rgba(255,255,255,0.38);letter-spacing:.05em;margin-top:1px;}
+.hero{margin:auto 0;padding:28px 0;}
+.live-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#6ee7b7;font-size:11px;font-weight:700;padding:5px 14px;border-radius:30px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:22px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.3);animation:livePulse 2s ease-in-out infinite;}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,0.3)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0.1)}}
+.hero-title{font-family:'Syne',sans-serif;font-size:50px;font-weight:800;color:#fff;line-height:1.08;letter-spacing:-2px;margin-bottom:18px;}
+.hero-title .grad{background:linear-gradient(90deg,#38bdf8 0%,#22d3ee 30%,#818cf8 65%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;}
+.hero-sub{font-size:14.5px;color:rgba(255,255,255,0.46);line-height:1.8;max-width:380px;margin-bottom:36px;font-weight:400;}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;}
+.pill{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:30px;font-size:11.5px;font-weight:600;border:1px solid;transition:transform .2s;}
+.pill:hover{transform:translateY(-2px);}
+.pill .material-icons-round{font-size:13px;}
+.pb{background:rgba(27,110,243,0.12);border-color:rgba(27,110,243,0.3);color:#93c5fd;}
+.pc{background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.3);color:#67e8f9;}
+.pp{background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.3);color:#c4b5fd;}
+.pg{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.3);color:#6ee7b7;}
+.pa{background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.3);color:#fcd34d;}
+.pr{background:rgba(244,63,94,0.12);border-color:rgba(244,63,94,0.3);color:#fda4af;}
+.stats-bar{display:flex;gap:0;border-top:1px solid rgba(255,255,255,0.07);padding-top:22px;margin-top:auto;}
+.sstat{flex:1;text-align:center;border-right:1px solid rgba(255,255,255,0.06);}
+.sstat:last-child{border-right:none;}
+.sstat-v{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;}
+.sstat-l{font-size:10px;color:rgba(255,255,255,0.32);margin-top:3px;text-transform:uppercase;letter-spacing:.08em;}
 
 /* RIGHT */
-.right{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 40px;overflow-y:auto;background:rgba(255,255,255,0.018);position:relative;}
-.right::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 30%,rgba(249,115,22,0.04),transparent);}
-.card{width:100%;max-width:400px;background:#fff;border-radius:26px;padding:36px 34px 32px;box-shadow:0 0 0 1px rgba(12,15,30,0.1),0 4px 8px rgba(12,15,30,0.06),0 20px 48px rgba(12,15,30,0.18),0 40px 80px rgba(249,115,22,0.07);animation:cardIn .6s cubic-bezier(.22,1,.36,1) both;position:relative;overflow:hidden;}
-@keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f97316 0%,#fbbf24 50%,#f97316 100%);background-size:200% 100%;animation:barShimmer 2.5s linear infinite;}
-@keyframes barShimmer{0%{background-position:-100% 0}100%{background-position:100% 0}}
-.card-head{text-align:center;margin-bottom:24px;position:relative;z-index:1;}
-.card-logo{width:58px;height:58px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#f97316,#fbbf24);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 6px 22px rgba(249,115,22,0.28),0 0 0 4px rgba(249,115,22,0.09);}
-.card-logo img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
-.card-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#0c0f1e;letter-spacing:-.3px;margin-bottom:4px;}
-.card-sub{font-size:12.5px;color:#64748b;}
-.tabs{display:flex;background:#f5f7fe;border:1.5px solid #e4eaf5;border-radius:13px;padding:4px;margin-bottom:22px;gap:3px;position:relative;z-index:1;}
-.tab{flex:1;padding:9px 8px;border-radius:9px;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;color:#64748b;background:none;}
-.tab.active{background:#fff;color:#0c0f1e;box-shadow:0 2px 8px rgba(12,15,30,0.1);}
-.alert{display:none;border-radius:11px;padding:10px 13px;margin-bottom:16px;font-size:12px;align-items:center;gap:7px;position:relative;z-index:1;}
-.alert .material-icons-round{font-size:15px;flex-shrink:0;}
-.alert-err{background:#fff4f6;border:1.5px solid #fecdd3;color:#e11d48;animation:shake .3s ease;}
-.alert-succ{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#16a34a;}
+.right{flex:1;display:flex;align-items:center;justify-content:center;background:#f0f4fd;padding:32px 28px;position:relative;overflow:hidden;}
+.right::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 80% 20%,rgba(27,110,243,0.07),transparent),radial-gradient(ellipse 50% 60% at 20% 80%,rgba(6,182,212,0.06),transparent);}
+.rdeco{position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:linear-gradient(135deg,rgba(27,110,243,0.08),rgba(6,182,212,0.05));border:1px solid rgba(27,110,243,0.1);}
+.rdeco2{position:absolute;bottom:-60px;left:-60px;width:240px;height:240px;border-radius:50%;background:linear-gradient(135deg,rgba(139,92,246,0.07),rgba(6,182,212,0.04));border:1px solid rgba(139,92,246,0.08);}
+.card{background:#fff;border-radius:28px;padding:40px 38px 36px;width:100%;max-width:428px;box-shadow:0 0 0 1px rgba(27,110,243,0.06),0 4px 6px -2px rgba(10,15,30,0.04),0 20px 48px -8px rgba(10,15,30,0.12),0 40px 80px -20px rgba(27,110,243,0.08);position:relative;z-index:1;animation:cardIn .5s cubic-bezier(.22,1,.36,1) both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.card::before{content:'';position:absolute;top:0;left:40px;right:40px;height:2px;background:linear-gradient(90deg,#1b6ef3,#06b6d4,#8b5cf6);border-radius:0 0 4px 4px;}
+.card-head{text-align:center;margin-bottom:28px;}
+.card-logo-wrap{width:58px;height:58px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#1b6ef3,#06b6d4);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 24px rgba(27,110,243,0.3),0 0 0 4px rgba(27,110,243,0.08);}
+.card-logo-wrap img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+.card-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#0a0f1e;letter-spacing:-.4px;margin-bottom:5px;}
+.card-sub{font-size:13px;color:#64748b;}
+.tabs{display:flex;background:#f7f9ff;border:1.5px solid #e4eaf4;border-radius:14px;padding:4px;margin-bottom:24px;gap:3px;}
+.tab{flex:1;padding:10px 8px;border-radius:10px;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .22s;color:#64748b;background:none;letter-spacing:.01em;}
+.tab.active{background:#fff;color:#0a0f1e;box-shadow:0 2px 10px rgba(10,15,30,0.1),0 1px 2px rgba(10,15,30,0.06);}
+.err-box{display:none;background:#fff5f5;border:1.5px solid #fecdd3;border-radius:12px;padding:11px 14px;margin-bottom:18px;font-size:12.5px;color:#e11d48;align-items:center;gap:8px;animation:shake .3s ease;}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.info-box{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:11px;padding:10px 13px;margin-bottom:16px;font-size:12px;color:#1d4ed8;display:flex;align-items:flex-start;gap:7px;position:relative;z-index:1;line-height:1.5;}
-.info-box .material-icons-round{font-size:15px;flex-shrink:0;margin-top:1px;}
-.fg{margin-bottom:14px;position:relative;z-index:1;}
-.fg label{display:block;font-size:10.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
-.iw{position:relative;}
-.iw .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:#c8d0e0;pointer-events:none;z-index:1;transition:color .18s;}
-.iw input{width:100%;padding:12px 13px 12px 41px;border:1.5px solid #e4eaf5;border-radius:11px;font-family:'Outfit',sans-serif;font-size:13.5px;color:#0c0f1e;background:#f5f7fe;outline:none;transition:border-color .18s,box-shadow .18s,background .18s;}
-.iw input:focus{border-color:#f97316;background:#fff;box-shadow:0 0 0 4px rgba(249,115,22,0.09);}
-.iw:focus-within .ico{color:#f97316;}
-.iw input::placeholder{color:#c4cede;font-size:13px;}
-.eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:0;display:flex;z-index:2;transition:color .18s;}
-.eye:hover{color:#f97316;}
-.eye .material-icons-round{font-size:16px;}
-.strength{margin-top:6px;display:none;}
-.sbar{height:3px;border-radius:2px;background:#e4eaf5;overflow:hidden;}
-.sfill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%;}
-.stxt{font-size:10px;margin-top:4px;color:#94a3b8;}
-.forgot{text-align:right;margin:-4px 0 14px;}
-.forgot a{font-size:11.5px;color:#f97316;font-weight:700;cursor:pointer;}
+.err-box .material-icons-round{font-size:16px;flex-shrink:0;}
+.form-group{margin-bottom:15px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px;}
+.input-wrap{position:relative;}
+.input-wrap .iicon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;color:#cbd5e1;pointer-events:none;z-index:1;transition:color .18s;}
+.input-wrap input{width:100%;padding:13px 14px 13px 44px;border:1.5px solid #e4eaf4;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:#0a0f1e;background:#f7f9ff;outline:none;transition:border-color .18s,box-shadow .18s,background .18s;}
+.input-wrap input:focus{border-color:#1b6ef3;background:#fff;box-shadow:0 0 0 4px rgba(27,110,243,0.09);}
+.input-wrap:focus-within .iicon{color:#1b6ef3;}
+.input-wrap input::placeholder{color:#c8d3e8;}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:0;display:flex;z-index:2;transition:color .18s;}
+.eye-btn:hover{color:#1b6ef3;}
+.eye-btn .material-icons-round{font-size:17px;}
+.forgot{text-align:right;margin-top:-8px;margin-bottom:16px;}
+.forgot a{font-size:12px;color:#1b6ef3;cursor:pointer;font-weight:700;}
 .forgot a:hover{text-decoration:underline;}
-.btn{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,#f97316 0%,#fbbf24 100%);color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(249,115,22,0.32),0 1px 3px rgba(249,115,22,0.15);position:relative;overflow:hidden;z-index:1;}
-.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.13),transparent);pointer-events:none;}
-.btn:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(249,115,22,0.42);}
-.btn:active{transform:translateY(0);}
-.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-.btn .material-icons-round{font-size:17px;}
-.btn-ghost{width:100%;margin-top:9px;padding:11px;border:1.5px solid #e4eaf5;border-radius:12px;background:#f5f7fe;color:#64748b;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;position:relative;z-index:1;}
-.btn-ghost:hover{border-color:#f97316;color:#f97316;background:#fff;}
-.btn-ghost .material-icons-round{font-size:15px;}
-.spin{width:17px;height:17px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:none;flex-shrink:0;}
-@keyframes sp{to{transform:rotate(360deg)}}
-.steps{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:20px;position:relative;z-index:1;}
-.sdot{width:7px;height:7px;border-radius:50%;background:#e4eaf5;transition:all .3s;}
-.sdot.active{background:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,0.18);width:22px;border-radius:3px;}
-.sdot.done{background:#10b981;}
-.ev-hd{text-align:center;margin-bottom:16px;position:relative;z-index:1;}
-.ev-ico{width:66px;height:66px;border-radius:20px;background:linear-gradient(135deg,#3b82f6,#22d3ee);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 6px 22px rgba(59,130,246,0.28);}
-.ev-ico .material-icons-round{color:#fff;font-size:32px;}
-.ev-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#0c0f1e;margin-bottom:7px;}
-.ev-sub{font-size:12.5px;color:#64748b;line-height:1.7;margin-bottom:8px;}
-.ev-email{font-weight:700;color:#0c0f1e;background:#fff8f0;padding:2px 7px;border-radius:5px;border:1px solid rgba(249,115,22,0.2);}
-.ev-note{font-size:11px;color:#64748b;margin-bottom:14px;padding:8px 10px;background:#f8faff;border-radius:8px;border:1px solid #e4eaf5;line-height:1.5;}
-.otp-hd{text-align:center;margin-bottom:20px;position:relative;z-index:1;}
-.otp-ico{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#f97316,#fbbf24);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 6px 20px rgba(249,115,22,0.28);}
-.otp-ico .material-icons-round{color:#fff;font-size:28px;}
-.otp-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#0c0f1e;}
-.otp-sub{font-size:12.5px;color:#64748b;margin-top:5px;line-height:1.6;}
-.otp-timer{text-align:center;font-size:11.5px;font-weight:600;color:#64748b;margin-bottom:14px;padding:8px 13px;background:#f5f7fe;border-radius:9px;border:1px solid #e4eaf5;position:relative;z-index:1;}
-#otpInput{letter-spacing:10px!important;font-size:22px!important;font-weight:800!important;text-align:center;padding-left:13px!important;color:#0c0f1e!important;}
-.sec-badge{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid #f0f3fa;position:relative;z-index:1;}
-.sec-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#b0bac9;font-weight:600;}
-.sec-item .material-icons-round{font-size:12px;color:#94a3b8;}
-.card-foot{text-align:center;margin-top:16px;font-size:11.5px;color:#94a3b8;display:flex;align-items:center;justify-content:center;gap:5px;position:relative;z-index:1;}
-.card-foot a{color:#f97316;font-weight:700;text-decoration:none;}
+.strength-wrap{margin-top:7px;}
+.strength-bar{height:3px;border-radius:4px;background:#e4eaf4;overflow:hidden;}
+.strength-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;width:0%;}
+.strength-text{font-size:11px;margin-top:4px;color:#94a3b8;}
+.btn-submit{width:100%;padding:14px;border:none;border-radius:13px;background:linear-gradient(135deg,#1b6ef3 0%,#06b6d4 100%);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(27,110,243,0.35),0 1px 3px rgba(27,110,243,0.2);letter-spacing:.01em;position:relative;overflow:hidden;}
+.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.12),transparent);pointer-events:none;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(27,110,243,0.45);}
+.btn-submit:active{transform:translateY(0);box-shadow:0 2px 8px rgba(27,110,243,0.3);}
+.btn-submit:disabled{opacity:.7;cursor:not-allowed;transform:none;}
+.btn-submit .material-icons-round{font-size:19px;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;display:none;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.info-badge{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:12px;padding:11px 14px;margin-bottom:18px;font-size:12.5px;color:#0369a1;display:flex;align-items:center;gap:9px;}
+.info-badge .material-icons-round{font-size:16px;flex-shrink:0;}
+.card-foot{text-align:center;margin-top:20px;font-size:12px;color:#94a3b8;display:flex;align-items:center;justify-content:center;gap:6px;}
+.card-foot a{color:#1b6ef3;font-weight:700;text-decoration:none;}
 .card-foot a:hover{text-decoration:underline;}
-@media(max-width:960px){.left{display:none;}body{background:#0a0c1e;}.right{background:transparent;padding:20px 14px;}.card{max-width:420px;}}
+.otp-icon-wrap{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#1b6ef3,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 8px 24px rgba(139,92,246,0.28);}
+.otp-icon-wrap .material-icons-round{color:#fff;font-size:28px;}
+#otpTimer{text-align:center;font-size:12px;font-weight:600;color:#64748b;margin-bottom:14px;padding:8px 14px;background:#f7f9ff;border-radius:8px;border:1px solid #e4eaf4;}
+.btn-ghost{width:100%;margin-top:10px;padding:12px;border:1.5px solid #e4eaf4;border-radius:13px;background:#f7f9ff;color:#64748b;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-ghost:hover{border-color:#1b6ef3;color:#1b6ef3;background:#fff;}
+.btn-ghost .material-icons-round{font-size:16px;}
+#otpInput{letter-spacing:8px !important;font-size:22px !important;font-weight:800 !important;text-align:center;padding-left:14px !important;color:#0a0f1e !important;}
+@media(max-width:860px){.left{display:none;}body{background:#f0f4fd;}.right{background:transparent;}.card{box-shadow:0 0 0 1px #e4eaf4,0 20px 48px rgba(10,15,30,0.1);}}
 </style>
 </head>
 <body>
-<div class="ambient">
-  <div class="amb-g ag1"></div><div class="amb-g ag2"></div><div class="amb-g ag3"></div>
-  <div class="grid"></div>
-</div>
-<div class="wrap">
-  <!-- LEFT -->
-  <div class="left">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-logo"><img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:16px;font-weight:800;color:#fff\'>KI</span>'"/></div>
-        <div><div class="brand-name">KIDV Invoice</div><div class="brand-tag">by KIDV Tech · kidvtech.com</div></div>
+<div class="left">
+  <div class="left-bg"></div>
+  <div class="mesh"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="particles" id="particles"></div>
+  <div class="left-content">
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:17px;font-weight:800;color:#fff\'>KI</span>'"/>
       </div>
-      <div class="live-pill"><div class="live-dot"></div>GST Ready</div>
-    </div>
-    <div class="left-main">
-      <div class="hero-col">
-        <div class="hero-eyebrow">India's #1 Invoice Platform</div>
-        <div class="hero-title">Smart<br/><span class="hl">Invoicing</span><br/>Software</div>
-        <p class="hero-desc">Professional GST invoices, real-time payment tracking &amp; compliance reports built for Indian businesses.</p>
-        <div class="feat-list">
-          <div class="feat-item"><div class="fi-icon fi-o"><span class="material-icons-round">receipt_long</span></div>GST Tax Invoices &amp; Bills</div>
-          <div class="feat-item"><div class="fi-icon fi-b"><span class="material-icons-round">payments</span></div>Real-time Payment Tracking</div>
-          <div class="feat-item"><div class="fi-icon fi-g"><span class="material-icons-round">account_balance_wallet</span></div>Party Ledger &amp; Accounts</div>
-          <div class="feat-item"><div class="fi-icon fi-a"><span class="material-icons-round">bar_chart</span></div>GST Returns &amp; Reports</div>
-          <div class="feat-item"><div class="fi-icon fi-r"><span class="material-icons-round">local_shipping</span></div>E-Way Bill Generation</div>
-          <div class="feat-item"><div class="fi-icon fi-c"><span class="material-icons-round">cloud_sync</span></div>Cloud Backup &amp; Sync</div>
-        </div>
-        <div class="trust-row">
-          <div class="trust-avatar-stack">
-            <div class="t-av">R</div>
-            <div class="t-av" style="background:linear-gradient(135deg,#3b82f6,#22d3ee)">A</div>
-            <div class="t-av" style="background:linear-gradient(135deg,#10b981,#06b6d4)">M</div>
-            <div class="t-av" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">S</div>
-          </div>
-          <div class="trust-text"><strong>500+</strong> Indian businesses trust KIDV Invoice</div>
-          <div class="trust-rating"><div class="stars">★★★★★</div><div class="r-num">4.9</div></div>
-        </div>
-      </div>
-      <div class="preview-col">
-        <div class="inv-card" style="animation-delay:.1s">
-          <div class="inv-card-hd"><div class="inv-no">INV-2025-047</div><div class="inv-badge ib-paid">✓ Paid</div></div>
-          <div class="inv-client">Mehta Traders Pvt Ltd</div>
-          <div class="inv-client-sub">GSTIN: 24AABCM1234P1Z5</div>
-          <div class="inv-amount">₹1,24,500 <span>incl. GST</span></div>
-          <div class="inv-bar"><div class="inv-bar-fill" style="width:100%"></div></div>
-          <div class="inv-row"><span class="inv-row-l">Due Date</span><span class="inv-row-r">Paid on 12 Jan 2025</span></div>
-        </div>
-        <div class="mini-cards">
-          <div class="mini-card" style="animation-delay:.15s">
-            <div class="mc-label">This Month</div><div class="mc-val">₹8.4L</div>
-            <div class="mc-change mc-up"><span class="material-icons-round">arrow_upward</span>+23% vs last</div>
-          </div>
-          <div class="mini-card" style="animation-delay:.2s">
-            <div class="mc-label">Pending</div><div class="mc-val">₹2.1L</div>
-            <div class="mc-change mc-dn"><span class="material-icons-round">arrow_downward</span>3 invoices</div>
-          </div>
-        </div>
-        <div class="activity">
-          <div class="act-hd">Recent Activity</div>
-          <div class="act-items">
-            <div class="act-item"><div class="act-dot act-dot-g"></div><div class="act-txt"><strong>Shah Industries</strong> paid ₹45,200</div><div class="act-time">2m ago</div></div>
-            <div class="act-item"><div class="act-dot act-dot-o"></div><div class="act-txt">New invoice <strong>INV-2025-048</strong> created</div><div class="act-time">18m ago</div></div>
-            <div class="act-item"><div class="act-dot act-dot-b"></div><div class="act-txt"><strong>GSTR-1</strong> filed successfully for Dec</div><div class="act-time">1h ago</div></div>
-          </div>
-        </div>
+      <div>
+        <div class="brand-name">KIDV Invoice</div>
+        <div class="brand-tag">by KIDV Tech &middot; kidvtech.com</div>
       </div>
     </div>
-    <div class="bottom-bar">
-      <div class="bstat"><div class="bsv">100%</div><div class="bsl">GST Compliant</div></div>
-      <div class="bstat"><div class="bsv">₹4,999</div><div class="bsl">Per Year</div></div>
-      <div class="bstat"><div class="bsv">24/7</div><div class="bsl">Cloud Access</div></div>
-      <div class="bstat"><div class="bsv">🇮🇳</div><div class="bsl">Made in India</div></div>
+    <div class="hero">
+      <div class="live-badge"><div class="live-dot"></div>GST-Ready Software</div>
+      <div class="hero-title">Smart Invoicing<br/>for <span class="grad">Indian Business</span></div>
+      <div class="hero-sub">Professional GST invoices, customer management &amp;<br/>payment tracking — all in one place.</div>
+      <div class="pills">
+        <div class="pill pb"><span class="material-icons-round">receipt_long</span>GST Tax Invoices</div>
+        <div class="pill pc"><span class="material-icons-round">payments</span>Payment Tracking</div>
+        <div class="pill pa"><span class="material-icons-round">bar_chart</span>GST Returns</div>
+        <div class="pill pp"><span class="material-icons-round">cloud_sync</span>Cloud Backup</div>
+        <div class="pill pr"><span class="material-icons-round">local_shipping</span>E-Way Bill</div>
+        <div class="pill pg"><span class="material-icons-round">account_balance_wallet</span>Party Ledger</div>
+      </div>
     </div>
-  </div>
-
-  <!-- RIGHT -->
-  <div class="right">
-    <div class="card">
-      <div class="card-head">
-        <div class="card-logo"><img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:20px;font-weight:800;color:#fff\'>KI</span>'"/></div>
-        <div class="card-title" id="cardTitle">Welcome back 👋</div>
-        <div class="card-sub" id="cardSub">Sign in to your KIDV Invoice account</div>
-      </div>
-
-      <div class="tabs" id="tabsRow">
-        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-        <button class="tab" id="tabReg" onclick="switchTab('register')">Create Account</button>
-      </div>
-
-      <div class="alert alert-err" id="errBox"><span class="material-icons-round">error_outline</span><span id="errMsg"></span></div>
-      <div class="alert alert-succ" id="succBox"><span class="material-icons-round">check_circle_outline</span><span id="succMsg"></span></div>
-
-      <!-- LOGIN -->
-      <div id="loginForm">
-        <div class="fg">
-          <label>Email Address</label>
-          <div class="iw"><span class="material-icons-round ico">mail_outline</span><input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        </div>
-        <div class="fg">
-          <label>Password</label>
-          <div class="iw">
-            <span class="material-icons-round ico">lock_outline</span>
-            <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-            <button class="eye" onclick="toggleEye('loginPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
-          </div>
-        </div>
-        <div class="forgot"><a onclick="doForgot()">Forgot password?</a></div>
-        <button class="btn" id="loginBtn" onclick="doLogin()">
-          <div class="spin" id="loginSpin"></div>
-          <span class="material-icons-round" id="loginIco">login</span>
-          <span id="loginTxt">Sign In</span>
-        </button>
-        <div class="sec-badge">
-          <div class="sec-item"><span class="material-icons-round">lock</span>SSL Secured</div>
-          <div class="sec-item"><span class="material-icons-round">verified_user</span>Firebase Auth</div>
-          <div class="sec-item"><span class="material-icons-round">cloud_done</span>GST Compliant</div>
-        </div>
-      </div>
-
-      <!-- REGISTER -->
-      <div id="registerForm" style="display:none">
-        <div class="steps"><div class="sdot active" id="sd1"></div><div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div></div>
-        <div class="info-box"><span class="material-icons-round">info</span>After registering, admin activates your account. Email &amp; mobile will be verified.</div>
-        <div class="fg"><label>Full Name *</label><div class="iw"><span class="material-icons-round ico">person_outline</span><input type="text" id="regName" placeholder="Your full name"/></div></div>
-        <div class="fg"><label>Email Address *</label><div class="iw"><span class="material-icons-round ico">mail_outline</span><input type="email" id="regEmail" placeholder="your@email.com"/></div></div>
-        <div class="fg"><label>Mobile Number *</label><div class="iw"><span class="material-icons-round ico">phone_iphone</span><input type="tel" id="regMobile" placeholder="+91 9999999999" maxlength="13"/></div></div>
-        <div class="fg">
-          <label>Password *</label>
-          <div class="iw">
-            <span class="material-icons-round ico">lock_outline</span>
-            <input type="password" id="regPass" placeholder="Min 6 characters" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()"/>
-            <button class="eye" onclick="toggleEye('regPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
-          </div>
-          <div class="strength" id="strengthWrap"><div class="sbar"><div class="sfill" id="sfill"></div></div><div class="stxt" id="stxt"></div></div>
-        </div>
-        <button class="btn" id="regBtn" onclick="doRegister()">
-          <div class="spin" id="regSpin"></div>
-          <span class="material-icons-round" id="regIco">person_add</span>
-          <span id="regTxt">Create Account</span>
-        </button>
-      </div>
-
-      <!-- EMAIL VERIFY -->
-      <div id="emailVerifyPanel" style="display:none">
-        <div class="ev-hd">
-          <div class="ev-ico"><span class="material-icons-round">mark_email_unread</span></div>
-          <div class="ev-title">Verify Your Email 📧</div>
-          <div class="ev-sub">Verification link sent to<br/><span class="ev-email" id="verifyEmailDisplay"></span></div>
-          <div class="ev-note">📌 <strong>Spam folder check karo</strong> — email <code>noreply@kidv-tech-project.firebaseapp.com</code> thi aave che.<br/>Link click karya pachi "I've Verified" button dabavo.</div>
-        </div>
-        <div id="emailVerifyStatus" style="font-size:12px;color:#64748b;text-align:center;margin-bottom:12px;min-height:18px;position:relative;z-index:1;"></div>
-        <button class="btn" onclick="checkEmailVerified()"><span class="material-icons-round">refresh</span><span>I've Verified — Continue</span></button>
-        <button class="btn-ghost" onclick="resendVerification()"><span class="material-icons-round">send</span>Resend Email</button>
-        <button class="btn-ghost" style="margin-top:6px" onclick="cancelVerify()"><span class="material-icons-round">arrow_back</span>Use Different Email</button>
-      </div>
-
-      <!-- PHONE OTP -->
-      <div id="phoneOtpPanel" style="display:none">
-        <div class="otp-hd">
-          <div class="otp-ico"><span class="material-icons-round">smartphone</span></div>
-          <div class="otp-title">Verify Mobile 📱</div>
-          <div class="otp-sub" id="phoneOtpSub">Enter the OTP sent to your number</div>
-        </div>
-        <div class="fg" style="position:relative;z-index:1;">
-          <label>OTP Code</label>
-          <div class="iw"><span class="material-icons-round ico">pin</span><input type="number" id="otpInput" placeholder="000000" maxlength="6" onkeydown="if(event.key==='Enter')verifyOTP()"/></div>
-        </div>
-        <div class="otp-timer" id="otpTimer"></div>
-        <button class="btn" id="otpBtn" onclick="verifyOTP()">
-          <div class="spin" id="otpSpin"></div>
-          <span class="material-icons-round" id="otpIco">verified</span>
-          <span id="otpTxt">Verify Mobile OTP</span>
-        </button>
-        <button class="btn-ghost" onclick="skipOTP()"><span class="material-icons-round">skip_next</span>Skip — Verify Later</button>
-        <button class="btn-ghost" style="margin-top:6px" onclick="cancelOTP()"><span class="material-icons-round">arrow_back</span>Go Back</button>
-        <div id="recaptcha-container"></div>
-      </div>
-
-      <div class="card-foot">Need help? <a href="https://wa.me/917984486885" target="_blank">📲 WhatsApp Support</a></div>
+    <div class="stats-bar">
+      <div class="sstat"><div class="sstat-v">100%</div><div class="sstat-l">GST Compliant</div></div>
+      <div class="sstat"><div class="sstat-v">&#8377;4,999</div><div class="sstat-l">Per Year</div></div>
+      <div class="sstat"><div class="sstat-v">24/7</div><div class="sstat-l">Cloud Access</div></div>
+      <div class="sstat"><div class="sstat-v">&#127470;&#127475;</div><div class="sstat-l">Made in India</div></div>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDKs -->
+<div class="right">
+  <div class="rdeco"></div>
+  <div class="rdeco2"></div>
+  <div class="card">
+    <div class="card-head">
+      <div class="card-logo-wrap">
+        <img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:22px;font-weight:800;color:#fff\'>KI</span>'"/>
+      </div>
+      <div class="card-title" id="cardTitle">Welcome back &#128075;</div>
+      <div class="card-sub" id="cardSub">Sign in to your KIDV Invoice account</div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    </div>
+    <div class="err-box" id="errBox">
+      <span class="material-icons-round">error_outline</span>
+      <span id="errMsg">Error</span>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <span class="material-icons-round iicon">mail_outline</span>
+          <input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="material-icons-round iicon">lock_outline</span>
+          <input type="password" id="loginPass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button class="eye-btn" onclick="toggleEye('loginPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
+        </div>
+      </div>
+      <div class="forgot"><a onclick="showForgotOptions()">Forgot password?</a></div>
+      <button class="btn-submit" id="loginBtn" onclick="doLogin()">
+        <div class="spinner" id="loginSpinner"></div>
+        <span class="material-icons-round" id="loginIcon">login</span>
+        <span id="loginTxt">Sign In</span>
+      </button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" style="display:none">
+      <div class="info-badge"><span class="material-icons-round">info</span>After registering, contact admin to activate your account.</div>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <div class="input-wrap"><span class="material-icons-round iicon">person_outline</span><input type="text" id="regName" placeholder="Your full name"/></div>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <div class="input-wrap"><span class="material-icons-round iicon">mail_outline</span><input type="email" id="regEmail" placeholder="your@email.com"/></div>
+      </div>
+      <div class="form-group">
+        <label>Mobile Number *</label>
+        <div class="input-wrap"><span class="material-icons-round iicon">phone_iphone</span><input type="tel" id="regMobile" placeholder="+91 9999999999" maxlength="13"/></div>
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <div class="input-wrap">
+          <span class="material-icons-round iicon">lock_outline</span>
+          <input type="password" id="regPass" placeholder="Min 6 characters" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()"/>
+          <button class="eye-btn" onclick="toggleEye('regPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
+        </div>
+        <div class="strength-wrap" id="strengthWrap" style="display:none">
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-text" id="strengthText"></div>
+        </div>
+      </div>
+      <button class="btn-submit" id="regBtn" onclick="doRegister()">
+        <div class="spinner" id="regSpinner"></div>
+        <span class="material-icons-round" id="regIcon">person_add</span>
+        <span id="regTxt">Create Account</span>
+      </button>
+    </div>
+
+    <!-- OTP -->
+    <div id="otpPanel" style="display:none">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div class="otp-icon-wrap"><span class="material-icons-round">sms</span></div>
+        <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#0a0f1e;letter-spacing:-.3px;">Verify Your Mobile</div>
+        <div style="font-size:13px;color:#64748b;margin-top:6px;line-height:1.6;" id="otpSubtitle">Enter the 6-digit OTP sent to your number</div>
+      </div>
+      <div class="form-group">
+        <label>OTP Code</label>
+        <div class="input-wrap"><span class="material-icons-round iicon">pin</span><input type="number" id="otpInput" placeholder="000000" maxlength="6" onkeydown="if(event.key==='Enter')verifyOTP()"/></div>
+      </div>
+      <div id="otpTimer"></div>
+      <button class="btn-submit" id="otpVerifyBtn" onclick="verifyOTP()">
+        <div class="spinner" id="otpSpinner"></div>
+        <span class="material-icons-round" id="otpIcon">verified</span>
+        <span id="otpTxt">Verify OTP</span>
+      </button>
+      <button class="btn-ghost" onclick="cancelOTP()"><span class="material-icons-round">arrow_back</span>Go Back</button>
+      <div id="recaptcha-container"></div>
+    </div>
+
+    <div class="card-foot">Need help? <a href="https://wa.me/917984486885" target="_blank">&#128242; WhatsApp Support</a></div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-// ── Firebase Init ─────────────────────────────────────────
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",
-  authDomain: "kidv-tech-project.firebaseapp.com",
-  projectId: "kidv-tech-project",
-  storageBucket: "kidv-tech-project.firebasestorage.app",
-  messagingSenderId: "168663801953",
-  appId: "1:168663801953:web:af953338df12480b4fca20"
-};
-if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-const ADMIN_EMAILS = ['amit@kidvtech.com'];
+const FIREBASE_CONFIG={apiKey:"AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",authDomain:"kidv-tech-project.firebaseapp.com",projectId:"kidv-tech-project",storageBucket:"kidv-tech-project.firebasestorage.app",messagingSenderId:"168663801953",appId:"1:168663801953:web:af953338df12480b4fca20"};
+if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+const auth=firebase.auth();const db=firebase.firestore();
+const ADMIN_EMAILS=['amit@kidvtech.com'];
 
-// ── State ─────────────────────────────────────────────────
-let _inRegFlow = false, _regUser = null, _regData = null;
-let _phoneConfirm = null, _timerHandle = null;
-let _redirecting = false;
+(function(){
+  const c=document.getElementById('particles');if(!c)return;
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div');p.className='p';
+    const sz=Math.random()*4+2;
+    const clrs=['rgba(27,110,243,0.5)','rgba(6,182,212,0.5)','rgba(139,92,246,0.45)','rgba(255,255,255,0.2)'];
+    p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;background:'+clrs[Math.floor(Math.random()*4)]+';animation-duration:'+(8+Math.random()*14)+'s;animation-delay:'+(-(Math.random()*20))+'s;';
+    c.appendChild(p);
+  }
+})();
 
-// ── Auth redirect ─────────────────────────────────────────
-auth.onAuthStateChanged(async user => {
-  if (_redirecting || _inRegFlow) return;
-  if (user) {
-    _redirecting = true;
-    try {
-      await db.collection('users').doc(user.uid).set({
-        email: user.email,
-        name: user.displayName || '',
-        isAdmin: ADMIN_EMAILS.includes((user.email || '').toLowerCase()),
-        lastLogin: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      }, { merge: true });
-    } catch(e) {}
-    location.href = 'index.html';
+let _redirecting=false;
+auth.onAuthStateChanged(async user=>{
+  if(_redirecting)return;
+  if(user){
+    _redirecting=true;
+    const isAdmin=ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const mobile=document.getElementById('regMobile')?document.getElementById('regMobile').value.trim():'';
+    try{await db.collection('users').doc(user.uid).set({email:user.email,name:user.displayName||'',mobile:mobile||'',isAdmin,lastLogin:new Date().toISOString(),createdAt:new Date().toISOString()},{merge:true});}catch(e){}
+    location.replace('index.html');
   }
 });
 
-// ── UI Helpers ────────────────────────────────────────────
-function showErr(msg) {
-  const b = document.getElementById('errBox');
-  b.style.display = 'flex';
-  document.getElementById('errMsg').textContent = msg;
-  void b.offsetWidth;
-  document.getElementById('succBox').style.display = 'none';
+function switchTab(t){
+  const isLogin=t==='login';
+  document.getElementById('loginForm').style.display=isLogin?'':'none';
+  document.getElementById('registerForm').style.display=isLogin?'none':'';
+  document.getElementById('otpPanel').style.display='none';
+  document.getElementById('tabLogin').classList.toggle('active',isLogin);
+  document.getElementById('tabRegister').classList.toggle('active',!isLogin);
+  document.getElementById('cardTitle').textContent=isLogin?'Welcome back \u{1F44B}':'Create Account \u2728';
+  document.getElementById('cardSub').textContent=isLogin?'Sign in to your KIDV Invoice account':'Register your business account';
+  hideErr();
 }
-function showSucc(msg) {
-  document.getElementById('succBox').style.display = 'flex';
-  document.getElementById('succMsg').textContent = msg;
-  document.getElementById('errBox').style.display = 'none';
+function showErr(msg){const b=document.getElementById('errBox');b.style.display='flex';document.getElementById('errMsg').textContent=msg;void b.offsetWidth;}
+function hideErr(){document.getElementById('errBox').style.display='none';}
+function toggleEye(id,btn){const i=document.getElementById(id),ic=btn.querySelector('.material-icons-round');i.type=i.type==='password'?(ic.textContent='visibility_off','text'):(ic.textContent='visibility','password');}
+function checkStrength(val){
+  const w=document.getElementById('strengthWrap'),f=document.getElementById('strengthFill'),t=document.getElementById('strengthText');
+  if(!val){w.style.display='none';return;}w.style.display='';
+  let s=0;if(val.length>=6)s++;if(val.length>=10)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;
+  const l=[{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}][Math.min(s,4)];
+  f.style.width=l.w;f.style.background=l.c;t.textContent='Strength: '+l.t;t.style.color=l.c;
 }
-function hideAlerts() {
-  document.getElementById('errBox').style.display = 'none';
-  document.getElementById('succBox').style.display = 'none';
+const ERR_MAP={'auth/user-not-found':'Email not found. Please create an account.','auth/wrong-password':'Incorrect password. Please try again.','auth/invalid-credential':'Invalid email or password.','auth/email-already-in-use':'Email already registered. Please sign in.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Please try again later.','auth/network-request-failed':'Network error. Please check your connection.'};
+async function doLogin(){
+  hideErr();const email=document.getElementById('loginEmail').value.trim(),pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showErr('Please enter email and password.');return;}
+  setLoading('login',true);
+  try{await auth.signInWithEmailAndPassword(email,pass);}catch(e){showErr(ERR_MAP[e.code]||e.message);setLoading('login',false);}
 }
-function toggleEye(id, btn) {
-  const i = document.getElementById(id), ic = btn.querySelector('.material-icons-round');
-  i.type = i.type === 'password' ? 'text' : 'password';
-  ic.textContent = i.type === 'password' ? 'visibility' : 'visibility_off';
+let _otpConfirmResult=null,_otpPendingUser=null,_otpPendingData=null,_otpMode='',_otpTimerHandle=null;
+function startOTPTimer(s){
+  clearInterval(_otpTimerHandle);const el=document.getElementById('otpTimer');let left=s;el.textContent='OTP expires in '+left+'s';
+  _otpTimerHandle=setInterval(()=>{left--;if(left<=0){clearInterval(_otpTimerHandle);el.textContent='OTP expired. Go back and retry.';}else el.textContent='OTP expires in '+left+'s';},1000);
 }
-function setLoad(type, on) {
-  const m = {
-    login: ['loginSpin','loginIco','loginTxt','loginBtn','Signing in...','Sign In'],
-    reg:   ['regSpin','regIco','regTxt','regBtn','Please wait...','Create Account'],
-    otp:   ['otpSpin','otpIco','otpTxt','otpBtn','Verifying...','Verify Mobile OTP']
-  };
-  const [sp,ic,tx,bt,ld,id_] = m[type];
-  document.getElementById(sp).style.display = on ? 'block' : 'none';
-  document.getElementById(ic).style.display  = on ? 'none'  : 'inline';
-  document.getElementById(tx).textContent    = on ? ld : id_;
-  document.getElementById(bt).disabled       = on;
+function showOTPPanel(sub){
+  document.getElementById('loginForm').style.display='none';document.getElementById('registerForm').style.display='none';
+  document.getElementById('otpPanel').style.display='block';document.getElementById('otpSubtitle').textContent=sub;
+  document.getElementById('otpInput').value='';startOTPTimer(120);
 }
-function checkStrength(val) {
-  const w = document.getElementById('strengthWrap'), f = document.getElementById('sfill'), t = document.getElementById('stxt');
-  if (!val) { w.style.display = 'none'; return; }
-  w.style.display = '';
-  let s = 0;
-  if (val.length >= 6) s++; if (val.length >= 10) s++;
-  if (/[A-Z]/.test(val)) s++; if (/[0-9]/.test(val)) s++;
-  if (/[^A-Za-z0-9]/.test(val)) s++;
-  const l = [{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}][Math.min(s,4)];
-  f.style.width = l.w; f.style.background = l.c;
-  t.textContent = 'Strength: ' + l.t; t.style.color = l.c;
+function cancelOTP(){
+  clearInterval(_otpTimerHandle);_otpConfirmResult=null;_otpPendingUser=null;_otpPendingData=null;
+  if(_otpMode==='signup'&&auth.currentUser)auth.currentUser.delete().catch(()=>{});
+  _otpMode='';document.getElementById('otpPanel').style.display='none';
+  switchTab(document.getElementById('tabRegister').classList.contains('active')?'register':'login');hideErr();
 }
-function stepDot(n) {
-  for (let i = 1; i <= 3; i++) {
-    const el = document.getElementById('sd' + i);
-    if (!el) continue;
-    el.classList.remove('active','done');
-    if (i < n) el.classList.add('done');
-    else if (i === n) el.classList.add('active');
-  }
+async function sendPhoneOTP(phone){
+  if(window._recaptchaVerifier){try{window._recaptchaVerifier.clear();}catch(e){}}
+  window._recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{size:'invisible'});
+  const f=phone.replace(/\D/g,''),e164=f.startsWith('91')?'+'+f:'+91'+f;
+  return await auth.signInWithPhoneNumber(e164,window._recaptchaVerifier);
 }
-
-const ERR_MAP = {
-  'auth/user-not-found': 'Email not found. Please create an account.',
-  'auth/wrong-password': 'Incorrect password. Please try again.',
-  'auth/invalid-credential': 'Invalid email or password.',
-  'auth/email-already-in-use': 'Email already registered. Please sign in.',
-  'auth/weak-password': 'Password must be at least 6 characters.',
-  'auth/invalid-email': 'Please enter a valid email address.',
-  'auth/too-many-requests': 'Too many attempts. Please try again later.',
-  'auth/network-request-failed': 'Network error. Please check your connection.'
-};
-
-// ── Tab Switch ────────────────────────────────────────────
-function switchTab(t) {
-  const isLogin = t === 'login';
-  document.getElementById('loginForm').style.display    = isLogin ? '' : 'none';
-  document.getElementById('registerForm').style.display = isLogin ? 'none' : '';
-  document.getElementById('emailVerifyPanel').style.display = 'none';
-  document.getElementById('phoneOtpPanel').style.display    = 'none';
-  document.getElementById('tabsRow').style.display = '';
-  document.getElementById('tabLogin').classList.toggle('active', isLogin);
-  document.getElementById('tabReg').classList.toggle('active', !isLogin);
-  document.getElementById('cardTitle').textContent = isLogin ? 'Welcome back 👋' : 'Create Account ✨';
-  document.getElementById('cardSub').textContent   = isLogin ? 'Sign in to your KIDV Invoice account' : 'Register your business account';
-  _inRegFlow = false; hideAlerts();
+async function doRegister(){
+  hideErr();
+  const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim(),mobile=document.getElementById('regMobile').value.trim(),pass=document.getElementById('regPass').value;
+  if(!name){showErr('Please enter your full name.');return;}if(!email){showErr('Please enter your email address.');return;}
+  if(!mobile||mobile.replace(/\D/g,'').length<10){showErr('Please enter a valid mobile number (min 10 digits).');return;}
+  if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
+  setLoading('reg',true);
+  try{
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);await cred.user.updateProfile({displayName:name});
+    _otpPendingUser=cred.user;_otpPendingData={email,name,mobile};_otpMode='signup';
+    try{_otpConfirmResult=await sendPhoneOTP(mobile);setLoading('reg',false);showOTPPanel('Enter the OTP sent to '+mobile);}
+    catch(pe){console.warn('[OTP]',pe.message);await _completeRegistration(_otpPendingUser,_otpPendingData);setLoading('reg',false);}
+  }catch(e){showErr(ERR_MAP[e.code]||e.message);setLoading('reg',false);}
 }
-
-// ── LOGIN ─────────────────────────────────────────────────
-async function doLogin() {
-  hideAlerts();
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPass').value;
-  if (!email || !pass) { showErr('Please enter email and password.'); return; }
-  setLoad('login', true);
-  try {
-    await auth.signInWithEmailAndPassword(email, pass);
-  } catch(e) {
-    showErr(ERR_MAP[e.code] || e.message);
-    setLoad('login', false);
-  }
+async function _completeRegistration(user,data){
+  await db.collection('users').doc(user.uid).set({email:data.email,name:data.name,mobile:data.mobile,isAdmin:ADMIN_EMAILS.includes(data.email.toLowerCase()),mobileVerified:true,createdAt:new Date().toISOString(),lastLogin:new Date().toISOString()});
+  const msg=encodeURIComponent('\uD83C\uDD95 New Registration!\n\nName: '+data.name+'\nEmail: '+data.email+'\nMobile: '+data.mobile+'\n\nPlease activate account.');
+  window.open('https://wa.me/917984486885?text='+msg,'_blank');
 }
-
-// ── REGISTER ─────────────────────────────────────────────
-async function doRegister() {
-  hideAlerts();
-  const name   = document.getElementById('regName').value.trim();
-  const email  = document.getElementById('regEmail').value.trim();
-  const mobile = document.getElementById('regMobile').value.trim();
-  const pass   = document.getElementById('regPass').value;
-  if (!name)   { showErr('Please enter your full name.'); return; }
-  if (!email)  { showErr('Please enter your email address.'); return; }
-  if (!mobile || mobile.replace(/\D/g,'').length < 10) { showErr('Please enter a valid mobile number.'); return; }
-  if (!pass || pass.length < 6) { showErr('Password must be at least 6 characters.'); return; }
-
-  setLoad('reg', true);
-  _inRegFlow = true;
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await cred.user.updateProfile({ displayName: name });
-
-    // Save to Firestore
-    await db.collection('users').doc(cred.user.uid).set({
-      email, name, mobile,
-      isAdmin: ADMIN_EMAILS.includes(email.toLowerCase()),
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString()
-    });
-
-    // Notify admin on WhatsApp
-    const msg = encodeURIComponent('🆕 New Registration!\n\nName: ' + name + '\nEmail: ' + email + '\nMobile: ' + mobile + '\n\nPlease activate their account.');
-    window.open('https://wa.me/917984486885?text=' + msg, '_blank');
-
-    setLoad('reg', false);
-    _inRegFlow = false;
-    showSucc('Account created! Admin will activate it shortly.');
-    setTimeout(() => switchTab('login'), 2000);
-  } catch(e) {
-    _inRegFlow = false;
-    showErr(ERR_MAP[e.code] || e.message);
-    setLoad('reg', false);
-  }
-}
-
-// ── EMAIL VERIFY ──────────────────────────────────────────
-function showEmailVerifyPanel(email) {
-  document.getElementById('registerForm').style.display = 'none';
-  document.getElementById('tabsRow').style.display = 'none';
-  document.getElementById('emailVerifyPanel').style.display = '';
-  document.getElementById('verifyEmailDisplay').textContent = email;
-  document.getElementById('emailVerifyStatus').textContent = '';
-  document.getElementById('cardTitle').textContent = 'Verify Email 📧';
-  document.getElementById('cardSub').textContent   = 'Step 2 of 3 — Email verification';
-  stepDot(2); hideAlerts();
-  showSucc('Verification email sent! Check inbox & spam folder.');
-}
-
-async function checkEmailVerified() {
-  if (!_regUser) { showErr('Session expired. Please register again.'); return; }
-  hideAlerts();
-  try {
-    await _regUser.reload();
-    if (_regUser.emailVerified) {
-      document.getElementById('emailVerifyStatus').textContent = '';
-      showPhoneOTPStep();
-    } else {
-      const el = document.getElementById('emailVerifyStatus');
-      el.style.color = '#e11d48';
-      el.textContent = '⚠️ Not verified yet. Click the link in your email first.';
+async function verifyOTP(){
+  const code=document.getElementById('otpInput').value.trim();if(!code||code.length<6){showErr('Enter the 6-digit OTP.');return;}
+  setLoading('otp',true);
+  try{
+    if(_otpMode==='signup'){
+      const pc=firebase.auth.PhoneAuthProvider.credential(_otpConfirmResult.verificationId,code);
+      await _otpPendingUser.linkWithCredential(pc);await _completeRegistration(_otpPendingUser,_otpPendingData);
+      clearInterval(_otpTimerHandle);setLoading('otp',false);alert('\u2705 Account created & mobile verified! Please wait for admin to activate your plan.');location.reload();
+    }else if(_otpMode==='forgot'){
+      await _otpConfirmResult.confirm(code);clearInterval(_otpTimerHandle);setLoading('otp',false);
+      const np=prompt('OTP verified! Enter your new password (min 6 chars):');
+      if(!np||np.length<6){showErr('Password must be at least 6 chars.');return;}
+      await auth.currentUser.updatePassword(np);alert('\u2705 Password reset successfully! Please log in.');location.reload();
     }
-  } catch(e) { showErr('Error checking: ' + e.message); }
+  }catch(e){showErr(e.code==='auth/invalid-verification-code'?'Invalid OTP. Please try again.':(ERR_MAP[e.code]||e.message));setLoading('otp',false);}
 }
-
-async function resendVerification() {
-  if (!_regUser) { showErr('Session expired.'); return; }
-  try {
-    await _regUser.sendEmailVerification({ url: window.location.origin + '/login.html' });
-    showSucc('Verification email resent! Check inbox & spam.');
-  } catch(e) { showErr(ERR_MAP[e.code] || e.message || 'Try again later.'); }
+function setLoading(type,on){
+  if(type==='otp'){document.getElementById('otpSpinner').style.display=on?'block':'none';document.getElementById('otpIcon').style.display=on?'none':'inline';document.getElementById('otpTxt').textContent=on?'Verifying...':'Verify OTP';document.getElementById('otpVerifyBtn').disabled=on;}
+  else if(type==='reg'){document.getElementById('regSpinner').style.display=on?'block':'none';document.getElementById('regIcon').style.display=on?'none':'inline';document.getElementById('regTxt').textContent=on?'Please wait...':'Create Account';document.getElementById('regBtn').disabled=on;}
+  else if(type==='login'){document.getElementById('loginSpinner').style.display=on?'block':'none';document.getElementById('loginIcon').style.display=on?'none':'inline';document.getElementById('loginTxt').textContent=on?'Signing in...':'Sign In';document.getElementById('loginBtn').disabled=on;}
 }
-
-function cancelVerify() {
-  if (_regUser) { _regUser.delete().catch(() => {}); _regUser = null; _regData = null; }
-  _inRegFlow = false;
-  document.getElementById('emailVerifyPanel').style.display = 'none';
-  document.getElementById('tabsRow').style.display = '';
-  switchTab('register');
+function showForgotOptions(){
+  const email=document.getElementById('loginEmail').value.trim();if(!email){showErr('Enter your email above first, then click Forgot password.');return;}
+  const choice=confirm('How would you like to reset your password?\n\nOK \u2192 Send reset email\nCancel \u2192 Reset via mobile OTP');
+  if(choice)doForgotEmail(email);else doForgotOTP(email);
 }
-
-// ── PHONE OTP ─────────────────────────────────────────────
-function showPhoneOTPStep() {
-  document.getElementById('emailVerifyPanel').style.display = 'none';
-  document.getElementById('phoneOtpPanel').style.display = '';
-  document.getElementById('otpInput').value = '';
-  document.getElementById('phoneOtpSub').textContent = 'Enter the OTP sent to ' + (_regData?.mobile || 'your number');
-  document.getElementById('cardTitle').textContent = 'Verify Mobile 📱';
-  document.getElementById('cardSub').textContent   = 'Step 3 of 3 — Almost done!';
-  stepDot(3); hideAlerts();
-  sendPhoneOTP();
+async function doForgotEmail(email){try{await auth.sendPasswordResetEmail(email);hideErr();alert('Password reset email sent to '+email+'. Please check your inbox.');}catch(e){showErr(ERR_MAP[e.code]||e.message);}}
+async function doForgotOTP(email){
+  try{
+    const snap=await db.collection('users').where('email','==',email).limit(1).get();
+    if(snap.empty){showErr('No account found with this email.');return;}
+    const mobile=snap.docs[0].data().mobile;if(!mobile){showErr('No mobile number linked. Use email reset instead.');return;}
+    _otpMode='forgot';_otpConfirmResult=await sendPhoneOTP(mobile);showOTPPanel('Enter OTP sent to '+mobile+' to reset your password');
+  }catch(e){showErr('Could not send OTP: '+(ERR_MAP[e.code]||e.message));}
 }
-
-async function sendPhoneOTP() {
-  if (!_regData?.mobile) return;
-  try {
-    if (window._rcv) { try { window._rcv.clear(); } catch(e) {} }
-    window._rcv = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', callback: () => {} });
-    const raw = _regData.mobile.replace(/\D/g, '');
-    const e164 = raw.startsWith('91') ? '+' + raw : '+91' + raw;
-    _phoneConfirm = await auth.signInWithPhoneNumber(e164, window._rcv);
-    startTimer(120);
-    showSucc('OTP sent to ' + _regData.mobile);
-  } catch(e) {
-    console.warn('[PhoneOTP]', e);
-    document.getElementById('otpTimer').textContent = 'OTP send failed — you can skip this step.';
-    showErr('Could not send OTP. You may skip mobile verification.');
-  }
-}
-
-function startTimer(secs) {
-  clearInterval(_timerHandle);
-  const el = document.getElementById('otpTimer');
-  let left = secs;
-  el.textContent = 'OTP expires in ' + left + 's';
-  _timerHandle = setInterval(() => {
-    left--;
-    if (left <= 0) { clearInterval(_timerHandle); el.textContent = 'OTP expired. Go back & retry.'; }
-    else el.textContent = 'OTP expires in ' + left + 's';
-  }, 1000);
-}
-
-async function verifyOTP() {
-  const code = document.getElementById('otpInput').value.trim();
-  if (!code || code.length < 6) { showErr('Enter the 6-digit OTP.'); return; }
-  if (!_phoneConfirm) { showErr('OTP session expired. Please skip.'); return; }
-  setLoad('otp', true); hideAlerts();
-  try {
-    const cred = firebase.auth.PhoneAuthProvider.credential(_phoneConfirm.verificationId, code);
-    await _regUser.linkWithCredential(cred);
-    await completeRegistration(true);
-  } catch(e) {
-    showErr(e.code === 'auth/invalid-verification-code' ? 'Invalid OTP. Please try again.' : (ERR_MAP[e.code] || e.message));
-    setLoad('otp', false);
-  }
-}
-
-async function skipOTP() { clearInterval(_timerHandle); await completeRegistration(false); }
-
-async function completeRegistration(mobileVerified) {
-  clearInterval(_timerHandle);
-  try {
-    await db.collection('users').doc(_regUser.uid).set({
-      email: _regData.email,
-      name: _regData.name,
-      mobile: _regData.mobile,
-      isAdmin: ADMIN_EMAILS.includes(_regData.email.toLowerCase()),
-      emailVerified: _regUser.emailVerified,
-      mobileVerified,
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString()
-    });
-    const msg = encodeURIComponent(
-      '🆕 New Registration!\n\nName: ' + _regData.name +
-      '\nEmail: ' + _regData.email +
-      '\nMobile: ' + _regData.mobile +
-      '\nEmail Verified: ' + (_regUser.emailVerified ? '✅' : '⏳') +
-      '\nMobile Verified: ' + (mobileVerified ? '✅' : '⏳') +
-      '\n\nPlease activate their account.'
-    );
-    window.open('https://wa.me/917984486885?text=' + msg, '_blank');
-    setLoad('otp', false);
-    _inRegFlow = false;
-    alert('✅ Account created!\nPlease wait for admin to activate your account.');
-    location.reload();
-  } catch(e) {
-    showErr('Registration error: ' + e.message);
-    setLoad('otp', false);
-  }
-}
-
-function cancelOTP() {
-  clearInterval(_timerHandle);
-  _phoneConfirm = null;
-  document.getElementById('phoneOtpPanel').style.display = 'none';
-  document.getElementById('tabsRow').style.display = '';
-  switchTab('register');
-}
-
-// ── FORGOT PASSWORD ───────────────────────────────────────
-async function doForgot() {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) { showErr('Enter your email above first.'); return; }
-  try {
-    await auth.sendPasswordResetEmail(email);
-    hideAlerts();
-    showSucc('Password reset email sent to ' + email + '. Check your inbox.');
-  } catch(e) { showErr(ERR_MAP[e.code] || e.message); }
-}
+async function doForgot(){const email=document.getElementById('loginEmail').value.trim();if(!email){showErr('Enter your email above first.');return;}doForgotEmail(email);}
 </script>
 </body>
 </html>
