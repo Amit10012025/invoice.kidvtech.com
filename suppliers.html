@@ -638,6 +638,8 @@ function clearForm(){
   clearFeedback();
   addresses = [{type:'Billing',address:'',city:'',state:'',pin:'',gstin:'',primary:true}];
   contacts  = [{name:'',role:'Primary Contact',phone:'',email:'',dept:'',primary:true}];
+  tempAddresses = [];
+  tempContacts  = [];
   renderAddressList();
   renderContactList();
   // Reset addresses & contacts
