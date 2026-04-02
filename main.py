@@ -17,11 +17,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── Supabase client ───────────────────────────────────────
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")  # service_role key (backend only)
-SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_URL = os.getenv("https://ikuldkmkikfbyazabiuq.supabase.co")
+SUPABASE_SERVICE_KEY = os.getenv("sb_publishable_01xbMAC_t35frmIbiOdglQ_Um3GchYg")  # service_role key (backend only)
+SUPABASE_ANON_KEY = os.getenv("sb_secret_H5jfBrTZmaQ-6TVau9JD_Q_MdUihtlxY")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+supabase: Client = create_client(https://ikuldkmkikfbyazabiuq.supabase.co, sb_publishable_01xbMAC_t35frmIbiOdglQ_Um3GchYg)
 
 # ── App ───────────────────────────────────────────────────
 app = FastAPI(
