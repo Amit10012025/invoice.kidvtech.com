@@ -5,11 +5,11 @@
  */
 
 // ── Supabase Keys — supabase.com/dashboard → Settings → API ──
-const SUPABASE_URL  = 'https://xxxxxxxxxxxx.supabase.co';   // <-- apano URL mukho
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // <-- anon/public key
+const SUPABASE_URL  = 'https://ikuldkmkikfbyazabiuq.supabase.co';   // <-- apano URL mukho
+const SUPABASE_ANON = 'sb_publishable_01xbMAC_t35frmIbiOdglQ_Um3GchYg'; // <-- anon/public key
 
 // ── FastAPI Backend URL ───────────────────────────────────────
-const API_BASE = 'https://your-api.railway.app';  // <-- deploy karyo pachi URL mukho
+const API_BASE = 'https://sb_publishable_01xbMAC_t35frmIbiOdglQ_Um3GchYg';  // <-- deploy karyo pachi URL mukho
 // Development ma: const API_BASE = 'http://localhost:8000';
 
 // ─────────────────────────────────────────────────────────────
