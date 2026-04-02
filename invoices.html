@@ -355,16 +355,6 @@ function openModal(idx=-1){
     const tm = document.getElementById('f-transport-mode'); if(tm) tm.value='';
     document.getElementById('f-shipclient').value = '';
     document.getElementById('shipPreview').innerHTML = '';
-    // Transport restore
-    if(inv.transport){
-      document.getElementById('f-transport-toggle').checked = true;
-      document.getElementById('transportSection').style.display = '';
-      const t = inv.transport;
-      ['transporter','transporter-id','vehicle-no','destination','lr-no','lr-date','eway-no'].forEach(k=>{
-        const el=document.getElementById('f-'+k); if(el) el.value=t[k.replace('-','')]||t[k]||'';
-      });
-      const tm=document.getElementById('f-transport-mode'); if(tm&&t.mode) tm.value=t.mode;
-    }
     document.getElementById('lineItems').innerHTML='';
     addLine();
   } else {
