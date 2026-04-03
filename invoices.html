@@ -387,13 +387,70 @@ function openModal(idx=-1){
 }
 function closeModal(){document.getElementById('modalBg').classList.remove('open');}
 
+// HSN/SAC Master Data
+const HSN_DATA=[
+  {code:'9983',desc:'Professional, technical and business services'},
+  {code:'9984',desc:'Telecommunications, broadcasting services'},
+  {code:'9985',desc:'Support services'},
+  {code:'9987',desc:'Maintenance, repair and installation services'},
+  {code:'9988',desc:'Manufacturing services on physical inputs'},
+  {code:'9992',desc:'Education services'},
+  {code:'9993',desc:'Human health and social care services'},
+  {code:'9996',desc:'Recreational, cultural and sporting services'},
+  {code:'9997',desc:'Other services'},
+  {code:'8471',desc:'Computers and data processing machines'},
+  {code:'8517',desc:'Telephone sets, smartphones'},
+  {code:'8504',desc:'Electrical transformers, converters'},
+  {code:'8536',desc:'Electrical switches, sockets, relays'},
+  {code:'8544',desc:'Insulated wire and cables'},
+  {code:'7108',desc:'Gold'},
+  {code:'7113',desc:'Articles of jewellery'},
+  {code:'6109',desc:'T-shirts and vests, knitted'},
+  {code:'6203',desc:'Mens suits, jackets, trousers'},
+  {code:'4901',desc:'Printed books, brochures, leaflets'},
+  {code:'3004',desc:'Medicaments for retail sale'},
+  {code:'1006',desc:'Rice'},
+  {code:'1701',desc:'Cane or beet sugar'},
+  {code:'0201',desc:'Meat of bovine animals'},
+  {code:'8703',desc:'Motor cars and vehicles'},
+  {code:'9403',desc:'Furniture and parts'},
+  {code:'9405',desc:'Lamps and lighting fittings'},
+];
+function hsnSearch(inp){
+  const val=inp.value.trim();
+  let drop=inp.nextElementSibling;
+  if(!drop||!drop.classList.contains('hsn-drop')){
+    drop=document.createElement('div');
+    drop.className='hsn-drop';
+    drop.style.cssText='position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:0 0 8px 8px;z-index:200;max-height:160px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1)';
+    inp.parentNode.style.position='relative';
+    inp.parentNode.appendChild(drop);
+  }
+  if(!val){drop.style.display='none';return;}
+  const q=val.toLowerCase();
+  const matches=HSN_DATA.filter(h=>h.code.startsWith(val)||h.desc.toLowerCase().includes(q)).slice(0,8);
+  if(!matches.length){drop.style.display='none';return;}
+  drop.style.display='';
+  drop.innerHTML=matches.map(h=>`<div onclick="selectHSNLine(this,'${h.code}')" style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid #f0f4f8" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''"><strong style="color:#2f81f7">${h.code}</strong> <span style="color:#6b7a90">${h.desc}</span></div>`).join('');
+}
+function selectHSNLine(el,code){
+  const td=el.closest('td');
+  const inp=td.querySelector('[data-field="hsn"]');
+  if(inp)inp.value=code;
+  el.closest('.hsn-drop').style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.classList.contains('hsn-inp'))
+    document.querySelectorAll('.hsn-drop').forEach(d=>d.style.display='none');
+});
+
 function addLine(data){
   const tbody=document.getElementById('lineItems');
   const tr=document.createElement('tr');
   const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}" data-hsn="${p.hsn}" data-uom="${p.uom||'Nos'}" data-desc="${p.description||p.name}">${p.name}</option>`).join('');
   tr.innerHTML=`
     <td><select class="li-input li-prod" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" value="${data?data.desc||'':''}" data-field="desc"/></td>
-    <td><input class="li-input" placeholder="HSN" value="${data?data.hsn||'':''}" data-field="hsn"/></td>
+    <td><div style="position:relative"><input class="li-input hsn-inp" placeholder="HSN/SAC" value="${data?data.hsn||'':''}" data-field="hsn" oninput="hsnSearch(this)" autocomplete="off"/></div></td>
     <td><input class="li-input" type="number" value="${data?data.qty||1:1}" min="1" data-field="qty" oninput="calcTotals()"/></td>
     <td><input class="li-input" type="number" value="${data?data.rate||'':''}" placeholder="0.00" data-field="rate" oninput="calcTotals()"/></td>
     <td><select class="li-input" data-field="gst" onchange="calcTotals()"><option ${data&&data.gst=='0'?'selected':''}>0</option><option ${data&&data.gst=='5'?'selected':''}>5</option><option ${data&&data.gst=='12'?'selected':''}>12</option><option ${(!data||data.gst=='18')?'selected':''}>18</option><option ${data&&data.gst=='28'?'selected':''}>28</option></select></td>
@@ -555,10 +612,11 @@ function editInv(i){openModal(i);}
 async function markPaid(i){invoices[i].status='paid';const id=invoices[i]._id||i;await KIDV.set('invoices',id,invoices[i]);renderInvoices();}
 
 function previewInvoice(i){
-  // Save selected invoice to localStorage then open new theme page
-  localStorage.setItem('kidv-preview-invoice', JSON.stringify(invoices[i]));
-  localStorage.setItem('kidv-preview-idx', i.toString());
-  window.open('invoice-theme-v2.html?idx='+i, '_blank');
+  const inv=invoices[i];
+  localStorage.setItem('kidv-preview-invoice', JSON.stringify(inv));
+  // Pass both _id and idx for reliable lookup
+  const id=inv._id||'';
+  window.open('invoice-theme-v2.html?id='+encodeURIComponent(id)+'&idx='+i, '_blank');
 }
 function closePrint(){document.getElementById('printBg').classList.remove('open');}
 

@@ -131,7 +131,28 @@ body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
     <button class="btn btn-ghost" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
     <button class="btn btn-ghost" onclick="shareWA()"><span class="material-icons-round" style="color:#25d366">share</span>WhatsApp</button>
     <button class="btn btn-ghost" onclick="downloadPDF()" style="color:#dc2626;border-color:#fecaca;"><span class="material-icons-round">picture_as_pdf</span>Download PDF</button>
-    <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print</button>
+    <div style="position:relative;display:inline-flex;align-items:center;gap:0">
+      <button class="btn btn-primary" onclick="printSelected()" style="border-radius:10px 0 0 10px;border-right:1px solid rgba(255,255,255,0.2)"><span class="material-icons-round">print</span>Print</button>
+      <button class="btn btn-primary" onclick="toggleCopyMenu()" style="border-radius:0 10px 10px 0;padding:9px 8px" id="copyMenuBtn"><span class="material-icons-round" style="font-size:16px">expand_more</span></button>
+      <div id="copyMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:999;min-width:200px;padding:8px;font-family:'Outfit',sans-serif">
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px 8px">Select Copies</div>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-original" checked style="width:15px;height:15px;accent-color:#2f81f7"> Original Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-duplicate" style="width:15px;height:15px;accent-color:#2f81f7"> Duplicate Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-triplicate" style="width:15px;height:15px;accent-color:#2f81f7"> Triplicate Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-extra" style="width:15px;height:15px;accent-color:#2f81f7"> Extra Copy
+        </label>
+        <div style="border-top:1px solid #e2e8f0;margin:8px 0 4px"></div>
+        <button onclick="selectAllCopies(true)" style="background:none;border:none;color:#2f81f7;font-size:12px;font-weight:600;cursor:pointer;padding:4px 10px">Select All</button>
+        <button onclick="selectAllCopies(false)" style="background:none;border:none;color:#6b7a90;font-size:12px;font-weight:600;cursor:pointer;padding:4px 10px">Clear</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -505,30 +526,35 @@ async function downloadPDF(){
   btn.disabled = false;
 }
 
-function printCopy(){
-  const type = document.getElementById('copyType').value;
-  const label = document.getElementById('copyLabel');
-  
-  if(type === 'all'){
-    // Print all 4 copies
-    const copies = ['ORIGINAL COPY','DUPLICATE COPY','TRIPLICATE COPY','EXTRA COPY'];
-    let idx = 0;
-    function printNext(){
-      if(idx >= copies.length){ label.style.display='none'; return; }
-      label.textContent = copies[idx];
-      label.style.display = 'block';
-      idx++;
-      window.print();
-      setTimeout(printNext, 800);
-    }
-    printNext();
-  } else {
-    const labels = {original:'ORIGINAL COPY',duplicate:'DUPLICATE COPY',triplicate:'TRIPLICATE COPY',extra:'EXTRA COPY'};
-    label.textContent = labels[type]||'ORIGINAL COPY';
-    label.style.display = 'block';
-    window.print();
-    setTimeout(()=>{ label.style.display='none'; }, 1000);
+function toggleCopyMenu(){
+  const m=document.getElementById('copyMenu');
+  m.style.display=m.style.display==='none'?'':'none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#copyMenu')&&!e.target.closest('#copyMenuBtn'))
+    document.getElementById('copyMenu').style.display='none';
+});
+function selectAllCopies(v){
+  ['original','duplicate','triplicate','extra'].forEach(id=>{
+    document.getElementById('cp-'+id).checked=v;
+  });
+}
+function printSelected(){
+  const label=document.getElementById('copyLabel');
+  const copies=[];
+  if(document.getElementById('cp-original').checked) copies.push('ORIGINAL COPY');
+  if(document.getElementById('cp-duplicate').checked) copies.push('DUPLICATE COPY');
+  if(document.getElementById('cp-triplicate').checked) copies.push('TRIPLICATE COPY');
+  if(document.getElementById('cp-extra').checked) copies.push('EXTRA COPY');
+  if(!copies.length){ window.print(); return; }
+  let idx=0;
+  function printNext(){
+    if(idx>=copies.length){label.style.display='none';document.getElementById('copyMenu').style.display='none';return;}
+    label.textContent=copies[idx++];
+    label.style.display='block';
+    setTimeout(()=>{window.print();setTimeout(printNext,800);},100);
   }
+  printNext();
 }
 
 function shareWA(){
@@ -590,7 +616,15 @@ document.addEventListener('kidv:db-ready',async()=>{
   }
   if(!invoices.length) invoices=[DEMO];
   const params=new URLSearchParams(location.search);
-  currentIdx=Math.max(0,Math.min(invoices.length-1,parseInt(params.get('idx')||'0')));
+  const previewId=params.get('id');
+  const previewIdx=parseInt(params.get('idx')||'0');
+  // Find by _id first (more reliable), then fallback to idx
+  if(previewId){
+    const found=invoices.findIndex(i=>i._id===previewId);
+    currentIdx=found>=0?found:Math.max(0,Math.min(invoices.length-1,previewIdx));
+  } else {
+    currentIdx=Math.max(0,Math.min(invoices.length-1,previewIdx));
+  }
   renderInvoice(invoices[currentIdx]); // Re-render with fresh Firestore data
   localStorage.removeItem('kidv-preview-invoice');
 });
