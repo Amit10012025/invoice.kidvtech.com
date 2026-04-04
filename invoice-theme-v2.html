@@ -572,29 +572,40 @@ function readSetting(key){
   );
 }
 
-// Quick load: instant preview using localStorage
+// ── Invoice Loading Strategy ─────────────────────────────
+// 1. IMMEDIATELY render from localStorage (instant, no flicker)
+// 2. Load settings from Firestore → re-render with fresh company/bank data
+// 3. If Firestore invoice lookup fails → keep localStorage invoice
+
+const params = new URLSearchParams(location.search);
+const previewId  = params.get('id');
+const previewIdx = parseInt(params.get('idx') || '0');
+
+// Step 1: Instant render from localStorage
 const _previewInv = localStorage.getItem('kidv-preview-invoice');
+let _localInv = null;
 if(_previewInv){
   try{
     comp    = readSetting('company');
     gstConf = readSetting('gst');
     bank    = readSetting('bank');
-    const inv = JSON.parse(_previewInv);
-    invoices = [inv];
-    renderInvoice(inv); // Always render — even if comp empty, better than blank
+    _localInv = JSON.parse(_previewInv);
+    invoices = [_localInv];
+    currentIdx = 0;
+    renderInvoice(_localInv);
   }catch(e){ console.warn('Quick preview error:',e); }
 }
 
-document.addEventListener('kidv:db-ready',async()=>{
+document.addEventListener('kidv:db-ready', async()=>{
   try{
-    // Load fresh from Firestore
+    // Load settings + all invoices from Firestore
     [comp, gstConf, bank, invoices] = await Promise.all([
       KIDV.getSettings('company'),
       KIDV.getSettings('gst'),
       KIDV.getSettings('bank'),
       KIDV.list('invoices'),
     ]);
-    // Persist to localStorage for instant next time
+    // Cache settings to localStorage
     if(comp && comp.name){
       localStorage.setItem('kidv-cache-company', JSON.stringify(comp));
       localStorage.setItem('kidv-company', JSON.stringify(comp));
@@ -608,24 +619,41 @@ document.addEventListener('kidv:db-ready',async()=>{
       localStorage.setItem('kidv-bank', JSON.stringify(bank));
     }
   }catch(e){
-    console.warn('Firestore settings error, using localStorage:',e);
+    console.warn('[Invoice] Firestore error, using cache:', e);
     comp    = readSetting('company');
     gstConf = readSetting('gst');
     bank    = readSetting('bank');
     invoices = [];
   }
-  if(!invoices.length) invoices=[DEMO];
-  const params=new URLSearchParams(location.search);
-  const previewId=params.get('id');
-  const previewIdx=parseInt(params.get('idx')||'0');
-  // Find by _id first (more reliable), then fallback to idx
-  if(previewId){
-    const found=invoices.findIndex(i=>i._id===previewId);
-    currentIdx=found>=0?found:Math.max(0,Math.min(invoices.length-1,previewIdx));
-  } else {
-    currentIdx=Math.max(0,Math.min(invoices.length-1,previewIdx));
+
+  // Step 2: Find the correct invoice
+  let targetInv = null;
+
+  // Try _id lookup first (most reliable)
+  if(previewId && invoices.length){
+    const found = invoices.findIndex(i => i._id === previewId);
+    if(found >= 0){
+      currentIdx = found;
+      targetInv  = invoices[found];
+    }
   }
-  renderInvoice(invoices[currentIdx]); // Re-render with fresh Firestore data
+
+  // Fallback 1: use localStorage invoice data (already rendered, just refresh settings)
+  if(!targetInv && _localInv){
+    targetInv  = _localInv;
+    invoices   = [_localInv];
+    currentIdx = 0;
+  }
+
+  // Fallback 2: use DEMO
+  if(!targetInv){
+    invoices  = [DEMO];
+    currentIdx = 0;
+    targetInv  = DEMO;
+  }
+
+  // Re-render with fresh company/bank settings + correct invoice
+  renderInvoice(targetInv);
   localStorage.removeItem('kidv-preview-invoice');
 });
 </script>
