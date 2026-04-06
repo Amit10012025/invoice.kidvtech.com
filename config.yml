@@ -1,1 +1,11 @@
-invoice.kidvtech.com
+# GitHub Pages — Jekyll Config
+# Disable Jekyll processing so JS/HTML files work correctly
+plugins: []
+exclude:
+  - "*.py"
+  - "*.sql"
+  - "*.md"
+  - "*.txt"
+  - "*.zip"
+  - "env.example"
+  - "backend/"
