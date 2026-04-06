@@ -2,110 +2,105 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – HSN/SAC Master</title>
+<title>KIDV Invoice – GST Returns</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-hsn:#bc8cff;}
+:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-gst:#39d0d8;--c-einv:#f7c948;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
 .rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
 .rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
 .rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:#f0f4f8;color:#fff;}
-.rail-item.active{background:rgba(188,140,255,0.15);color:var(--c-hsn);border-color:rgba(188,140,255,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.rail-item.active{background:rgba(57,208,216,0.15);color:var(--c-gst);border-color:rgba(57,208,216,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
 .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
 .rail-spacer{flex:1;}
 .flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
 .flyout.open{transform:translateX(0);}
 .flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-hsn);}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-gst);}
 .flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
 .flyout-link .material-icons-round{font-size:18px;}
 .flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
-.flyout-link.active{color:var(--text);background:rgba(188,140,255,0.08);border-left-color:var(--c-hsn);}
+.flyout-link.active{color:var(--text);background:rgba(57,208,216,0.08);border-left-color:var(--c-gst);}
 .overlay{display:none;position:fixed;inset:0;z-index:180;}
 .overlay.show{display:block;}
 .main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
 .main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
+.page-title{font-size:22px;font-weight:700;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
 .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-primary:hover{transform:translateY(-1px);}
 .btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
 .btn-ghost:hover{background:#f0f4f8;}
-.btn-purple{background:rgba(188,140,255,0.12);color:var(--c-hsn);border:1px solid rgba(188,140,255,0.2);}
-.btn-purple:hover{background:rgba(188,140,255,0.22);}
+.btn-teal{background:rgba(57,208,216,0.1);color:var(--c-gst);border:1px solid rgba(57,208,216,0.2);}
+.btn-teal:hover{background:rgba(57,208,216,0.2);}
 .btn .material-icons-round{font-size:18px;}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
-/* Search */
-.search-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
-.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 16px;flex:1;max-width:500px;}
-.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
-.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:14px;padding:12px 0;width:100%;}
-.search-bar input::placeholder{color:var(--muted);}
-.type-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
-.ttab{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;}
-.ttab.active{background:var(--surface2);color:var(--text);}
-/* Grid */
-.hsn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:24px;}
-.hsn-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;}
-.hsn-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);border-color:rgba(188,140,255,0.3);}
-.hsn-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
-.hsn-code{font-family:monospace;font-size:18px;font-weight:800;color:var(--c-hsn);letter-spacing:1px;}
-.hsn-type-badge{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 9px;border-radius:20px;}
-.type-hsn{background:rgba(57,208,216,0.1);color:#39d0d8;}
-.type-sac{background:rgba(188,140,255,0.1);color:var(--c-hsn);}
-.hsn-desc{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.4;}
-.hsn-category{font-size:12px;color:var(--muted);}
-.hsn-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.hsn-rate{font-size:13px;font-weight:600;}
-.gst-0{color:#7d8590;}
-.gst-5{color:#3fb950;}
-.gst-12{color:#f0883e;}
-.gst-18{color:#39d0d8;}
-.gst-28{color:#f85149;}
-.use-btn{background:rgba(188,140,255,0.1);border:1px solid rgba(188,140,255,0.2);color:var(--c-hsn);padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit';transition:all .15s;}
-.use-btn:hover{background:rgba(188,140,255,0.2);}
-/* My HSN section */
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.filter-select{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;cursor:pointer;}
+.filter-select option{background:#fff;color:#1a2332;}
+/* Tabs */
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.tab{padding:7px 20px;border-radius:7px;font-size:13.5px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;border:none;background:none;font-family:'Outfit',sans-serif;}
+.tab.active{background:var(--surface2);color:var(--text);}
+/* GST Summary boxes */
+.gst-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.gst-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden;}
+.gst-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.gst-box.tax::after{background:var(--c-gst);}
+.gst-box.cgst::after{background:#2f81f7;}
+.gst-box.sgst::after{background:#bc8cff;}
+.gst-box.igst::after{background:#f0883e;}
+.gst-box.total::after{background:var(--gradient);}
+.gst-box.payable::after{background:linear-gradient(90deg,#f85149,#e64340);}
+.gst-box-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px;}
+.gst-box-val{font-size:24px;font-weight:700;}
+.gst-box-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+/* Tab sections */
+.tab-section{display:none;}
+.tab-section.active{display:block;}
+/* Card */
 .card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;margin-bottom:20px;}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
 .card-title{font-size:14px;font-weight:600;}
+.card-subtitle{font-size:12px;color:var(--muted);margin-top:1px;}
 table{width:100%;border-collapse:collapse;}
 th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
-td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
+td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f8faff;}
-/* Modal */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
-.modal-bg.open{display:flex;}
-.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:500px;max-width:95vw;}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
-.modal-title{font-size:16px;font-weight:600;}
-.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
-.modal-close .material-icons-round{font-size:20px;}
-.modal-body{padding:24px;}
-.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:18px 24px;border-top:1px solid var(--border);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.form-row.full{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.form-group input,.form-group select{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--c-hsn);}
-.form-group select option{background:#fff;color:#1a2332;}
+.empty-row td{text-align:center;color:var(--muted);padding:32px;}
+.rate-pill{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:600;background:rgba(57,208,216,0.1);color:var(--c-gst);border:1px solid rgba(57,208,216,0.15);}
+/* GSTR-3B form */
+.form-3b{padding:20px;}
+.form-3b-row{display:grid;grid-template-columns:1fr auto auto auto;gap:0;border-bottom:1px solid var(--border);align-items:center;}
+.form-3b-row:last-child{border-bottom:none;}
+.form-3b-label{padding:13px 20px;font-size:13.5px;font-weight:500;}
+.form-3b-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.form-3b-cell{padding:10px 20px;font-size:13.5px;font-weight:600;text-align:right;min-width:130px;}
+.form-3b-cell.header-cell{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--border);padding:10px 20px;}
+.form-3b-section{background:#f8faff;border-bottom:2px solid #e2e8f0;}
+.form-3b-section-label{padding:12px 20px;font-size:12px;font-weight:700;color:var(--c-gst);text-transform:uppercase;letter-spacing:.08em;}
+.total-row-3b{background:rgba(57,208,216,0.04);}
+.total-row-3b .form-3b-label{font-weight:700;color:var(--text);}
+.total-row-3b .form-3b-cell{color:var(--c-gst);}
+.itc-input{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;width:110px;outline:none;text-align:right;}
+.itc-input:focus{border-color:var(--c-gst);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
 <script src="firebase-config.js"></script>
 <script src="subscription.js"></script>
 </head>
 <body>
+
 <nav class="rail">
   <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
   <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
@@ -123,205 +118,539 @@ tr:hover td{background:#f8faff;}
   <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
+
 <div class="flyout" id="flyout">
   <div class="flyout-header"><div class="flyout-title">Compliance</div></div>
   <a class="flyout-link" href="einvoice.html"><span class="material-icons-round">qr_code_2</span>E-Invoice (IRN)</a>
   <a class="flyout-link" href="ewaybill.html"><span class="material-icons-round">local_shipping</span>E-Way Bill</a>
-  <a class="flyout-link" href="gst-returns.html"><span class="material-icons-round">receipt</span>GST Returns</a>
-  <a class="flyout-link active" href="hsn-master.html"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
+  <a class="flyout-link active" href="gst-returns.html"><span class="material-icons-round">receipt</span>GST Returns</a>
+  <a class="flyout-link" href="hsn-master.html"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
 </div>
 
 <main class="main" id="main">
   <div class="topbar">
     <div>
-      <div class="page-title">HSN / SAC Master</div>
-      <div class="page-subtitle">Harmonized System of Nomenclature & Service Accounting Codes</div>
+      <div class="page-title">GST Returns</div>
+      <div class="page-subtitle">GSTR-1 · GSTR-3B · Tax Liability Summary</div>
     </div>
     <div class="topbar-right">
-      <button class="btn btn-purple" onclick="openModal()"><span class="material-icons-round">add</span>Add Custom HSN</button>
-      <div class="avatar">A</div>
+      <select class="filter-select" id="monthSel" onchange="build()">
+        <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+        <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+        <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+        <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+      </select>
+      <select class="filter-select" id="yearSel" onchange="build()">
+        <option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option>
+      </select>
+      <button class="btn btn-teal" onclick="exportGSTR1()"><span class="material-icons-round">download</span>Export GSTR-1</button>
+      <div class="avatar" id="navAvatar">A</div>
     </div>
   </div>
 
-  <div class="search-row">
-    <div class="search-bar">
-      <span class="material-icons-round">search</span>
-      <input type="text" id="searchInput" placeholder="Search HSN/SAC code or description..." oninput="filterCodes()"/>
-    </div>
-    <div class="type-tabs">
-      <div class="ttab active" onclick="setType('all',this)">All</div>
-      <div class="ttab" onclick="setType('hsn',this)">HSN (Goods)</div>
-      <div class="ttab" onclick="setType('sac',this)">SAC (Services)</div>
-      <div class="ttab" onclick="setType('custom',this)">My Codes</div>
+  <!-- Tab buttons -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+    <div class="tabs">
+      <button class="tab active" id="tab-btn-gstr1" onclick="setTab('gstr1')">GSTR-1</button>
+      <button class="tab" id="tab-btn-gstr3b" onclick="setTab('gstr3b')">GSTR-3B</button>
+      <button class="tab" id="tab-btn-hsn" onclick="setTab('hsn')">HSN Summary</button>
     </div>
   </div>
 
-  <div class="hsn-grid" id="hsnGrid"></div>
-
-  <!-- Used in products -->
-  <div class="card">
-    <div class="card-header"><div class="card-title">HSN/SAC Codes Used in Products</div></div>
-    <table>
-      <thead><tr><th>Code</th><th>Type</th><th>Product/Service</th><th>GST Rate</th><th>Description</th></tr></thead>
-      <tbody id="usedBody"></tbody>
-    </table>
+  <!-- Summary Boxes — always visible -->
+  <div class="gst-boxes">
+    <div class="gst-box tax">
+      <div class="gst-box-label">Taxable Turnover</div>
+      <div class="gst-box-val" id="b-taxable">₹0.00</div>
+      <div class="gst-box-sub" id="b-invcount">0 invoices</div>
+    </div>
+    <div class="gst-box cgst">
+      <div class="gst-box-label">CGST Collected</div>
+      <div class="gst-box-val" id="b-cgst">₹0.00</div>
+      <div class="gst-box-sub">Intra-state only</div>
+    </div>
+    <div class="gst-box sgst">
+      <div class="gst-box-label">SGST Collected</div>
+      <div class="gst-box-val" id="b-sgst">₹0.00</div>
+      <div class="gst-box-sub">Intra-state only</div>
+    </div>
+    <div class="gst-box igst">
+      <div class="gst-box-label">IGST Collected</div>
+      <div class="gst-box-val" id="b-igst">₹0.00</div>
+      <div class="gst-box-sub">Inter-state only</div>
+    </div>
+    <div class="gst-box total">
+      <div class="gst-box-label">Total GST Collected</div>
+      <div class="gst-box-val" id="b-totalgst">₹0.00</div>
+      <div class="gst-box-sub">CGST + SGST + IGST</div>
+    </div>
+    <div class="gst-box payable">
+      <div class="gst-box-label">Net Tax Payable</div>
+      <div class="gst-box-val" id="b-payable" style="color:#f85149">₹0.00</div>
+      <div class="gst-box-sub">After ITC (manual)</div>
+    </div>
   </div>
+
+  <!-- ══ GSTR-1 TAB ══ -->
+  <div class="tab-section active" id="tab-gstr1">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">B2B Invoices (Table 4)</div>
+          <div class="card-subtitle">All taxable outward supplies to registered persons (with GSTIN)</div>
+        </div>
+        <span id="b2b-count" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice No</th><th>Date</th><th>GSTIN (Buyer)</th><th>Buyer Name</th>
+            <th>Taxable Value</th><th>IGST</th><th>CGST</th><th>SGST</th><th>Invoice Value</th>
+          </tr>
+        </thead>
+        <tbody id="b2bBody">
+          <tr class="empty-row"><td colspan="9">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">B2C Invoices (Table 7)</div>
+          <div class="card-subtitle">Outward supplies to unregistered persons (without GSTIN)</div>
+        </div>
+        <span id="b2c-count" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice No</th><th>Date</th><th>Client</th><th>State</th>
+            <th>Taxable Value</th><th>Tax Rate</th><th>CGST</th><th>SGST</th><th>IGST</th>
+          </tr>
+        </thead>
+        <tbody id="b2cBody">
+          <tr class="empty-row"><td colspan="9">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ GSTR-3B TAB ══ -->
+  <div class="tab-section" id="tab-gstr3b">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">GSTR-3B Summary</div>
+          <div class="card-subtitle">Monthly self-declaration · Auto-computed from invoices</div>
+        </div>
+        <button class="btn btn-teal" onclick="exportGSTR3B()"><span class="material-icons-round">download</span>Export</button>
+      </div>
+      <div class="form-3b">
+        <!-- Header row -->
+        <div class="form-3b-row">
+          <div class="form-3b-label" style="font-size:11px;font-weight:700;color:var(--muted)">DESCRIPTION</div>
+          <div class="form-3b-cell header-cell">Taxable Value</div>
+          <div class="form-3b-cell header-cell">IGST</div>
+          <div class="form-3b-cell header-cell">CGST</div>
+          <div class="form-3b-cell header-cell">SGST/UTGST</div>
+        </div>
+        <!-- Section 3.1 -->
+        <div class="form-3b-section"><div class="form-3b-section-label">3.1 Details of Outward Supplies and Inward Supplies liable to reverse charge</div></div>
+        <div class="form-3b-row">
+          <div class="form-3b-label">(a) Outward taxable supplies (other than zero rated, nil rated and exempted)<div class="form-3b-sub">Regular taxable supplies - Table 4</div></div>
+          <div class="form-3b-cell" id="3b-taxable">₹0.00</div>
+          <div class="form-3b-cell" id="3b-igst">₹0.00</div>
+          <div class="form-3b-cell" id="3b-cgst">₹0.00</div>
+          <div class="form-3b-cell" id="3b-sgst">₹0.00</div>
+        </div>
+        <div class="form-3b-row">
+          <div class="form-3b-label">(b) Outward taxable supplies (zero rated)<div class="form-3b-sub">Exports / SEZ without payment of tax</div></div>
+          <div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div>
+        </div>
+        <div class="form-3b-row">
+          <div class="form-3b-label">(c) Other outward supplies (Nil rated, exempted)<div class="form-3b-sub">Nil/exempt/non-GST supplies</div></div>
+          <div class="form-3b-cell" id="3b-nil">₹0.00</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div><div class="form-3b-cell">—</div>
+        </div>
+        <div class="form-3b-row">
+          <div class="form-3b-label">(d) Inward supplies (liable to reverse charge)<div class="form-3b-sub">RCM applicable supplies</div></div>
+          <div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div><div class="form-3b-cell">₹0.00</div>
+        </div>
+        <div class="form-3b-row total-row-3b">
+          <div class="form-3b-label">Total Outward Tax Liability</div>
+          <div class="form-3b-cell" id="3b-tot-taxable">₹0.00</div>
+          <div class="form-3b-cell" id="3b-tot-igst">₹0.00</div>
+          <div class="form-3b-cell" id="3b-tot-cgst">₹0.00</div>
+          <div class="form-3b-cell" id="3b-tot-sgst">₹0.00</div>
+        </div>
+        <!-- Section 4 ITC -->
+        <div class="form-3b-section"><div class="form-3b-section-label">4. Eligible ITC (Input Tax Credit) — Enter Manually</div></div>
+        <div class="form-3b-row">
+          <div class="form-3b-label">(A) ITC Available<div class="form-3b-sub">ITC on inward supplies (purchases)</div></div>
+          <div class="form-3b-cell">—</div>
+          <div class="form-3b-cell"><input type="number" id="itc-igst" class="itc-input" placeholder="0.00" oninput="calcPayable()"/></div>
+          <div class="form-3b-cell"><input type="number" id="itc-cgst" class="itc-input" placeholder="0.00" oninput="calcPayable()"/></div>
+          <div class="form-3b-cell"><input type="number" id="itc-sgst" class="itc-input" placeholder="0.00" oninput="calcPayable()"/></div>
+        </div>
+        <!-- Section 5 Net payable -->
+        <div class="form-3b-section"><div class="form-3b-section-label">5. Net Tax Payable</div></div>
+        <div class="form-3b-row total-row-3b" style="background:rgba(248,81,73,0.04)">
+          <div class="form-3b-label" style="color:#f85149;font-weight:700">Net GST Payable (after ITC)</div>
+          <div class="form-3b-cell">—</div>
+          <div class="form-3b-cell" id="pay-igst" style="color:#f85149">₹0.00</div>
+          <div class="form-3b-cell" id="pay-cgst" style="color:#f85149">₹0.00</div>
+          <div class="form-3b-cell" id="pay-sgst" style="color:#f85149">₹0.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HSN SUMMARY TAB ══ -->
+  <div class="tab-section" id="tab-hsn">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">HSN/SAC Summary (Table 12)</div>
+          <div class="card-subtitle">HSN-wise summary of outward supplies for the selected month</div>
+        </div>
+        <button class="btn btn-teal" onclick="exportHSN()"><span class="material-icons-round">download</span>Export</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>HSN/SAC Code</th><th>Description</th><th>UOM</th>
+            <th>Total Qty</th><th>Total Value</th><th>Taxable Value</th>
+            <th>IGST</th><th>CGST</th><th>SGST</th>
+          </tr>
+        </thead>
+        <tbody id="hsnSummaryBody">
+          <tr class="empty-row"><td colspan="10">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
 
-<!-- Add Custom Modal -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Add Custom HSN/SAC</div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>Code *</label><input type="text" id="f-code" placeholder="e.g. 998314" style="font-family:monospace"/></div>
-        <div class="form-group"><label>Type</label><select id="f-type"><option value="sac">SAC (Service)</option><option value="hsn">HSN (Goods)</option></select></div>
-      </div>
-      <div class="form-row full"><div class="form-group"><label>Description *</label><input type="text" id="f-desc" placeholder="e.g. Information technology services"/></div></div>
-      <div class="form-row"><div class="form-group"><label>Category</label><input type="text" id="f-cat" placeholder="e.g. IT Services"/></div><div class="form-group"><label>GST Rate (%)</label><select id="f-gst"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCustom()"><span class="material-icons-round">save</span>Save Code</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// ── Built-in common codes ──
-const BUILTIN = [
-  // IT & Software Services (SAC)
-  {code:'998311',type:'sac',desc:'Management consulting & advisory services',category:'IT / Consulting',gst:18},
-  {code:'998312',type:'sac',desc:'Business process management services',category:'IT / Consulting',gst:18},
-  {code:'998313',type:'sac',desc:'IT design and development services',category:'Software',gst:18},
-  {code:'998314',type:'sac',desc:'IT infrastructure and network management',category:'Software',gst:18},
-  {code:'998315',type:'sac',desc:'IT support services',category:'Software',gst:18},
-  {code:'998316',type:'sac',desc:'IT technical testing services',category:'Software',gst:18},
-  {code:'998319',type:'sac',desc:'Other IT services',category:'Software',gst:18},
-  {code:'997331',type:'sac',desc:'Internet telecommunication services',category:'Telecom',gst:18},
-  {code:'997221',type:'sac',desc:'Software development services',category:'Software',gst:18},
-  // Digital / Online
-  {code:'998431',type:'sac',desc:'Online content and media services',category:'Digital',gst:18},
-  {code:'998439',type:'sac',desc:'Other online services',category:'Digital',gst:18},
-  // Professional Services
-  {code:'997211',type:'sac',desc:'Legal advisory and consultancy',category:'Professional',gst:18},
-  {code:'997212',type:'sac',desc:'Arbitration and conciliation services',category:'Professional',gst:18},
-  {code:'997221',type:'sac',desc:'Accounting, auditing and bookkeeping',category:'Professional',gst:18},
-  {code:'997222',type:'sac',desc:'Tax related services',category:'Professional',gst:18},
-  {code:'997251',type:'sac',desc:'Management consulting services',category:'Professional',gst:18},
-  {code:'997261',type:'sac',desc:'Advertising services',category:'Marketing',gst:18},
-  {code:'997263',type:'sac',desc:'Market research and public opinion polling',category:'Marketing',gst:18},
-  // Training & Education
-  {code:'999291',type:'sac',desc:'Educational support services',category:'Education',gst:18},
-  {code:'999293',type:'sac',desc:'Vocational training and coaching',category:'Education',gst:18},
-  // Construction
-  {code:'995411',type:'sac',desc:'Construction of residential buildings',category:'Construction',gst:12},
-  {code:'995412',type:'sac',desc:'Construction of commercial buildings',category:'Construction',gst:12},
-  // Maintenance & Repair
-  {code:'995411',type:'sac',desc:'Maintenance and repair of machinery',category:'Maintenance',gst:18},
-  {code:'997319',type:'sac',desc:'Other support services',category:'Support',gst:18},
-  // Goods - Common HSN
-  {code:'8471',type:'hsn',desc:'Computers, laptops and peripherals',category:'Electronics',gst:18},
-  {code:'8473',type:'hsn',desc:'Parts and accessories for computers',category:'Electronics',gst:18},
-  {code:'8517',type:'hsn',desc:'Telephone sets and mobile phones',category:'Electronics',gst:12},
-  {code:'8443',type:'hsn',desc:'Printing machinery',category:'Machinery',gst:18},
-  {code:'4901',type:'hsn',desc:'Printed books, brochures, catalogues',category:'Print',gst:0},
-  {code:'4820',type:'hsn',desc:'Registers, notebooks, diaries',category:'Stationery',gst:12},
-  {code:'3926',type:'hsn',desc:'Plastic articles',category:'Plastic',gst:18},
-  {code:'7318',type:'hsn',desc:'Screws, bolts, nuts and similar articles',category:'Hardware',gst:18},
-  {code:'9403',type:'hsn',desc:'Office furniture',category:'Furniture',gst:18},
-  {code:'9801',type:'hsn',desc:'All items of machinery for project imports',category:'Capital Goods',gst:0},
-];
+// ── Global ──────────────────────────────────────────────
+let allInvoices = [];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-let customCodes = JSON.parse(localStorage.getItem('kidv-hsn-custom')||'[]');
-let currentType = 'all';
+// ── Utility ─────────────────────────────────────────────
+function fmt(n){ return '₹' + parseFloat(n||0).toLocaleString('en-IN', {minimumFractionDigits:2}); }
 
-function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
-function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
-
-function setType(t,el){
-  currentType=t;
-  document.querySelectorAll('.ttab').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  filterCodes();
+// ── Flyout ───────────────────────────────────────────────
+function toggleFlyout(){
+  const f=document.getElementById('flyout'), o=document.getElementById('overlay'), m=document.getElementById('main');
+  f.classList.toggle('open'); o.classList.toggle('show'); m.classList.toggle('shifted');
+}
+function closeFlyout(){
+  document.getElementById('flyout').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('main').classList.remove('shifted');
 }
 
-function filterCodes(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  let all = currentType==='custom' ? customCodes.map(c=>({...c,isCustom:true})) : [...BUILTIN.map(c=>({...c,isCustom:false})),...customCodes.map(c=>({...c,isCustom:true}))];
-  if(currentType==='hsn') all=all.filter(c=>c.type==='hsn');
-  else if(currentType==='sac') all=all.filter(c=>c.type==='sac');
-  if(q) all=all.filter(c=>(c.code+c.desc+c.category).toLowerCase().includes(q));
-  renderGrid(all);
+// ── Tab Switching ────────────────────────────────────────
+function setTab(name) {
+  // Hide all tab sections
+  document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+  // Deactivate all tab buttons
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  // Activate selected
+  const section = document.getElementById('tab-' + name);
+  const btn = document.getElementById('tab-btn-' + name);
+  if(section) section.classList.add('active');
+  if(btn) btn.classList.add('active');
 }
 
-function renderGrid(list){
-  const grid=document.getElementById('hsnGrid');
-  if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px"><span class="material-icons-round" style="font-size:40px;display:block;margin-bottom:12px;opacity:.3">search_off</span>No codes found. Try a different search.</div>`;return;}
-  const gstColor={0:'gst-0',5:'gst-5',12:'gst-12',18:'gst-18',28:'gst-28'};
-  grid.innerHTML=list.map((c,i)=>`
-    <div class="hsn-card" onclick="copyCode('${c.code}')">
-      <div class="hsn-card-top">
-        <div class="hsn-code">${c.code}</div>
-        <span class="hsn-type-badge type-${c.type}">${c.type.toUpperCase()}</span>
-      </div>
-      <div class="hsn-desc">${c.desc}</div>
-      <div class="hsn-category">${c.category||''}${c.isCustom?' · <span style="color:var(--c-hsn)">Custom</span>':''}</div>
-      <div class="hsn-card-footer">
-        <span class="hsn-rate ${gstColor[c.gst]||'gst-18'}">GST ${c.gst}%</span>
-        <button class="use-btn" onclick="event.stopPropagation();useInProduct('${c.code}','${c.desc.replace(/'/g,"\\'")}',${c.gst})">Use in Product →</button>
-      </div>
-    </div>`).join('');
+// ── Get filtered invoices for selected month/year ────────
+function getFiltered() {
+  const month = parseInt(document.getElementById('monthSel').value);
+  const year  = parseInt(document.getElementById('yearSel').value);
+  return allInvoices.filter(inv => {
+    if(!inv.date) return false;
+    const d = new Date(inv.date);
+    return d.getMonth() === month && d.getFullYear() === year;
+  });
 }
 
-function copyCode(code){
-  navigator.clipboard.writeText(code).then(()=>showToast('Copied: '+code));
+// ── Main Build ───────────────────────────────────────────
+function build() {
+  const invoices = getFiltered();
+  buildSummary(invoices);
+  buildGSTR1(invoices);
+  build3B(invoices);
+  buildHSN(invoices);
 }
 
-function useInProduct(code,desc,gst){
-  // Store for product page to pick up
-  localStorage.setItem('kidv-hsn-prefill',JSON.stringify({code,desc,gst}));
-  showToast('HSN saved! Add product to use it.');
-  setTimeout(()=>location.href='products.html',1200);
+// ── Summary Boxes ────────────────────────────────────────
+function buildSummary(invoices) {
+  let taxable=0, cgst=0, sgst=0, igst=0;
+  invoices.forEach(inv => {
+    const sub = parseFloat(inv.sub||0);
+    const gst = parseFloat(inv.totalGST||0);
+    taxable += sub;
+    if(inv.supply === 'inter') {
+      igst += gst;
+    } else {
+      cgst += gst / 2;
+      sgst += gst / 2;
+    }
+  });
+  const totalGST = cgst + sgst + igst;
+  document.getElementById('b-taxable').textContent  = fmt(taxable);
+  document.getElementById('b-cgst').textContent     = fmt(cgst);
+  document.getElementById('b-sgst').textContent     = fmt(sgst);
+  document.getElementById('b-igst').textContent     = fmt(igst);
+  document.getElementById('b-totalgst').textContent = fmt(totalGST);
+  document.getElementById('b-payable').textContent  = fmt(totalGST);
+  document.getElementById('b-invcount').textContent = invoices.length + ' invoice' + (invoices.length!==1?'s':'');
 }
 
-function openModal(){document.getElementById('modalBg').classList.add('open');}
-function closeModal(){document.getElementById('modalBg').classList.remove('open');}
-function saveCustom(){
-  const code=document.getElementById('f-code').value.trim();
-  const desc=document.getElementById('f-desc').value.trim();
-  if(!code||!desc){alert('Code and description required');return;}
-  const c={code,type:document.getElementById('f-type').value,desc,category:document.getElementById('f-cat').value,gst:parseInt(document.getElementById('f-gst').value),isCustom:true};
-  customCodes.push(c);
-  localStorage.setItem('kidv-hsn-custom',JSON.stringify(customCodes));
-  closeModal();filterCodes();renderUsed();showToast('HSN/SAC code added!');
+// ── GSTR-1 ───────────────────────────────────────────────
+function buildGSTR1(invoices) {
+  const b2b = invoices.filter(inv => inv.clientGSTIN && inv.clientGSTIN.length === 15);
+  const b2c = invoices.filter(inv => !inv.clientGSTIN || inv.clientGSTIN.length !== 15);
+
+  document.getElementById('b2b-count').textContent = b2b.length + ' invoices';
+  document.getElementById('b2c-count').textContent = b2c.length + ' invoices';
+
+  // B2B table
+  document.getElementById('b2bBody').innerHTML = b2b.length
+    ? b2b.map(inv => {
+        const sub = parseFloat(inv.sub||0);
+        const gst = parseFloat(inv.totalGST||0);
+        const half = gst / 2;
+        const intra = inv.supply !== 'inter';
+        return `<tr>
+          <td style="font-weight:600;color:var(--accent)">${inv.invoiceNo||'—'}</td>
+          <td>${inv.date||'—'}</td>
+          <td style="font-family:monospace;font-size:12px">${inv.clientGSTIN||'—'}</td>
+          <td style="font-weight:500">${inv.clientName||'—'}</td>
+          <td>${fmt(sub)}</td>
+          <td>${fmt(intra ? 0 : gst)}</td>
+          <td>${fmt(intra ? half : 0)}</td>
+          <td>${fmt(intra ? half : 0)}</td>
+          <td style="font-weight:700">${fmt(parseFloat(inv.total||0))}</td>
+        </tr>`;
+      }).join('')
+    : '<tr class="empty-row"><td colspan="9">No B2B invoices for selected month. Add invoices with client GSTIN to see here.</td></tr>';
+
+  // B2C table
+  document.getElementById('b2cBody').innerHTML = b2c.length
+    ? b2c.map(inv => {
+        const sub = parseFloat(inv.sub||0);
+        const gst = parseFloat(inv.totalGST||0);
+        const half = gst / 2;
+        const intra = inv.supply !== 'inter';
+        // Get dominant GST rate from lines
+        const rates = (inv.lines||[]).map(l => parseFloat(l.gst||0));
+        const domRate = rates.length ? Math.max(...rates) : 0;
+        return `<tr>
+          <td style="font-weight:600;color:var(--accent)">${inv.invoiceNo||'—'}</td>
+          <td>${inv.date||'—'}</td>
+          <td style="font-weight:500">${inv.clientName||'—'}</td>
+          <td>${inv.clientState||'—'}</td>
+          <td>${fmt(sub)}</td>
+          <td><span class="rate-pill">${domRate}%</span></td>
+          <td>${fmt(intra ? half : 0)}</td>
+          <td>${fmt(intra ? half : 0)}</td>
+          <td>${fmt(intra ? 0 : gst)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr class="empty-row"><td colspan="9">No B2C invoices for selected month.</td></tr>';
 }
 
-function renderUsed(){
-  const products=JSON.parse(localStorage.getItem('kidv-products')||'[]');
-  const tbody=document.getElementById('usedBody');
-  const withHSN=products.filter(p=>p.hsn);
-  if(!withHSN.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">No products with HSN/SAC codes yet. <a href="products.html" style="color:var(--c-hsn)">Add products →</a></td></tr>`;return;}
-  const all=[...BUILTIN,...customCodes];
-  tbody.innerHTML=withHSN.map(p=>{
-    const match=all.find(c=>c.code===p.hsn);
-    const gstColor={0:'#7d8590',5:'#3fb950',12:'#f0883e',18:'#39d0d8',28:'#f85149'};
-    return`<tr>
-      <td style="font-family:monospace;font-weight:700;font-size:14px;color:var(--c-hsn)">${p.hsn}</td>
-      <td><span style="font-size:11px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:rgba(188,140,255,0.1);color:var(--c-hsn)">${match?.type?.toUpperCase()||'—'}</span></td>
-      <td style="font-weight:500">${p.name}</td>
-      <td style="color:${gstColor[p.gst]||'#39d0d8'};font-weight:600">${p.gst}%</td>
-      <td style="font-size:13px;color:var(--muted)">${match?.desc||'—'}</td>
-    </tr>`;}).join('');
+// ── GSTR-3B ──────────────────────────────────────────────
+function build3B(invoices) {
+  let taxable=0, cgst=0, sgst=0, igst=0, nilTaxable=0;
+  invoices.forEach(inv => {
+    const sub = parseFloat(inv.sub||0);
+    const gst = parseFloat(inv.totalGST||0);
+    // Nil/exempt: invoices with GST rate 0 on all lines
+    const allZero = (inv.lines||[]).every(l => parseFloat(l.gst||0) === 0);
+    if(allZero) { nilTaxable += sub; return; }
+    taxable += sub;
+    if(inv.supply === 'inter') {
+      igst += gst;
+    } else {
+      cgst += gst / 2;
+      sgst += gst / 2;
+    }
+  });
+
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent = fmt(v); };
+  set('3b-taxable', taxable);
+  set('3b-igst', igst);
+  set('3b-cgst', cgst);
+  set('3b-sgst', sgst);
+  set('3b-nil', nilTaxable);
+  set('3b-tot-taxable', taxable + nilTaxable);
+  set('3b-tot-igst', igst);
+  set('3b-tot-cgst', cgst);
+  set('3b-tot-sgst', sgst);
+
+  // Store for calcPayable
+  window._3bData = { igst, cgst, sgst };
+  calcPayable();
 }
 
-function showToast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
+function calcPayable() {
+  const d = window._3bData || { igst:0, cgst:0, sgst:0 };
+  const itcIgst = parseFloat(document.getElementById('itc-igst').value||0);
+  const itcCgst = parseFloat(document.getElementById('itc-cgst').value||0);
+  const itcSgst = parseFloat(document.getElementById('itc-sgst').value||0);
+  const payIgst = Math.max(0, d.igst - itcIgst);
+  const payCgst = Math.max(0, d.cgst - itcCgst);
+  const paySgst = Math.max(0, d.sgst - itcSgst);
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent = fmt(v); };
+  set('pay-igst', payIgst);
+  set('pay-cgst', payCgst);
+  set('pay-sgst', paySgst);
+  // Update Net Tax Payable summary box
+  const netPayable = payIgst + payCgst + paySgst;
+  const pb = document.getElementById('b-payable');
+  if(pb) pb.textContent = fmt(netPayable);
+}
 
-filterCodes();
-renderUsed();
+// ── HSN Summary ──────────────────────────────────────────
+function buildHSN(invoices) {
+  const hsnMap = {};
+  invoices.forEach(inv => {
+    (inv.lines||[]).forEach(line => {
+      const code = line.hsn || 'MISC';
+      const desc = line.desc || '—';
+      const qty  = parseFloat(line.qty||1);
+      const amt  = parseFloat(line.amount||0);
+      const gstPct = parseFloat(line.gst||0);
+      const gstAmt = amt * gstPct / 100;
+      const intra = inv.supply !== 'inter';
+
+      if(!hsnMap[code]) hsnMap[code] = { code, desc, qty:0, value:0, taxable:0, igst:0, cgst:0, sgst:0 };
+      hsnMap[code].qty     += qty;
+      hsnMap[code].value   += amt + gstAmt;
+      hsnMap[code].taxable += amt;
+      if(intra) { hsnMap[code].cgst += gstAmt/2; hsnMap[code].sgst += gstAmt/2; }
+      else       { hsnMap[code].igst += gstAmt; }
+    });
+  });
+
+  const rows = Object.values(hsnMap).sort((a,b) => b.taxable - a.taxable);
+  const tbody = document.getElementById('hsnSummaryBody');
+  tbody.innerHTML = rows.length
+    ? rows.map((h, i) => `<tr>
+        <td>${i+1}</td>
+        <td style="font-family:monospace;font-weight:700;color:var(--c-gst)">${h.code}</td>
+        <td style="font-size:12.5px">${h.desc}</td>
+        <td>Nos</td>
+        <td>${h.qty.toFixed(2)}</td>
+        <td style="font-weight:600">${fmt(h.value)}</td>
+        <td style="font-weight:600">${fmt(h.taxable)}</td>
+        <td>${fmt(h.igst)}</td>
+        <td>${fmt(h.cgst)}</td>
+        <td>${fmt(h.sgst)}</td>
+      </tr>`).join('')
+    : '<tr class="empty-row"><td colspan="10">No line items with HSN/SAC codes for selected month. Add HSN codes to products.</td></tr>';
+}
+
+// ── Export GSTR-1 ────────────────────────────────────────
+function exportGSTR1() {
+  const invoices = getFiltered();
+  const month = MONTHS[parseInt(document.getElementById('monthSel').value)];
+  const year  = document.getElementById('yearSel').value;
+
+  if(!invoices.length) { alert('No invoices for ' + month + ' ' + year); return; }
+
+  const rows = [
+    ['GSTR-1 Export — ' + month + ' ' + year],
+    [],
+    ['=== B2B INVOICES (Table 4) ==='],
+    ['Invoice No','Date','Buyer GSTIN','Buyer Name','Taxable Value','IGST','CGST','SGST','Invoice Value'],
+    ...invoices.filter(i=>i.clientGSTIN&&i.clientGSTIN.length===15).map(inv => {
+      const sub=parseFloat(inv.sub||0), gst=parseFloat(inv.totalGST||0), half=gst/2;
+      const intra=inv.supply!=='inter';
+      return [inv.invoiceNo,inv.date,inv.clientGSTIN,inv.clientName,sub.toFixed(2),(intra?0:gst).toFixed(2),(intra?half:0).toFixed(2),(intra?half:0).toFixed(2),parseFloat(inv.total||0).toFixed(2)];
+    }),
+    [],
+    ['=== B2C INVOICES (Table 7) ==='],
+    ['Invoice No','Date','Client','State','Taxable Value','GST Rate','CGST','SGST','IGST'],
+    ...invoices.filter(i=>!i.clientGSTIN||i.clientGSTIN.length!==15).map(inv => {
+      const sub=parseFloat(inv.sub||0), gst=parseFloat(inv.totalGST||0), half=gst/2;
+      const intra=inv.supply!=='inter';
+      const rate=(inv.lines||[]).map(l=>parseFloat(l.gst||0));
+      const domRate=rate.length?Math.max(...rate):0;
+      return [inv.invoiceNo,inv.date,inv.clientName,inv.clientState||'',sub.toFixed(2),domRate+'%',(intra?half:0).toFixed(2),(intra?half:0).toFixed(2),(intra?0:gst).toFixed(2)];
+    }),
+  ];
+  const csv = rows.map(r => r.map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'GSTR1-' + month + '-' + year + '.csv';
+  a.click();
+}
+
+// ── Export GSTR-3B ───────────────────────────────────────
+function exportGSTR3B() {
+  const month = MONTHS[parseInt(document.getElementById('monthSel').value)];
+  const year  = document.getElementById('yearSel').value;
+  const d = window._3bData || { igst:0, cgst:0, sgst:0 };
+  const taxEl = document.getElementById('3b-taxable');
+  const taxable = taxEl ? taxEl.textContent : '0';
+  const rows = [
+    ['GSTR-3B Summary — ' + month + ' ' + year],
+    [],
+    ['Section','Description','Taxable Value','IGST','CGST','SGST'],
+    ['3.1(a)','Outward taxable supplies',taxable,fmt(d.igst),fmt(d.cgst),fmt(d.sgst)],
+    ['3.1(b)','Zero rated supplies','0.00','0.00','—','—'],
+    ['3.1(c)','Nil/Exempt supplies',document.getElementById('3b-nil').textContent,'—','—','—'],
+    [],
+    ['5','Net GST Payable','—',document.getElementById('pay-igst').textContent,document.getElementById('pay-cgst').textContent,document.getElementById('pay-sgst').textContent],
+  ];
+  const csv = rows.map(r => r.map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'GSTR3B-' + month + '-' + year + '.csv';
+  a.click();
+}
+
+// ── Export HSN ───────────────────────────────────────────
+function exportHSN() {
+  const month = MONTHS[parseInt(document.getElementById('monthSel').value)];
+  const year  = document.getElementById('yearSel').value;
+  const rows  = document.querySelectorAll('#hsnSummaryBody tr:not(.empty-row)');
+  if(!rows.length) { alert('No HSN data for ' + month + ' ' + year); return; }
+  const headers = ['#','HSN/SAC','Description','UOM','Qty','Total Value','Taxable Value','IGST','CGST','SGST'];
+  const data = [headers, ...[...rows].map(tr => [...tr.querySelectorAll('td')].map(td => td.textContent.trim()))];
+  const csv = data.map(r => r.map(v => '"'+v.replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'HSN-Summary-' + month + '-' + year + '.csv';
+  a.click();
+}
+
+// ── Load from Firestore ──────────────────────────────────
+document.addEventListener('kidv:db-ready', async () => {
+  // Admin button
+  if(window.KIDV && KIDV.isAdmin) {
+    const b = document.getElementById('adminBtn');
+    if(b) b.style.display = '';
+  }
+
+  // Set current month & year
+  const now = new Date();
+  document.getElementById('monthSel').value = now.getMonth().toString();
+  document.getElementById('yearSel').value  = now.getFullYear().toString();
+
+  try {
+    allInvoices = await KIDV.list('invoices');
+  } catch(e) {
+    console.warn('[GST Returns] Load error:', e);
+    allInvoices = [];
+  }
+
+  build();
+});
 </script>
   <script src="kidv-common.js"></script>
 </body>

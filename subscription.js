@@ -1,128 +1,420 @@
-/**
- * KIDV Invoice — Subscription & Access Control
- * Include AFTER firebase-config.js on every page
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Subscribe</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.logo-bar{display:flex;align-items:center;gap:12px;margin-bottom:32px;}
+.logo-box{width:44px;height:44px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;}
+.logo-name{font-size:18px;font-weight:700;color:#1a2332;}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:950px;width:100%;margin-bottom:28px;}
+.plan-card{background:#fff;border-radius:20px;padding:28px 24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:2px solid transparent;position:relative;transition:all .2s;}
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.plan-card.popular{border-color:#2f81f7;box-shadow:0 8px 32px rgba(47,129,247,0.2);}
+.popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;}
+.plan-name{font-size:13px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+.plan-price{font-size:34px;font-weight:800;color:#1a2332;line-height:1;}
+.plan-price span{font-size:13px;font-weight:500;color:#6b7a90;}
+.plan-per{font-size:12px;color:#16a34a;font-weight:600;margin-top:4px;}
+.plan-desc{font-size:13px;color:#6b7a90;margin:8px 0 20px;}
+.plan-features{list-style:none;margin-bottom:24px;}
+.plan-features li{font-size:13px;color:#374151;padding:6px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f0f4f8;}
+.plan-features li:last-child{border-bottom:none;}
+.plan-features li .material-icons-round{font-size:16px;color:#16a34a;flex-shrink:0;}
+.btn-plan{width:100%;padding:12px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-outline{background:#fff;color:#2f81f7;border:2px solid #2f81f7;}
+.btn-outline:hover{background:#eff6ff;}
+.trial-info{background:#fff;border-radius:16px;padding:18px 24px;max-width:950px;width:100%;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;display:none;align-items:center;gap:16px;}
+.trial-icon{width:48px;height:48px;background:#fff7ed;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.trial-icon .material-icons-round{font-size:24px;color:#d97706;}
 
-window.SUB = {
-  TRIAL_DAYS: 14,
-  plan: null, // 'trial' | 'active' | 'expired' | 'suspended'
-  daysLeft: 0,
+/* Success Modal */
+.success-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:999;align-items:center;justify-content:center;}
+.success-modal.open{display:flex;}
+.success-card{background:#fff;border-radius:24px;padding:40px;max-width:480px;width:90%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.2);}
+.success-icon{width:72px;height:72px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.success-icon .material-icons-round{font-size:36px;color:#16a34a;}
+.success-title{font-size:22px;font-weight:800;color:#1a2332;margin-bottom:8px;}
+.success-sub{font-size:14px;color:#6b7a90;line-height:1.6;margin-bottom:24px;}
+.notif-row{display:flex;gap:10px;margin-bottom:12px;}
+.notif-btn{flex:1;padding:12px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;}
+.notif-btn .material-icons-round{font-size:18px;}
+.notif-wa-admin{background:#25d366;color:#fff;}
+.notif-wa-admin:hover{background:#22c55e;}
+.notif-wa-cust{background:#075e54;color:#fff;}
+.notif-wa-cust:hover{background:#064e46;}
+.notif-email{background:#f0f4f8;color:#1a2332;border:1.5px solid #e2e8f0;}
+.notif-email:hover{background:#e2e8f0;}
+.btn-done{width:100%;padding:13px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+.sent-badge{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;margin-left:6px;}
+</style>
+</head>
+<body>
 
-  async check() {
-    if (!KIDV._ready || !KIDV._uid) return;
-    const page = location.pathname.split('/').pop() || 'index.html';
-    const publicPages = ['login.html', 'subscribe.html', 'expired.html', 'suspended.html'];
-    if (publicPages.some(p => page.includes(p))) return;
+<div class="logo-bar">
+  <div class="logo-box">KI</div>
+  <div class="logo-name">KIDV Invoice</div>
+</div>
 
-    try {
-      const db = KIDV._db;
-      const uid = KIDV._uid;
-      const userDoc = await db.collection('users').doc(uid).get();
-      const data = userDoc.exists ? userDoc.data() : {};
+<div class="trial-info" id="trialInfo">
+  <div class="trial-icon"><span class="material-icons-round">hourglass_top</span></div>
+  <div>
+    <div style="font-size:15px;font-weight:700;color:#1a2332" id="trialMsg">Your trial period</div>
+    <div style="font-size:13px;color:#6b7a90;margin-top:3px">Upgrade to keep full access to all your data and features.</div>
+  </div>
+</div>
 
-      const now = new Date();
+<div class="plans-grid">
+  <!-- 3 Months -->
+  <div class="plan-card">
+    <div class="plan-name">3 Months</div>
+    <div class="plan-price">₹1,599 <span>/ 3 months</span></div>
+    <div class="plan-per">₹533/month</div>
+    <div class="plan-desc">Short term plan.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Unlimited Invoices</li>
+      <li><span class="material-icons-round">check</span>Unlimited Customers</li>
+      <li><span class="material-icons-round">check</span>GST Reports (GSTR-1, 3B)</li>
+      <li><span class="material-icons-round">check</span>WhatsApp Sharing</li>
+      <li><span class="material-icons-round">check</span>Cloud Backup</li>
+      <li><span class="material-icons-round">check</span>PDF Download</li>
+    </ul>
+    <button class="btn-plan btn-outline" onclick="initPayment('quarterly',1599)">Choose 3 Months</button>
+  </div>
 
-      // Admin = always full access
-      if (KIDV.isAdmin) {
-        this.plan = 'admin';
-        this._showBadge('admin');
-        return;
-      }
+  <!-- 6 Months -->
+  <div class="plan-card">
+    <div class="plan-name">6 Months</div>
+    <div class="plan-price">₹2,699 <span>/ 6 months</span></div>
+    <div class="plan-per">₹450/month · Save 16%</div>
+    <div class="plan-desc">Better value plan.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Everything in 3 Months</li>
+      <li><span class="material-icons-round">check</span>Priority Support</li>
+      <li><span class="material-icons-round">check</span>E-Invoice (IRN) Ready</li>
+      <li><span class="material-icons-round">check</span>E-Way Bill Ready</li>
+      <li><span class="material-icons-round">check</span>HSN/SAC Master</li>
+      <li><span class="material-icons-round">check</span>Free Updates</li>
+    </ul>
+    <button class="btn-plan btn-outline" onclick="initPayment('halfyearly',2699)">Choose 6 Months</button>
+  </div>
 
-      // 1. Check if suspended
-      if (data.subscriptionStatus === 'suspended') {
-        this.plan = 'suspended';
-        this._redirectSuspended();
-        return;
-      }
+  <!-- Yearly -->
+  <div class="plan-card popular">
+    <div class="popular-badge">🔥 Most Popular — Save 32%</div>
+    <div class="plan-name">Yearly</div>
+    <div class="plan-price">₹4,999 <span>/ year</span></div>
+    <div class="plan-per">₹417/month · Best value!</div>
+    <div class="plan-desc">Full year access.</div>
+    <ul class="plan-features">
+      <li><span class="material-icons-round">check</span>Everything in 6 Months</li>
+      <li><span class="material-icons-round">check</span>Dedicated Support</li>
+      <li><span class="material-icons-round">check</span>Multi-Company Support</li>
+      <li><span class="material-icons-round">check</span>Custom Branding</li>
+      <li><span class="material-icons-round">check</span>Tally Export</li>
+      <li><span class="material-icons-round">check</span>Free Updates — 1 Year</li>
+    </ul>
+    <button class="btn-plan btn-primary" onclick="initPayment('yearly',4999)">Choose Yearly</button>
+  </div>
+</div>
 
-      // 2. Check subscription status
-      if (data.subscriptionStatus === 'active') {
-        const expiry = data.subscriptionExpiry ? new Date(data.subscriptionExpiry) : null;
-        if (!expiry || expiry > now) {
-          this.plan = 'active';
-          this._showBadge('active', expiry);
-          return;
-        }
-      }
+<div style="text-align:center;font-size:12px;color:#9ca3af;margin-bottom:10px">Secure payment via Razorpay &nbsp;|&nbsp; UPI · Cards · NetBanking · Wallets</div>
+<div style="margin-bottom:14px;font-size:13px;color:#6b7a90;text-align:center">
+  Need help? <a href="https://wa.me/917984486885" target="_blank" style="color:#25d366;font-weight:600">📱 WhatsApp: +91 79844 86885</a>
+</div>
+<span style="font-size:13px;color:#6b7a90;cursor:pointer;text-decoration:underline" onclick="location.href='index.html'">← Back to App</span>
 
-      // Check trial
-      const registeredAt = data.createdAt ? new Date(data.createdAt) : now;
-      const trialEnd = new Date(registeredAt.getTime() + this.TRIAL_DAYS * 24 * 60 * 60 * 1000);
-      const msLeft = trialEnd - now;
-      this.daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
+<!-- ── SUCCESS MODAL ── -->
+<div class="success-modal" id="successModal">
+  <div class="success-card">
+    <div class="success-icon"><span class="material-icons-round">check_circle</span></div>
+    <div class="success-title">🎉 Subscription Activated!</div>
+    <div class="success-sub" id="successMsg">Your plan has been activated successfully.</div>
 
-      if (this.daysLeft > 0) {
-        // Still in trial — allow access
-        this.plan = 'trial';
-        this._showBadge('trial', trialEnd);
-        return;
-      }
+    <div style="background:#f8faff;border-radius:12px;padding:16px;margin-bottom:16px;text-align:left">
+      <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">📣 Send Confirmation</div>
 
-      // Trial expired
-      this.plan = 'expired';
-      this._redirectExpired();
+      <!-- WhatsApp to Admin -->
+      <div class="notif-row">
+        <button class="notif-btn notif-wa-admin" id="btnWaAdmin" onclick="sendWAAdmin()">
+          <span class="material-icons-round">whatsapp</span>
+          WhatsApp → Admin (You)
+        </button>
+      </div>
 
-    } catch (e) {
-      console.warn('[SUB] Check error:', e);
-    }
-  },
+      <!-- WhatsApp to Customer -->
+      <div class="notif-row">
+        <button class="notif-btn notif-wa-cust" id="btnWaCust" onclick="sendWACustomer()">
+          <span class="material-icons-round">whatsapp</span>
+          WhatsApp → Customer
+        </button>
+      </div>
 
-  _showBadge(type, expiry) {
-    const existing = document.getElementById('subBadge');
-    if (existing) existing.remove();
+      <!-- Email to both -->
+      <div class="notif-row">
+        <button class="notif-btn notif-email" id="btnEmail" onclick="sendEmail()">
+          <span class="material-icons-round">mail</span>
+          Send Email Confirmation
+        </button>
+      </div>
 
-    const badge = document.createElement('div');
-    badge.id = 'subBadge';
+      <div style="font-size:11px;color:#9ca3af;margin-top:8px;text-align:center">
+        Upar na buttons click karo — confirmation moksho
+      </div>
+    </div>
 
-    if (type === 'admin') {
-      badge.innerHTML = `<span class="material-icons-round" style="font-size:14px">admin_panel_settings</span> Admin`;
-      badge.style.cssText = `position:fixed;bottom:16px;left:80px;background:#7c3aed;color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;z-index:9999;font-family:Outfit,sans-serif;box-shadow:0 4px 12px rgba(124,58,237,0.35)`;
-    } else if (type === 'active') {
-      badge.innerHTML = `<span class="material-icons-round" style="font-size:14px">verified</span> Active`;
-      badge.style.cssText = `position:fixed;bottom:16px;left:80px;background:#16a34a;color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;z-index:9999;font-family:Outfit,sans-serif;box-shadow:0 4px 12px rgba(22,163,74,0.35)`;
-    } else if (type === 'trial') {
-      badge.innerHTML = `<span class="material-icons-round" style="font-size:14px">hourglass_top</span> Trial: ${this.daysLeft} days left`;
-      badge.style.cssText = `position:fixed;bottom:16px;left:80px;background:#d97706;color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;z-index:9999;font-family:Outfit,sans-serif;box-shadow:0 4px 12px rgba(217,119,6,0.35);cursor:pointer`;
-      badge.onclick = () => location.href = 'subscribe.html';
-    }
+    <button class="btn-done" onclick="location.href='index.html'">
+      <span class="material-icons-round">arrow_forward</span>
+      Go to Dashboard
+    </button>
+  </div>
+</div>
 
-    document.body.appendChild(badge);
-  },
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+// ── CONFIG — TAME FILL KARO ──────────────────────────────
+const ADMIN_PHONE   = '917984486885';       // Tamaro WhatsApp number (91 + number)
+const ADMIN_EMAIL   = 'amit@kidvtech.com';  // Tamaro email
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // EmailJS thi malshe
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // EmailJS thi malshe
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // EmailJS thi malshe
+// ────────────────────────────────────────────────────────
 
-  _showTrialWarning() {
-    if (localStorage.getItem('kidv-trial-warning-shown-today') === new Date().toDateString()) return;
-    localStorage.setItem('kidv-trial-warning-shown-today', new Date().toDateString());
+const planNames = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly'};
+let currentSub = {}; // Store subscription details for notifications
 
-    const banner = document.createElement('div');
-    banner.style.cssText = `position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#d97706,#ea580c);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;z-index:10000;font-family:Outfit,sans-serif;font-size:13px;font-weight:500`;
-    banner.innerHTML = `
-      <span><span style="font-weight:700">⚠️ Trial expires in ${this.daysLeft} day${this.daysLeft===1?'':'s'}!</span> Upgrade now to keep your data.</span>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button onclick="location.href='subscribe.html'" style="background:#fff;color:#d97706;border:none;border-radius:6px;padding:5px 14px;font-weight:700;cursor:pointer;font-size:12px">Upgrade Now</button>
-        <button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px;line-height:1">×</button>
-      </div>`;
-    document.body.prepend(banner);
-  },
+// Init EmailJS
+if(typeof emailjs !== 'undefined'){
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
 
-  _redirectExpired() {
-    const page = location.pathname.split('/').pop() || '';
-    const safe = ['expired.html','subscribe.html','login.html','suspended.html'];
-    if (!safe.some(p => page.includes(p))) {
-      location.href = 'expired.html';
-    }
-  },
-
-  _redirectSuspended() {
-    const page = location.pathname.split('/').pop() || '';
-    const safe = ['suspended.html','login.html'];
-    if (!safe.some(p => page.includes(p))) {
-      location.href = 'suspended.html';
-    }
+document.addEventListener('kidv:db-ready', async()=>{
+  if(!KIDV._ready||!KIDV._uid) return;
+  const doc = await KIDV._db.collection('users').doc(KIDV._uid).get();
+  const data = doc.exists ? doc.data() : {};
+  const info = document.getElementById('trialInfo');
+  const msg  = document.getElementById('trialMsg');
+  info.style.display = 'flex';
+  if(data.subscriptionStatus==='active'){
+    msg.textContent = '✅ Your subscription is active!';
+    setTimeout(()=>location.href='index.html', 2000);
+  } else {
+    const reg = data.createdAt ? new Date(data.createdAt) : new Date();
+    const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+    const daysLeft = Math.max(0,Math.ceil((trialEnd-new Date())/(24*60*60*1000)));
+    msg.textContent = daysLeft>0
+      ? `⏳ Trial: ${daysLeft} day${daysLeft===1?'':'s'} remaining`
+      : '⚠️ Trial expired. Subscribe to continue.';
+    if(!daysLeft) info.style.borderLeft='4px solid #ef4444';
   }
-};
-
-// Run check after Firebase auth is ready
-document.addEventListener('kidv:db-ready', () => {
-  if (KIDV._ready) setTimeout(() => SUB.check(), 100);
 });
+
+async function initPayment(plan, amount){
+  if(!KIDV._user){ alert('Please login first'); return; }
+
+  const rzpKey = 'YOUR_RAZORPAY_KEY_ID';
+
+  if(rzpKey === 'YOUR_RAZORPAY_KEY_ID'){
+    // Manual payment — WhatsApp to admin
+    const msg = `🆕 *New Subscription Request*\n\nPlan: ${planNames[plan]}\nAmount: ₹${amount.toLocaleString('en-IN')}\nEmail: ${KIDV._user.email}\nName: ${KIDV._user.displayName||'—'}\n\nPlease collect payment and activate.`;
+    window.open('https://wa.me/'+ADMIN_PHONE+'?text='+encodeURIComponent(msg),'_blank');
+
+    // Activate after confirmation (for manual flow)
+    const confirm = window.confirm('Payment request sent to admin via WhatsApp!\n\nAfter payment is received, admin will activate your account.\n\nDo you want to mark as pending?');
+    if(confirm){
+      await activateSubscription(plan, amount, 'pending_payment');
+    }
+    return;
+  }
+
+  // Razorpay auto payment
+  const options = {
+    key: rzpKey, amount: amount*100, currency: 'INR',
+    name: 'KIDV Invoice', description: planNames[plan]+' Subscription',
+    prefill: {email:KIDV._user.email, name:KIDV._user.displayName||''},
+    theme: {color:'#2f81f7'},
+    handler: async function(response){
+      await activateSubscription(plan, amount, 'active', response.razorpay_payment_id);
+    }
+  };
+  new Razorpay(options).open();
+}
+
+async function activateSubscription(plan, amount, status='active', paymentId=''){
+  const now = new Date();
+  const expiry = plan==='quarterly'
+    ? new Date(now.getTime()+90*24*60*60*1000)
+    : plan==='halfyearly'
+    ? new Date(now.getTime()+180*24*60*60*1000)
+    : new Date(now.getTime()+365*24*60*60*1000);
+
+  // Save to Firestore
+  await KIDV._db.collection('users').doc(KIDV._uid).set({
+    subscriptionStatus: status,
+    subscriptionPlan: plan,
+    subscriptionAmount: amount,
+    subscriptionExpiry: expiry.toISOString(),
+    subscriptionActivatedAt: now.toISOString(),
+    razorpayPaymentId: paymentId,
+  },{merge:true});
+
+  // Store for notifications
+  currentSub = {
+    plan: planNames[plan],
+    amount: '₹'+amount.toLocaleString('en-IN'),
+    email: KIDV._user.email,
+    name: KIDV._user.displayName || KIDV._user.email,
+    expiry: expiry.toLocaleDateString('en-IN'),
+    paymentId: paymentId,
+    activatedAt: now.toLocaleDateString('en-IN'),
+  };
+
+  // Show success modal
+  document.getElementById('successMsg').innerHTML =
+    `<strong>${currentSub.name}</strong> ne <strong>${currentSub.plan}</strong> plan activate thayo.<br/>
+     Amount: <strong>${currentSub.amount}</strong> · Expiry: <strong>${currentSub.expiry}</strong>`;
+  document.getElementById('successModal').classList.add('open');
+
+  // Auto-send WhatsApp to admin
+  setTimeout(()=> sendWAAdmin(), 500);
+}
+
+// ── WhatsApp to Admin ──
+function sendWAAdmin(){
+  const msg =
+`🎉 *New Subscription — KIDV Invoice*
+
+👤 Customer: ${currentSub.name}
+📧 Email: ${currentSub.email}
+📦 Plan: ${currentSub.plan}
+💰 Amount: ${currentSub.amount}
+📅 Activated: ${currentSub.activatedAt}
+⏰ Expiry: ${currentSub.expiry}
+${currentSub.paymentId?'🔑 Payment ID: '+currentSub.paymentId:''}
+
+✅ Please verify and confirm activation.`;
+
+  window.open('https://wa.me/'+ADMIN_PHONE+'?text='+encodeURIComponent(msg),'_blank');
+  markSent('btnWaAdmin','✅ Sent to Admin');
+}
+
+// ── WhatsApp to Customer ──
+function sendWACustomer(){
+  const msg =
+`🎉 *Thank you for subscribing to KIDV Invoice!*
+
+Dear ${currentSub.name},
+
+Your subscription has been activated successfully.
+
+📦 Plan: *${currentSub.plan}*
+💰 Amount Paid: *${currentSub.amount}*
+📅 Activation Date: ${currentSub.activatedAt}
+⏰ Valid Until: *${currentSub.expiry}*
+
+Need help? Contact us:
+📱 WhatsApp: +91 79844 86885
+📧 Email: ${ADMIN_EMAIL}
+
+_KIDV Invoice — Smart Invoicing for Indian Business_
+_kidvtech.com_`;
+
+  // Open WhatsApp — customer email thi number dhundhi shakay nahi
+  // So open general share
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  markSent('btnWaCust','✅ Message Ready');
+}
+
+// ── Email Confirmation ──
+async function sendEmail(){
+  const btn = document.getElementById('btnEmail');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  // Check EmailJS configured
+  if(EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID'){
+    // Fallback: open email client
+    const subject = encodeURIComponent('KIDV Invoice - Subscription Confirmation');
+    const body = encodeURIComponent(
+`Dear ${currentSub.name},
+
+Your KIDV Invoice subscription has been activated!
+
+Plan: ${currentSub.plan}
+Amount: ${currentSub.amount}
+Activation Date: ${currentSub.activatedAt}
+Valid Until: ${currentSub.expiry}
+
+Login at: https://invoice.kidvtech.com
+
+Thank you for choosing KIDV Invoice!
+
+KIDV Tech
++91 98986 81171
+kidvtech.com`
+    );
+    // Email to customer
+    window.open(`mailto:${currentSub.email}?subject=${subject}&body=${body}`,'_blank');
+    // Email to admin
+    setTimeout(()=>{
+      window.open(`mailto:${ADMIN_EMAIL}?subject=${encodeURIComponent('New Subscription: '+currentSub.name+' - '+currentSub.plan)}&body=${body}`,'_blank');
+    }, 1000);
+
+    markSent('btnEmail','✅ Email Client Opened');
+    return;
+  }
+
+  // EmailJS auto-send
+  try{
+    // To customer
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_name:    currentSub.name,
+      to_email:   currentSub.email,
+      plan:       currentSub.plan,
+      amount:     currentSub.amount,
+      expiry:     currentSub.expiry,
+      activated:  currentSub.activatedAt,
+    });
+    // To admin
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_name:    'Amit Patel',
+      to_email:   ADMIN_EMAIL,
+      plan:       currentSub.plan+' ('+currentSub.name+')',
+      amount:     currentSub.amount,
+      expiry:     currentSub.expiry,
+      activated:  currentSub.activatedAt,
+    });
+    markSent('btnEmail','✅ Emails Sent!');
+  }catch(e){
+    btn.textContent = '❌ Error - Try again';
+    btn.disabled = false;
+  }
+}
+
+function markSent(btnId, text){
+  const btn = document.getElementById(btnId);
+  if(btn){
+    btn.innerHTML = '<span class="material-icons-round">check_circle</span> '+text;
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+  }
+}
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+  <script src="kidv-common.js"></script>
+</body>
+</html>

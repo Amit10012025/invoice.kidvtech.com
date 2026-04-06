@@ -1,282 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Customer Ledger</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
-<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">  
-<style>
-:root{--rail-w:68px;--bg:#f0f4f8;--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-.rail-logo{width:42px;height:42px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:14px;cursor:pointer;}
-.rail-logo img{width:42px;height:42px;object-fit:cover;border-radius:12px;}
-.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
-.rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
-.rail-item.active{background:rgba(47,129,247,0.2);color:#2f81f7;}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-.rail-spacer{flex:1;}
-.main{margin-left:var(--rail-w);flex:1;padding:24px 28px;}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:22px;font-weight:700;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
-.btn .material-icons-round{font-size:18px;}
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;margin-bottom:20px;}
-.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.card-title{font-size:14px;font-weight:700;}
-select,input{font-family:'Outfit',sans-serif;font-size:13px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a2332;outline:none;}
-select:focus,input:focus{border-color:#2f81f7;}
-table{width:100%;border-collapse:collapse;}
-th{padding:10px 16px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;background:#f8faff;border-bottom:2px solid #f0f4f8;text-align:left;}
-td{padding:12px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
-tr:last-child td{border:none;}
-tr:hover td{background:#f8faff;}
-.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-invoice{background:#eff6ff;color:#2f81f7;}
-.badge-payment{background:#f0fdf4;color:#16a34a;}
-.badge-debit{background:#fff7ed;color:#d97706;}
-.balance-row{background:#f8faff;font-weight:700;}
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
-.stat{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1.5px solid #e2e8f0;}
-.stat-val{font-size:24px;font-weight:800;}
-.stat-lbl{font-size:12px;color:var(--muted);margin-top:4px;}
-.positive{color:#16a34a;}.negative{color:#ef4444;}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;cursor:pointer;}
-@media print{
-  nav.rail,.topbar .btn,.topbar select{display:none!important}
-  body{background:#fff}
-  .main{margin-left:0;padding:10px}
-  table{font-size:11px}
-}
-</style>
-<script src="firebase-config.js"></script>
-<script src="subscription.js"></script>
-</head>
-<body>
-<nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item active" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
-  <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile</div></div>
-</nav>
+/**
+ * KIDV Invoice — Common Footer & Logo Injector
+ * Include this in ALL HTML pages before </body>
+ * <script src="kidv-common.js"></script>
+ */
 
-<main class="main">
-  <div class="topbar">
-    <div>
-      <div class="page-title">Customer / Supplier Ledger</div>
-      <div class="page-subtitle">Invoice wise outstanding balance & payment history</div>
-    </div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <select id="typeFilter" onchange="loadLedger()">
-        <option value="customer">Customer</option>
-        <option value="supplier">Supplier</option>
-      </select>
-      <select id="partyFilter" onchange="loadLedger()" style="min-width:200px">
-        <option value="">Select Party</option>
-      </select>
-      <button class="btn btn-ghost" onclick="printLedger()"><span class="material-icons-round">print</span>Print</button>
-    </div>
-  </div>
+(function () {
+  'use strict';
 
-  <!-- Summary -->
-  <div class="summary-grid" id="summaryGrid">
-    <div class="stat"><div class="stat-val" id="sTotalInvoiced">₹0</div><div class="stat-lbl">Total Invoiced</div></div>
-    <div class="stat"><div class="stat-val positive" id="sTotalPaid">₹0</div><div class="stat-lbl">Total Received</div></div>
-    <div class="stat"><div class="stat-val negative" id="sOutstanding">₹0</div><div class="stat-lbl">Outstanding</div></div>
-    <div class="stat"><div class="stat-val" id="sInvoiceCount">0</div><div class="stat-lbl">Total Invoices</div></div>
-  </div>
+  // ── 1. (Footer injection placeholder) ────────────────────
 
-  <!-- Ledger Table -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title" id="ledgerTitle">Select a party to view ledger</div>
-      <div style="font-size:12px;color:var(--muted)" id="ledgerPeriod"></div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:90px">Date</th>
-          <th style="width:80px">Vch Type</th>
-          <th style="width:100px">Vch No / Ref</th>
-          <th>Particulars / Narration</th>
-          <th style="text-align:right;width:110px">Debit (₹)</th>
-          <th style="text-align:right;width:110px">Credit (₹)</th>
-          <th style="text-align:right;width:120px">Balance (₹)</th>
-        </tr>
-      </thead>
-      <tbody id="ledgerBody">
-        <tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">Select a customer or supplier to view ledger</td></tr>
-      </tbody>
-    </table>
-  </div>
-</main>
-
-<script>
-const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
-const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-
-let invoices=[], payments=[], clients=[], suppliers=[];
-
-document.addEventListener('kidv:db-ready', async()=>{
-  if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; }
-  
-  [invoices, payments, clients, suppliers] = await Promise.all([
-    KIDV.list('invoices'), KIDV.list('payments'),
-    KIDV.list('clients'), KIDV.list('suppliers')
-  ]);
-  
-  updatePartyDropdown();
-});
-
-function updatePartyDropdown(){
-  const type = document.getElementById('typeFilter').value;
-  const list = type === 'customer' ? clients : suppliers;
-  const sel = document.getElementById('partyFilter');
-  sel.innerHTML = '<option value="">— Select Party —</option>';
-  list.forEach((p,i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = p.name + (p.gstin ? ' ('+p.gstin+')' : '');
-    sel.appendChild(opt);
-  });
-  document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">Select a party to view ledger</td></tr>';
-  resetSummary();
-}
-
-function resetSummary(){
-  ['sTotalInvoiced','sTotalPaid','sOutstanding','sInvoiceCount'].forEach(id=>{
-    document.getElementById(id).textContent = id==='sInvoiceCount'?'0':'₹0';
-  });
-}
-
-function loadLedger(){
-  const type = document.getElementById('typeFilter').value;
-  const idx = document.getElementById('partyFilter').value;
-  
-  if(idx === '') {
-    updatePartyDropdown();
-    return;
+  // ── 2. Add logo tooltip to rail-logo ─────────────────────
+  function enhanceRailLogo() {
+    const logo = document.querySelector('.rail-logo');
+    if (logo && !logo.title) {
+      logo.title = 'KIDV Invoice — Dashboard';
+      logo.style.cursor = 'pointer';
+      if (!logo.onclick) {
+        logo.addEventListener('click', () => location.href = 'index.html');
+      }
+    }
   }
-  
-  const list = type === 'customer' ? clients : suppliers;
-  const party = list[parseInt(idx)];
-  if(!party) return;
-  
-  // Get invoices for this party
-  const partyInvoices = invoices.filter(inv =>
-    inv.clientName === party.name ||
-    inv.clientId === party._id ||
-    (party.gstin && inv.clientGSTIN === party.gstin)
-  );
-  
-  // Get payments for this party  
-  const partyPayments = payments.filter(p =>
-    p.clientName === party.name ||
-    p.clientId === party._id
-  );
-  
-  // Build ledger entries
-  let entries = [];
-  
-  partyInvoices.forEach(inv => {
-    entries.push({
-      date: inv.date || inv.createdAt,
-      type: 'invoice',
-      ref: inv.invoiceNo,
-      desc: 'Tax Invoice',
-      debit: parseFloat(inv.total||0),
-      credit: 0,
-    });
-  });
-  
-  partyPayments.forEach(pay => {
-    entries.push({
-      date: pay.date || pay.createdAt,
-      type: 'payment',
-      ref: pay.ref || pay.utr || '',
-      desc: 'Payment - ' + (pay.method||''),
-      debit: 0,
-      credit: parseFloat(pay.amount||0),
-    });
-  });
-  
-  // Sort by date
-  entries.sort((a,b) => new Date(a.date||0) - new Date(b.date||0));
-  
-  // Calculate running balance
-  let balance = 0;
-  let totalDebit = 0, totalCredit = 0;
-  
-  // Add opening balance row
-  const openingRow = `<tr style="background:#f0f9ff;border-bottom:2px solid #bae6fd">
-    <td colspan="6" style="font-weight:700;color:#0369a1;font-size:13px">Opening Balance</td>
-    <td style="text-align:right;font-weight:800;color:#0369a1">₹0.00</td>
-  </tr>`;
 
-  const rows = entries.map((e,ri) => {
-    balance += e.debit - e.credit;
-    totalDebit += e.debit;
-    totalCredit += e.credit;
-    const balStr = balance===0 ? '—' : fmt(Math.abs(balance))+' '+(balance>0?'Dr':'Cr');
-    const vchType = e.type==='invoice'?'Sales':e.type==='payment'?'Receipt':'Journal';
-    const vchColor = e.type==='invoice'?'#2f81f7':e.type==='payment'?'#16a34a':'#d97706';
-    return `<tr style="${ri%2===1?'background:#fafbff':''}">
-      <td style="font-size:12px;color:#374151">${fmtDate(e.date)}</td>
-      <td><span style="font-size:11px;font-weight:700;color:${vchColor}">${vchType}</span></td>
-      <td style="font-size:12px;font-weight:700;color:#2f81f7;font-family:monospace">${e.ref ? e.ref : (e.type==='payment' ? '<span style="color:#9ca3af;font-weight:400">No Ref</span>' : '—')}</td>
-      <td>
-        <div style="font-size:13px;font-weight:600;color:#1a2332">${e.desc}</div>
-        ${e.method?'<div style="font-size:11px;color:#9ca3af">Via: '+e.method+'</div>':''}
-        ${e.remarks?'<div style="font-size:11px;color:#9ca3af;font-style:italic">'+e.remarks+'</div>':''}
-      </td>
-      <td style="text-align:right;font-weight:700;color:${e.debit?'#ef4444':'#d1d5db'}">${e.debit?fmt(e.debit):'—'}</td>
-      <td style="text-align:right;font-weight:700;color:${e.credit?'#16a34a':'#d1d5db'}">${e.credit?fmt(e.credit):'—'}</td>
-      <td style="text-align:right;font-weight:700;font-size:13px;color:${balance>0?'#ef4444':balance<0?'#16a34a':'#9ca3af'}">${balStr}</td>
-    </tr>`;
-  });
-  
-  // Add closing balance row
-  rows.push(`<tr class="balance-row" style="background:#f0f4f8">
-    <td colspan="4" style="font-weight:700;text-align:right">Closing Balance</td>
-    <td style="text-align:right;font-weight:700;color:#ef4444">${fmt(totalDebit)}</td>
-    <td style="text-align:right;font-weight:700;color:#16a34a">${fmt(totalCredit)}</td>
-    <td style="text-align:right;font-weight:800;font-size:14px;color:${balance>0?'#ef4444':'#16a34a'}">${fmt(Math.abs(balance))} ${balance>0?'Dr':'Cr'}</td>
-  </tr>`);
-  
-  document.getElementById('ledgerBody').innerHTML = rows.length > 0 ? openingRow + rows.join('') : '<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">No transactions found</td></tr>';
-  document.getElementById('ledgerTitle').textContent = party.name + ' — Ledger';
-  document.getElementById('ledgerPeriod').textContent = partyInvoices.length + ' invoices · ' + partyPayments.length + ' payments';
-  
-  // Update summary
-  const outstanding = totalDebit - totalCredit;
-  document.getElementById('sTotalInvoiced').textContent = fmt(totalDebit);
-  document.getElementById('sTotalPaid').textContent = fmt(totalCredit);
-  document.getElementById('sOutstanding').textContent = fmt(Math.max(0,outstanding));
-  document.getElementById('sInvoiceCount').textContent = partyInvoices.length;
-}
+  // ── 3. Add About/Privacy/Terms to rail bottom ────────────
+  function addLegalRailItems() {
+    const rail = document.querySelector('.rail');
+    const page = location.pathname.split('/').pop() || '';
+    if (!rail) return;
 
-function printLedger(){
-  window.print();
-}
-</script>
-</body>
-</html>
+    // Check if already added
+    if (document.getElementById('rail-legal-group')) return;
+
+    const group = document.createElement('div');
+    group.id = 'rail-legal-group';
+    group.style.cssText = 'display:flex;flex-direction:column;gap:2px;padding-bottom:4px;';
+    group.innerHTML = `
+      <div onclick="location.href='about.html'" class="rail-item" title="About KIDV" style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.4);transition:background .18s,color .18s;border:1.5px solid transparent;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.4)'">
+        <span class="material-icons-round" style="font-size:20px">info</span>
+      </div>
+    `;
+
+    // Insert before last spacer/last item
+    const spacer = rail.querySelector('.rail-spacer');
+    if (spacer) {
+      rail.insertBefore(group, spacer);
+    } else {
+      rail.appendChild(group);
+    }
+  }
+
+  // ── 4. Update page title with KIDV branding ──────────────
+  function enhanceTitle() {
+    if (!document.title.includes('KIDV')) {
+      document.title = 'KIDV Invoice — ' + document.title;
+    }
+  }
+
+  // ── Run after DOM ready ───────────────────────────────────
+  function init() {
+    enhanceRailLogo();
+    enhanceTitle();
+    // addLegalRailItems(); // Uncomment if you want an "About" icon in the rail
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();

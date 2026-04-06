@@ -1,71 +1,681 @@
-/**
- * KIDV Invoice — Common Footer & Logo Injector
- * Include this in ALL HTML pages before </body>
- * <script src="kidv-common.js"></script>
- */
-
-(function () {
-  'use strict';
-
-  // ── 1. (Footer injection placeholder) ────────────────────
-
-  // ── 2. Add logo tooltip to rail-logo ─────────────────────
-  function enhanceRailLogo() {
-    const logo = document.querySelector('.rail-logo');
-    if (logo && !logo.title) {
-      logo.title = 'KIDV Invoice — Dashboard';
-      logo.style.cursor = 'pointer';
-      if (!logo.onclick) {
-        logo.addEventListener('click', () => location.href = 'index.html');
-      }
-    }
-  }
-
-  // ── 3. Add About/Privacy/Terms to rail bottom ────────────
-  function addLegalRailItems() {
-    const rail = document.querySelector('.rail');
-    const page = location.pathname.split('/').pop() || '';
-    if (!rail) return;
-
-    // Check if already added
-    if (document.getElementById('rail-legal-group')) return;
-
-    const group = document.createElement('div');
-    group.id = 'rail-legal-group';
-    group.style.cssText = 'display:flex;flex-direction:column;gap:2px;padding-bottom:4px;';
-    group.innerHTML = `
-      <div onclick="location.href='about.html'" class="rail-item" title="About KIDV" style="width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.4);transition:background .18s,color .18s;border:1.5px solid transparent;" onmouseover="this.style.background='rgba(255,255,255,0.1)';this.style.color='#fff'" onmouseout="this.style.background='';this.style.color='rgba(255,255,255,0.4)'">
-        <span class="material-icons-round" style="font-size:20px">info</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Tax Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo.jpg">
+<link rel="apple-touch-icon" href="logo.jpg">
+<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#0d1117;min-height:100vh;}
+.toolbar{background:#161b22;border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.toolbar-left{display:flex;align-items:center;gap:16px;}
+.back-btn{display:flex;align-items:center;gap:6px;color:#7d8590;font-size:13.5px;cursor:pointer;text-decoration:none;transition:color .15s;}
+.back-btn:hover{color:#e6edf3;}.back-btn .material-icons-round{font-size:20px;}
+.divider-v{width:1px;height:22px;background:rgba(255,255,255,0.07);}
+.toolbar-title{font-size:15px;font-weight:600;color:#e6edf3;}
+.toolbar-right{display:flex;align-items:center;gap:10px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#e6edf3;border:1px solid rgba(255,255,255,0.08);}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);}
+.btn .material-icons-round{font-size:17px;}
+.preview-outer{padding:32px 24px;display:flex;justify-content:center;min-height:calc(100vh - 60px);}
+/* Invoice Paper */
+.invoice-paper{width:794px;max-width:100%;background:#fff;font-family:'Outfit',sans-serif;color:#111;border:1.5px solid #111;font-size:11px;box-shadow:0 24px 80px rgba(0,0,0,0.5);position:relative;}
+/* Paid stamp */
+.paid-stamp{position:absolute;top:50px;right:50px;border:3px solid #22c55e;color:#22c55e;border-radius:6px;padding:5px 14px;font-size:14px;font-weight:800;letter-spacing:.2em;transform:rotate(8deg);background:rgba(34,197,94,0.05);display:none;z-index:10;}
+.paid-stamp.show{display:block;}
+/* Header */
+.inv-header{display:grid;grid-template-columns:60% 40%;border-bottom:1.5px solid #111;}
+.header-left{padding:12px 14px;border-right:1.5px solid #111;display:flex;gap:12px;align-items:flex-start;}
+.logo-box{width:62px;height:62px;background:linear-gradient(135deg,#1a3a6b,#2f81f7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;border:1px solid #1a3a6b;}
+.company-info{flex:1;}
+.company-name{font-size:13px;font-weight:800;color:#111;line-height:1.3;margin-bottom:3px;}
+.company-detail{font-size:9.5px;color:#333;line-height:1.65;}
+.header-right{padding:8px 12px;}
+.invoice-title{font-size:15px;font-weight:800;text-align:center;color:#fff;background:#1a3a6b;padding:7px;margin:-8px -12px 8px;letter-spacing:2px;}
+.meta-table{width:100%;border-collapse:collapse;}
+.meta-table tr td{font-size:10px;padding:3px 4px;border-bottom:1px dotted #ccc;}
+.meta-table tr:last-child td{border-bottom:none;}
+.meta-table .ml{font-weight:600;color:#444;width:48%;}
+.meta-table .mv{font-weight:700;color:#111;}
+/* Parties */
+.parties-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.party-block{padding:8px 12px;}
+.party-block:first-child{border-right:1.5px solid #111;}
+.party-type{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#fff;background:#444;padding:2px 7px;display:inline-block;border-radius:2px;margin-bottom:5px;}
+.party-name{font-size:12px;font-weight:800;color:#111;margin-bottom:3px;}
+.party-detail{font-size:9.5px;color:#333;line-height:1.65;}
+.party-gstin{font-size:10px;font-weight:700;color:#1a3a6b;margin-top:3px;}
+/* Items table */
+.items-table{width:100%;border-collapse:collapse;border-bottom:1.5px solid #111;}
+.items-table th{background:#1a3a6b;color:#fff;padding:6px 7px;font-size:9px;text-align:center;border-right:1px solid #2a4a8b;text-transform:uppercase;letter-spacing:.04em;font-weight:700;}
+.items-table th.left{text-align:left;}
+.items-table th:last-child{border-right:none;}
+.items-table td{padding:6px 7px;font-size:10.5px;border-bottom:1px solid #e0e0e0;border-right:1px solid #e0e0e0;vertical-align:top;}
+.items-table td:last-child{border-right:none;}
+.items-table td.c{text-align:center;}
+.items-table td.r{text-align:right;}
+.items-table tbody tr:nth-child(even) td{background:#f8f9ff;}
+.item-desc{font-weight:600;color:#111;}
+.item-hsn{font-size:9px;color:#666;font-family:monospace;margin-top:1px;}
+.items-table tfoot td{background:#eef2ff;font-weight:700;font-size:10.5px;border-top:1.5px solid #111;}
+/* Totals */
+.totals-section{display:grid;grid-template-columns:55% 45%;border-bottom:1.5px solid #111;}
+.totals-left{padding:10px 12px;border-right:1.5px solid #111;}
+.words-label{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:2px;}
+.words-text{font-size:11px;font-style:italic;color:#111;font-weight:500;margin-bottom:8px;}
+.irn-box{background:#f0f4ff;border:1px solid #c5daff;border-radius:4px;padding:5px 8px;margin-top:6px;display:none;}
+.irn-box-label{font-size:8px;font-weight:700;color:#2f81f7;text-transform:uppercase;}
+.irn-val{font-size:8.5px;font-family:monospace;color:#333;word-break:break-all;}
+.totals-right{padding:0;}
+.total-row{display:flex;justify-content:space-between;padding:4px 12px;border-bottom:1px solid #eee;font-size:11px;}
+.total-row:last-child{border-bottom:none;}
+.total-row .tl{color:#444;}
+.total-row .tv{font-weight:700;color:#111;}
+.total-row.hi{background:#fff8e1;}
+.total-row.hi .tl{color:#e65100;font-weight:600;}
+.total-row.hi .tv{color:#e65100;}
+.total-row.grand{background:#1a3a6b;padding:7px 12px;}
+.total-row.grand .tl{color:#fff;font-weight:700;font-size:12px;}
+.total-row.grand .tv{color:#fff;font-weight:800;font-size:14px;}
+/* Bottom */
+.bottom-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.bottom-left{padding:8px 12px;border-right:1.5px solid #111;}
+.bottom-right{padding:8px 12px;}
+.sec-head{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#555;border-bottom:1px solid #ddd;padding-bottom:3px;margin-bottom:5px;}
+.pan-text{font-size:11px;font-weight:700;margin-bottom:6px;color:#111;}
+.decl-text{font-size:9.5px;color:#555;line-height:1.6;font-style:italic;}
+.bank-row{display:flex;gap:6px;font-size:10px;padding:2px 0;border-bottom:1px dotted #eee;}
+.bank-row:last-child{border-bottom:none;}
+.bank-lbl{font-weight:600;color:#444;min-width:90px;}
+.bank-val{color:#111;font-weight:500;}
+/* Signature */
+.sig-section{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid #111;}
+.sig-block{padding:8px 12px;}
+.sig-block:first-child{border-right:1.5px solid #111;}
+.sig-label{font-size:9px;color:#666;margin-bottom:22px;}
+.sig-line{border-top:1.5px solid #555;padding-top:4px;margin-top:4px;}
+.sig-name{font-size:10.5px;font-weight:700;color:#111;}
+.sig-co{font-size:9.5px;color:#444;}
+/* Footer */
+.inv-footer{padding:5px 14px;text-align:center;font-size:9.5px;font-weight:800;color:#fff;background:#1a3a6b;letter-spacing:.12em;text-transform:uppercase;}
+/* Print */
+@media print{
+  .copy-label{ display:block !important; }
+  body{background:#fff;}
+  .toolbar{display:none!important;}
+  .preview-outer{padding:0;background:#fff;}
+  .invoice-paper{box-shadow:none;width:100%;max-width:100%;}
+  @page{size:A4;margin:6mm;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+<div class="toolbar">
+  <div class="toolbar-left">
+    <a class="back-btn" href="invoices.html"><span class="material-icons-round">arrow_back</span>Invoices</a>
+    <div class="divider-v"></div>
+    <span class="toolbar-title">Tax Invoice</span>
+  </div>
+  <div class="toolbar-right">
+    <button class="btn btn-ghost" onclick="navigate(-1)"><span class="material-icons-round">chevron_left</span></button>
+    <span id="navCounter" style="font-size:13px;color:#7d8590;min-width:60px;text-align:center">1 / 1</span>
+    <button class="btn btn-ghost" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
+    <button class="btn btn-ghost" onclick="shareWA()"><span class="material-icons-round" style="color:#25d366">share</span>WhatsApp</button>
+    <button class="btn btn-ghost" onclick="downloadPDF()" style="color:#dc2626;border-color:#fecaca;"><span class="material-icons-round">picture_as_pdf</span>Download PDF</button>
+    <div style="position:relative;display:inline-flex;align-items:center;gap:0">
+      <button class="btn btn-primary" onclick="printSelected()" style="border-radius:10px 0 0 10px;border-right:1px solid rgba(255,255,255,0.2)"><span class="material-icons-round">print</span>Print</button>
+      <button class="btn btn-primary" onclick="toggleCopyMenu()" style="border-radius:0 10px 10px 0;padding:9px 8px" id="copyMenuBtn"><span class="material-icons-round" style="font-size:16px">expand_more</span></button>
+      <div id="copyMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:999;min-width:200px;padding:8px;font-family:'Outfit',sans-serif">
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;padding:4px 10px 8px">Select Copies</div>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-original" checked style="width:15px;height:15px;accent-color:#2f81f7"> Original Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-duplicate" style="width:15px;height:15px;accent-color:#2f81f7"> Duplicate Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-triplicate" style="width:15px;height:15px;accent-color:#2f81f7"> Triplicate Copy
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#1a2332;transition:background .15s" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+          <input type="checkbox" id="cp-extra" style="width:15px;height:15px;accent-color:#2f81f7"> Extra Copy
+        </label>
+        <div style="border-top:1px solid #e2e8f0;margin:8px 0 4px"></div>
+        <button onclick="selectAllCopies(true)" style="background:none;border:none;color:#2f81f7;font-size:12px;font-weight:600;cursor:pointer;padding:4px 10px">Select All</button>
+        <button onclick="selectAllCopies(false)" style="background:none;border:none;color:#6b7a90;font-size:12px;font-weight:600;cursor:pointer;padding:4px 10px">Clear</button>
       </div>
-    `;
+    </div>
+  </div>
+</div>
 
-    // Insert before last spacer/last item
-    const spacer = rail.querySelector('.rail-spacer');
-    if (spacer) {
-      rail.insertBefore(group, spacer);
-    } else {
-      rail.appendChild(group);
-    }
-  }
+<div class="preview-outer">
+<div class="invoice-paper" id="invoicePaper">
+  <div class="paid-stamp" id="paidStamp">✓ PAID</div>
 
-  // ── 4. Update page title with KIDV branding ──────────────
-  function enhanceTitle() {
-    if (!document.title.includes('KIDV')) {
-      document.title = 'KIDV Invoice — ' + document.title;
-    }
-  }
+  <!-- HEADER -->
+  <div class="inv-header">
+    <div class="header-left">
+      <div class="logo-box" id="logoBox">KI</div>
+      <div class="company-info">
+        <div class="company-name" id="hCname">KIDV Tech</div>
+        <div class="company-detail" id="hCdetail">Ahmedabad, Gujarat</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="invoice-title">TAX INVOICE</div>
+      <table class="meta-table">
+        <tr><td class="ml">Invoice No</td><td class="mv" id="hInvNo">—</td></tr>
+        <tr><td class="ml">Invoice Date</td><td class="mv" id="hInvDate">—</td></tr>
+        <tr><td class="ml">Due Date</td><td class="mv" id="hDueDate">—</td></tr>
+        <tr><td class="ml">Payment Terms</td><td class="mv" id="hTerms">—</td></tr>
+        <tr><td class="ml">Place of Supply</td><td class="mv" id="hPos">Gujarat (24)</td></tr>
 
-  // ── Run after DOM ready ───────────────────────────────────
-  function init() {
-    enhanceRailLogo();
-    enhanceTitle();
-    // addLegalRailItems(); // Uncomment if you want an "About" icon in the rail
-  }
+      </table>
+    </div>
+  </div>
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  <!-- PARTIES: Customer Bill To | Customer Ship To -->
+  <div class="parties-section" id="partiesRow">
+    <div class="party-block">
+      <div class="party-type">Customer (Bill To)</div>
+      <div class="party-name" id="toName">—</div>
+      <div class="party-detail" id="toDetail">—</div>
+      <div class="party-gstin" id="toGSTIN"></div>
+    </div>
+    <div class="party-block" id="shipToBlock">
+      <div class="party-type" style="background:#2563eb;">Customer (Ship To / Consignee)</div>
+      <div class="party-name" id="shipName">—</div>
+      <div class="party-detail" id="shipDetail">—</div>
+      <div class="party-gstin" id="shipGSTIN"></div>
+    </div>
+  </div>
+  <!-- Single column when no Ship To -->
+  <div class="parties-section" id="partiesRowSingle" style="display:none;">
+    <div class="party-block" style="border-right:none;">
+      <div class="party-type">Customer (Bill To)</div>
+      <div class="party-name" id="toNameSingle">—</div>
+      <div class="party-detail" id="toDetailSingle">—</div>
+      <div class="party-gstin" id="toGSTINSingle"></div>
+    </div>
+    <div class="party-block" style="background:#f8faff;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;color:#9ca3af;">
+        <div style="font-size:22px;margin-bottom:4px">📍</div>
+        <div style="font-size:10px;">Same billing &amp; shipping address</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSPORT DETAILS -->
+  <div class="parties-section" id="transportSection" style="display:none;background:#f8faff;">
+    <div class="party-block" style="border-right:1.5px solid #111;">
+      <div class="party-type" style="background:#2563eb;">Transport Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Transporter Name</div>
+          <div style="font-size:11px;font-weight:600;color:#111" id="tTransporter">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">GST Transporter ID</div>
+          <div style="font-size:11px;font-family:monospace;color:#111" id="tTransporterId">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Vehicle No</div>
+          <div style="font-size:11px;font-weight:700;color:#111" id="tVehicleNo">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Mode of Transport</div>
+          <div style="font-size:11px;color:#111" id="tMode">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="party-block">
+      <div class="party-type" style="background:#2563eb;opacity:0">.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">Destination</div>
+          <div style="font-size:11px;font-weight:600;color:#111" id="tDestination">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">LR No / Doc No</div>
+          <div style="font-size:11px;color:#111" id="tLrNo">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">LR Date</div>
+          <div style="font-size:11px;color:#111" id="tLrDate">—</div>
+        </div>
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#6b7a90;text-transform:uppercase;margin-bottom:2px;">E-Way Bill No</div>
+          <div style="font-size:11px;font-family:monospace;color:#111" id="tEwayNo">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEMS TABLE -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width:30px">Sr.</th>
+        <th class="left" style="width:28%">Description of Goods / Services</th>
+        <th style="width:60px">HSN/<br/>SAC</th>
+        <th style="width:38px">Qty</th>
+        <th style="width:35px">UOM</th>
+        <th style="width:75px">Rate (₹)</th>
+        <th style="width:45px">GST%</th>
+        <th style="width:85px">Amount (₹)</th>
+      </tr>
+    </thead>
+    <tbody id="itemsBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" class="r" style="font-size:10px;color:#555">Total Qty →</td>
+        <td class="c" id="totalQty">0</td>
+        <td colspan="3" class="r">Subtotal</td>
+        <td class="r" id="footerSub">₹0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- TOTALS -->
+  <div class="totals-section">
+    <div class="totals-left">
+      <div class="words-label">Amount in Words</div>
+      <div class="words-text" id="amtWords">—</div>
+      <div class="words-label">Tax Amount in Words</div>
+      <div class="words-text" id="taxWords">—</div>
+      <div class="irn-box" id="irnBox">
+        <div class="irn-box-label">IRN (Invoice Reference Number)</div>
+        <div class="irn-val" id="irnVal">—</div>
+      </div>
+    </div>
+    <div class="totals-right">
+      <div class="total-row"><span class="tl">Subtotal (Taxable Value)</span><span class="tv" id="tSub">₹0.00</span></div>
+      <div class="total-row hi" id="cgstRow"><span class="tl" id="cgstLbl">Output Tax CGST @ 9%</span><span class="tv" id="tCgst">₹0.00</span></div>
+      <div class="total-row hi" id="sgstRow"><span class="tl" id="sgstLbl">Output Tax SGST @ 9%</span><span class="tv" id="tSgst">₹0.00</span></div>
+      <div class="total-row hi" id="igstRow" style="display:none"><span class="tl" id="igstLbl">Output Tax IGST @ 18%</span><span class="tv" id="tIgst">₹0.00</span></div>
+      <div class="total-row"><span class="tl">Total Taxes and Charges</span><span class="tv" id="tTax">₹0.00</span></div>
+      <div class="total-row"><span class="tl">Rounding Adjustment</span><span class="tv">₹ 0.00</span></div>
+      <div class="total-row grand"><span class="tl">Grand Total</span><span class="tv" id="tGrand">₹0.00</span></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-section">
+    <div class="bottom-left">
+      <div class="pan-text" id="panText"></div>
+      <div class="sec-head">Declaration</div>
+      <div class="decl-text" id="notesText">We declare that this invoice shows the actual price of the goods/services described and that all particulars are true and correct.</div>
+    </div>
+    <div class="bottom-right">
+      <div class="sec-head">Company's Bank Details</div>
+      <div class="bank-row"><span class="bank-lbl">Bank Name</span><span class="bank-val" id="bBank">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">A/c No.</span><span class="bank-val" id="bAcc">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">Branch &amp; IFS Code</span><span class="bank-val" id="bIfsc">—</span></div>
+      <div class="bank-row"><span class="bank-lbl">UPI ID</span><span class="bank-val" id="bUpi">—</span></div>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="sig-section">
+    <div class="sig-block">
+      <div class="sig-label">Customer's Seal and Signature</div>
+      <div style="height:34px"></div>
+    </div>
+    <div class="sig-block" style="text-align:right">
+      <div class="sig-label" id="sigFor">For KIDV Tech</div>
+      <div style="height:34px"></div>
+      <div class="sig-line">
+        <div class="sig-name">Authorised Signatory</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="inv-footer" id="invFooter">SUBJECT TO AHMEDABAD JURISDICTION</div>
+</div>
+</div>
+
+<script src="firebase-config.js"></script>
+<script>
+const ONES=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+const TENS=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+function n2w(n){n=Math.floor(n);if(n===0)return'Zero';if(n<20)return ONES[n];if(n<100)return TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');if(n<1000)return ONES[Math.floor(n/100)]+' Hundred'+(n%100?' and '+n2w(n%100):'');if(n<100000)return n2w(Math.floor(n/1000))+' Thousand'+(n%1000?' '+n2w(n%1000):'');if(n<10000000)return n2w(Math.floor(n/100000))+' Lakh'+(n%100000?' '+n2w(n%100000):'');return n2w(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+n2w(n%10000000):'');}
+function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function set(id,v){const el=document.getElementById(id);if(el)el.textContent=v!=null?v:'—';}
+
+const DEMO={invoiceNo:'INV-001',date:'2026-03-21',due:'2026-04-20',terms:'Net 30',supply:'intra',status:'pending',clientName:'Acme Industries Pvt. Ltd.',clientGSTIN:'24AABCU9603R1ZX',clientAddress:'Plot 42, GIDC Phase 2, Vatva',clientState:'Gujarat',lines:[{desc:'ERPNext Implementation Services',hsn:'998314',qty:1,rate:50000,gst:18,amount:50000},{desc:'Custom Module Development',hsn:'998314',qty:3,rate:8000,gst:18,amount:24000},{desc:'Annual Support & Maintenance',hsn:'998315',qty:1,rate:12000,gst:18,amount:12000}],sub:'86000.00',totalGST:'15480.00',total:'101480.00',notes:'Thank you for your business!'};
+
+let invoices=[],currentIdx=0;
+let comp={}, gstConf={}, bank={};
+
+function renderInvoice(inv){
+  if(!inv) return;
+  document.getElementById('navCounter').textContent=(currentIdx+1)+' / '+Math.max(1,invoices.length);
+  document.getElementById('paidStamp').classList.toggle('show',inv.status==='paid');
+
+  const cname=comp.name||'KIDV Tech';
+  const gstin=gstConf.gstin||comp.gstin||'';
+  const pan=gstConf.pan||'';
+  document.getElementById('logoBox').textContent=cname.slice(0,2).toUpperCase();
+  set('hCname',cname);
+  document.getElementById('hCdetail').innerHTML=[
+    comp.address||'',comp.city?comp.city+', Gujarat':'Gujarat, India',
+    gstin?'GSTIN/UIN: '+gstin:'',
+    comp.phone?'Contact No: '+comp.phone:'',
+    comp.email?'Email Id: '+comp.email:'',
+    comp.web?'Website: '+comp.web:'',
+    pan?'CIN/PAN: '+pan:'',
+  ].filter(Boolean).join('<br/>');
+
+  set('hInvNo',inv.invoiceNo);
+  set('hInvDate',fmtDate(inv.date));
+  set('hDueDate',fmtDate(inv.due));
+  set('hTerms',inv.terms||'Net 30');
+  set('hPos',(comp.city||'Gujarat')+' ('+(gstConf.statecode||'24')+')');
+  set('hSupply',inv.supply==='inter'?'Inter-State (IGST)':'Intra-State (CGST+SGST)');
+
+  // Bill To customer details
+  const billToDetail = [
+    inv.clientAddress||'',
+    inv.clientCity||'',
+    inv.clientState ? inv.clientState+(inv.clientStateCode?', State Code: '+inv.clientStateCode:'') : ''
+  ].filter(Boolean).join('<br/>');
+
+  const hasShipTo = !!(inv.shipName || inv.shipAddress);
+
+  if(hasShipTo){
+    // Show 2-column: Bill To | Ship To
+    document.getElementById('partiesRow').style.display='';
+    document.getElementById('partiesRowSingle').style.display='none';
+
+    set('toName', inv.clientName);
+    document.getElementById('toDetail').innerHTML = billToDetail||'—';
+    document.getElementById('toGSTIN').textContent = inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
+
+    set('shipName', inv.shipName||inv.clientName);
+    document.getElementById('shipDetail').innerHTML = [
+      inv.shipAddress||'',
+      inv.shipCity||'',
+      inv.shipState||''
+    ].filter(Boolean).join('<br/>')||'—';
+    document.getElementById('shipGSTIN').textContent = inv.shipGSTIN?'GSTIN: '+inv.shipGSTIN:'';
   } else {
-    init();
+    // Show single column Bill To + same address note
+    document.getElementById('partiesRow').style.display='none';
+    document.getElementById('partiesRowSingle').style.display='';
+
+    set('toNameSingle', inv.clientName);
+    document.getElementById('toDetailSingle').innerHTML = billToDetail||'—';
+    document.getElementById('toGSTINSingle').textContent = inv.clientGSTIN?'GSTIN: '+inv.clientGSTIN:'';
   }
 
-})();
+  // Transport section
+  const transport = inv.transport;
+  const tSection = document.getElementById('transportSection');
+  if(transport && (transport.transporter || transport.vehicleNo)){
+    tSection.style.display = '';
+    const set2 = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v||'—'; };
+    set2('tTransporter', transport.transporter);
+    set2('tTransporterId', transport.transporterId);
+    set2('tVehicleNo', transport.vehicleNo);
+    set2('tMode', transport.mode);
+    set2('tDestination', transport.destination);
+    set2('tLrNo', transport.lrNo);
+    set2('tLrDate', transport.lrDate ? fmtDate(transport.lrDate) : '—');
+    set2('tEwayNo', transport.ewayNo);
+  } else {
+    tSection.style.display = 'none';
+  }
+
+  const lines=inv.lines||[];
+  let totalQty=0;
+  document.getElementById('itemsBody').innerHTML=lines.map((l,i)=>{
+    totalQty+=parseFloat(l.qty||1);
+    return`<tr>
+      <td class="c">${i+1}</td>
+      <td><div class="item-desc">${l.desc||'—'}</div></td>
+      <td class="c" style="font-family:monospace;font-size:9.5px;font-weight:600">${l.hsn||'—'}</td>
+      <td class="c">${l.qty}</td>
+      <td class="c">Nos</td>
+      <td class="r">₹${parseFloat(l.rate||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
+      <td class="c">${l.gst}%</td>
+      <td class="r" style="font-weight:700">₹${parseFloat(l.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
+    </tr>`;}).join('');
+  set('totalQty',totalQty.toString());
+  set('footerSub',fmt(inv.sub));
+
+  const sub=parseFloat(inv.sub||0),gstT=parseFloat(inv.totalGST||0),half=gstT/2,tot=parseFloat(inv.total||0),intra=inv.supply!=='inter';
+  set('tSub',fmt(sub));set('tTax',fmt(gstT));set('tGrand',fmt(tot));
+
+  if(intra){
+    const rMap={};
+    lines.forEach(l=>{const r=parseFloat(l.gst||18);rMap[r]=(rMap[r]||0)+parseFloat(l.amount||0)*r/100;});
+    const rates=Object.keys(rMap).sort();
+    if(rates.length===1){set('cgstLbl','Output Tax CGST @ '+(rates[0]/2)+'%');set('sgstLbl','Output Tax SGST @ '+(rates[0]/2)+'%');}
+    set('tCgst',fmt(half));set('tSgst',fmt(half));
+    document.getElementById('cgstRow').style.display='';document.getElementById('sgstRow').style.display='';document.getElementById('igstRow').style.display='none';
+  }else{
+    const rate=lines.length?lines[0].gst||18:18;
+    set('igstLbl','Output Tax IGST @ '+rate+'%');set('tIgst',fmt(gstT));
+    document.getElementById('cgstRow').style.display='none';document.getElementById('sgstRow').style.display='none';document.getElementById('igstRow').style.display='';
+  }
+
+  set('amtWords','INR '+n2w(Math.floor(tot))+' only.');
+  set('taxWords','INR '+n2w(Math.floor(gstT))+' only.');
+  document.getElementById('panText').textContent=pan?"Company's PAN:    "+pan:'';
+  set('notesText',(inv.notes?inv.notes+'\n\n':'')+'We declare that this invoice shows the actual price of the goods/services described and that all particulars are true and correct.');
+
+  if(bank.acc){
+    set('bBank',bank.bank||'—');set('bAcc',bank.acc||'—');
+    set('bIfsc',[bank.branch,bank.ifsc].filter(Boolean).join(' & ')||'—');
+    set('bUpi',bank.upi||'—');
+  }
+  set('sigFor','For '+cname);
+  const gstData = await KIDV.getSettings('gst');
+  const city = gstData.jurisdiction || comp.city || 'Ahmedabad';
+  set('invFooter','SUBJECT TO '+city.toUpperCase()+' JURISDICTION');
+}
+
+function navigate(dir){if(!invoices.length)return;currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));renderInvoice(invoices[currentIdx]);}
+
+function downloadPDF(){
+  // Set filename before print dialog
+  const inv = invoices.length ? invoices[currentIdx] : {};
+  const filename = (inv.invoiceNo||'invoice') + '-' + (inv.clientName||'').replace(/\s+/g,'-') + '.pdf';
+  // Chrome trick: use title as PDF filename
+  const origTitle = document.title;
+  document.title = filename;
+  window.print();
+  setTimeout(()=> document.title = origTitle, 100);
+}
+
+async function downloadPDF(){
+  const btn = document.getElementById('pdfBtn');
+  btn.innerHTML = '<span class="material-icons-round">hourglass_top</span>Generating...';
+  btn.disabled = true;
+
+  const inv = invoices[currentIdx] || {};
+  const filename = (inv.invoiceNo || 'invoice') + '.pdf';
+
+  const element = document.getElementById('invoicePaper');
+  const opt = {
+    margin:       [5, 5, 5, 5],
+    filename:     filename,
+    image:        { type:'jpeg', quality:0.98 },
+    html2canvas:  { scale:2, useCORS:true, letterRendering:true },
+    jsPDF:        { unit:'mm', format:'a4', orientation:'portrait' }
+  };
+
+  try{
+    await html2pdf().set(opt).from(element).save();
+  }catch(e){
+    // Fallback to print
+    window.print();
+  }
+
+  btn.innerHTML = '<span class="material-icons-round" style="color:#ef4444">picture_as_pdf</span>Download PDF';
+  btn.disabled = false;
+}
+
+function toggleCopyMenu(){
+  const m=document.getElementById('copyMenu');
+  m.style.display=m.style.display==='none'?'':'none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#copyMenu')&&!e.target.closest('#copyMenuBtn'))
+    document.getElementById('copyMenu').style.display='none';
+});
+function selectAllCopies(v){
+  ['original','duplicate','triplicate','extra'].forEach(id=>{
+    document.getElementById('cp-'+id).checked=v;
+  });
+}
+function printSelected(){
+  const label=document.getElementById('copyLabel');
+  const copies=[];
+  if(document.getElementById('cp-original').checked) copies.push('ORIGINAL COPY');
+  if(document.getElementById('cp-duplicate').checked) copies.push('DUPLICATE COPY');
+  if(document.getElementById('cp-triplicate').checked) copies.push('TRIPLICATE COPY');
+  if(document.getElementById('cp-extra').checked) copies.push('EXTRA COPY');
+  if(!copies.length){ window.print(); return; }
+  let idx=0;
+  function printNext(){
+    if(idx>=copies.length){label.style.display='none';document.getElementById('copyMenu').style.display='none';return;}
+    label.textContent=copies[idx++];
+    label.style.display='block';
+    setTimeout(()=>{window.print();setTimeout(printNext,800);},100);
+  }
+  printNext();
+}
+
+function shareWA(){
+  const inv=invoices.length?invoices[currentIdx]:DEMO;
+  const msg='*Invoice: '+inv.invoiceNo+'*\nClient: '+inv.clientName+'\nAmount: '+fmt(inv.total)+'\nDate: '+fmtDate(inv.date)+'\nDue: '+fmtDate(inv.due)+'\n\n_'+(comp.name||'KIDV Invoice')+' \u00b7 '+(comp.phone||'')+'_';
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+// Helper: read setting from any of multiple localStorage keys
+function readSetting(key){
+  return JSON.parse(
+    localStorage.getItem('kidv-cache-'+key) ||
+    localStorage.getItem('kidv-'+key) ||
+    '{}'
+  );
+}
+
+// ── Invoice Loading Strategy ─────────────────────────────
+// 1. IMMEDIATELY render from localStorage (instant, no flicker)
+// 2. Load settings from Firestore → re-render with fresh company/bank data
+// 3. If Firestore invoice lookup fails → keep localStorage invoice
+
+const params = new URLSearchParams(location.search);
+const previewId  = params.get('id');
+const previewIdx = parseInt(params.get('idx') || '0');
+
+// Step 1: Instant render — try multiple storage sources
+function getPreviewInv(id){
+  // Try _id specific key first (most reliable)
+  if(id){
+    const byId = localStorage.getItem('kidv-inv-'+id);
+    if(byId){ try{ return JSON.parse(byId); }catch(e){} }
+  }
+  // Try sessionStorage (same tab session)
+  const ss = sessionStorage.getItem('kidv-preview-invoice');
+  if(ss){ try{ return JSON.parse(ss); }catch(e){} }
+  // Try localStorage
+  const ls = localStorage.getItem('kidv-preview-invoice');
+  if(ls){ try{ return JSON.parse(ls); }catch(e){} }
+  return null;
+}
+
+const _pId = new URLSearchParams(location.search).get('id')||'';
+let _localInv = getPreviewInv(_pId);
+if(_localInv){
+  try{
+    comp    = readSetting('company');
+    gstConf = readSetting('gst');
+    bank    = readSetting('bank');
+    invoices = [_localInv];
+    currentIdx = 0;
+    renderInvoice(_localInv);
+  }catch(e){ console.warn('Quick preview error:',e); }
+}
+
+document.addEventListener('kidv:db-ready', async()=>{
+  try{
+    // Load settings + all invoices from Firestore
+    [comp, gstConf, bank, invoices] = await Promise.all([
+      KIDV.getSettings('company'),
+      KIDV.getSettings('gst'),
+      KIDV.getSettings('bank'),
+      KIDV.list('invoices'),
+    ]);
+    // Cache settings to localStorage
+    if(comp && comp.name){
+      localStorage.setItem('kidv-cache-company', JSON.stringify(comp));
+      localStorage.setItem('kidv-company', JSON.stringify(comp));
+    }
+    if(gstConf && gstConf.gstin){
+      localStorage.setItem('kidv-cache-gst', JSON.stringify(gstConf));
+      localStorage.setItem('kidv-gst', JSON.stringify(gstConf));
+    }
+    if(bank && bank.acc){
+      localStorage.setItem('kidv-cache-bank', JSON.stringify(bank));
+      localStorage.setItem('kidv-bank', JSON.stringify(bank));
+    }
+  }catch(e){
+    console.warn('[Invoice] Firestore error, using cache:', e);
+    comp    = readSetting('company');
+    gstConf = readSetting('gst');
+    bank    = readSetting('bank');
+    invoices = [];
+  }
+
+  // Step 2: Find the correct invoice
+  let targetInv = null;
+
+  // Try _id lookup first (most reliable)
+  if(previewId && invoices.length){
+    const found = invoices.findIndex(i => i._id === previewId);
+    if(found >= 0){
+      currentIdx = found;
+      targetInv  = invoices[found];
+    }
+  }
+
+  // Fallback 1: re-try storage with fresh attempt
+  if(!targetInv){
+    const retry = getPreviewInv(previewId);
+    if(retry){ targetInv = retry; invoices = [retry]; currentIdx = 0; }
+  }
+  // Fallback 2: use already-loaded local invoice
+  if(!targetInv && _localInv){
+    targetInv  = _localInv;
+    invoices   = [_localInv];
+    currentIdx = 0;
+  }
+
+  // Fallback 3: use DEMO
+  if(!targetInv){
+    invoices  = [DEMO];
+    currentIdx = 0;
+    targetInv  = DEMO;
+  }
+
+  // Re-render with fresh company/bank settings + correct invoice
+  renderInvoice(targetInv);
+  localStorage.removeItem('kidv-preview-invoice');
+});
+</script>
+  <script src="kidv-common.js"></script>
+</body>
+</html>

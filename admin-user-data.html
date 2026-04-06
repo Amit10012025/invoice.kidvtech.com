@@ -2,66 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – User Data Viewer</title>
+<title>KIDV Invoice – Admin Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
-.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.topbar-left{display:flex;align-items:center;gap:14px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;color:#1a2332;}
+.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
 .logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
-.topbar-title{font-size:15px;font-weight:700;color:#fff;}
-.user-chip{background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.3);color:#60a5fa;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
-.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
-.btn-ghost:hover{background:rgba(255,255,255,0.2);}
+.topbar-title{font-size:16px;font-weight:700;color:#fff;}
+.admin-badge{background:#7c3aed;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;}
+.btn-danger{background:#ef4444;color:#fff;}
+.btn-success{background:#16a34a;color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;}
 .btn .material-icons-round{font-size:16px;}
-
-.main{padding:24px 28px;}
-
-/* User info card */
-.user-card{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
-.user-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
-.user-info{flex:1;}
-.user-name{font-size:18px;font-weight:700;color:#1a2332;}
-.user-email{font-size:13px;color:#6b7a90;margin-top:3px;}
-.user-meta{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.meta-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;}
-
-/* Tabs */
-.tabs{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;width:fit-content;}
-.tab{padding:8px 20px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;display:flex;align-items:center;gap:6px;}
-.tab .material-icons-round{font-size:16px;}
-.tab.active{background:#2f81f7;color:#fff;box-shadow:0 2px 8px rgba(47,129,247,0.3);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
-
-/* Stats row */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.stat{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1.5px solid #e2e8f0;}
-.stat-val{font-size:26px;font-weight:800;color:#1a2332;}
+.main{padding:28px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.stat-val{font-size:28px;font-weight:800;color:#1a2332;}
 .stat-lbl{font-size:12px;color:#6b7a90;margin-top:4px;}
-
-/* Table */
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
+.stat-icon{font-size:22px;margin-bottom:10px;}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;}
 .card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-size:14px;font-weight:700;color:#1a2332;}
+.card-title{font-size:14px;font-weight:700;}
 table{width:100%;border-collapse:collapse;}
 th{padding:10px 16px;font-size:10.5px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #f0f4f8;}
-td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;color:#374151;vertical-align:middle;}
+td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:#f8faff;}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-paid{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
-.badge-pending{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
-.badge-draft{background:#f8faff;color:#6b7a90;border:1px solid #e2e8f0;}
-.badge-overdue{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
-.empty{text-align:center;padding:40px;color:#9ca3af;font-size:13px;}
-.inv-no{font-weight:700;color:#2f81f7;font-size:12.5px;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.badge-trial{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
+.badge-active{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.badge-expired{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+.badge-admin{background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;}
+.actions{display:flex;gap:6px;}
+.search{background:#f0f4f8;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:13px;width:260px;outline:none;}
+.search:focus{border-color:#2f81f7;}
+.empty{text-align:center;padding:40px;color:#9ca3af;}
 </style>
 </head>
 <body>
@@ -69,89 +51,39 @@ tr:hover td{background:#f8faff;}
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">KI</div>
-    <div class="topbar-title">User Data Viewer</div>
-    <div class="user-chip" id="topUserEmail">Loading...</div>
+    <div class="topbar-title">KIDV Invoice — Admin Panel</div>
+    <div class="admin-badge">ADMIN ONLY</div>
   </div>
-  <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" onclick="location.href='admin.html'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index.html'"><span class="material-icons-round">arrow_back</span>Back to App</button>
+    <button class="btn btn-danger btn-sm" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Logout</button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- User Info -->
-  <div class="user-card">
-    <div class="user-avatar" id="uAvatar">A</div>
-    <div class="user-info">
-      <div class="user-name" id="uName">Loading...</div>
-      <div class="user-email" id="uEmail">—</div>
-      <div class="user-meta">
-        <span class="meta-badge" id="uStatus" style="background:#f0fdf4;color:#16a34a">—</span>
-        <span class="meta-badge" id="uPlan" style="background:#eff6ff;color:#2f81f7">—</span>
-        <span class="meta-badge" id="uExpiry" style="background:#f8faff;color:#6b7a90">—</span>
-        <span class="meta-badge" id="uRegistered" style="background:#f8faff;color:#6b7a90">—</span>
-      </div>
-    </div>
-  </div>
-
   <!-- Stats -->
   <div class="stats-row">
-    <div class="stat"><div class="stat-val" id="sInvoices">0</div><div class="stat-lbl">Total Invoices</div></div>
-    <div class="stat"><div class="stat-val" id="sClients">0</div><div class="stat-lbl">Customers</div></div>
-    <div class="stat"><div class="stat-val" id="sProducts">0</div><div class="stat-lbl">Products</div></div>
-    <div class="stat"><div class="stat-val" id="sRevenue">₹0</div><div class="stat-lbl">Total Revenue</div></div>
+    <div class="stat"><div class="stat-icon">👥</div><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total Users</div></div>
+    <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="statActive">—</div><div class="stat-lbl">Active Subscriptions</div></div>
+    <div class="stat"><div class="stat-icon">⏳</div><div class="stat-val" id="statTrial">—</div><div class="stat-lbl">On Trial</div></div>
+    <div class="stat"><div class="stat-icon">🔴</div><div class="stat-val" id="statExpired">—</div><div class="stat-lbl">Trial Expired</div></div>
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('invoices',this)"><span class="material-icons-round">receipt_long</span>Invoices</button>
-    <button class="tab" onclick="showTab('clients',this)"><span class="material-icons-round">people_alt</span>Customers</button>
-    <button class="tab" onclick="showTab('products',this)"><span class="material-icons-round">inventory_2</span>Products</button>
-    <button class="tab" onclick="showTab('payments',this)"><span class="material-icons-round">payments</span>Payments</button>
-  </div>
-
-  <!-- Invoices Tab -->
-  <div class="tab-content active" id="tab-invoices">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Invoices</div><span id="invCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Date</th><th>Due Date</th><th>Amount</th><th>GST</th><th>Status</th></tr></thead>
-        <tbody id="invoicesTable"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
-      </table>
+  <!-- Users Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Users</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input class="search" placeholder="Search by email..." oninput="filterUsers(this.value)" id="searchInput"/>
+        <button onclick="openAddUser()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(16,185,129,0.3)"><span class="material-icons-round" style="font-size:16px">person_add</span>Add User</button>
+        <button class="btn btn-primary btn-sm" onclick="loadUsers()"><span class="material-icons-round">refresh</span>Refresh</button>
+      </div>
     </div>
-  </div>
-
-  <!-- Clients Tab -->
-  <div class="tab-content" id="tab-clients">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Customers</div><span id="clientCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Added On</th></tr></thead>
-        <tbody id="clientsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Products Tab -->
-  <div class="tab-content" id="tab-products">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Products / Services</div><span id="productCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Name</th><th>HSN/SAC</th><th>Price (₹)</th><th>GST%</th><th>Category</th></tr></thead>
-        <tbody id="productsTable"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Payments Tab -->
-  <div class="tab-content" id="tab-payments">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Payments</div><span id="paymentCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Amount</th><th>Method</th><th>Date</th><th>Reference</th></tr></thead>
-        <tbody id="paymentsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
+    <table>
+      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Trial / Expiry</th><th>License Key</th><th>Registered</th><th>Actions</th></tr></thead>
+      <tbody id="usersTable"><tr><td colspan="8" class="empty">Loading users...</td></tr></tbody>
+    </table>
   </div>
 
 </div>
@@ -161,143 +93,663 @@ tr:hover td{background:#f8faff;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
-const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-const planNames = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
-
-let targetUid = '';
-
-function showTab(id, el){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
-}
+let allUsers = [];
 
 document.addEventListener('kidv:db-ready', async()=>{
+  console.log('[Admin] db-ready fired. KIDV._ready:', KIDV._ready, 'isAdmin:', KIDV.isAdmin);
   if(!KIDV._ready){ location.href='login.html'; return; }
-  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index.html'; return; }
-
-  // Get UID from URL
-  const params = new URLSearchParams(location.search);
-  targetUid = params.get('uid');
-  if(!targetUid){ alert('No user selected'); location.href='admin.html'; return; }
-
-  await loadUserData();
+  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
+  loadUsers();
 });
 
-async function loadUserData(){
-  const db = KIDV._db;
-
-  // Load user info
-  const userDoc = await db.collection('users').doc(targetUid).get();
-  const u = userDoc.exists ? userDoc.data() : {};
-
-  // Update header
-  const name = u.name||u.displayName||u.email||'Unknown';
-  document.getElementById('topUserEmail').textContent = u.email||'—';
-  document.getElementById('uAvatar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('uName').textContent = name;
-  document.getElementById('uEmail').textContent = u.email||'—';
-
-  // Status badge
-  const now = new Date();
-  let statusText='', planText='', expiryText='';
-  if(u.subscriptionStatus==='active'){
-    statusText = '✅ Active';
-    planText = '📦 '+( planNames[u.subscriptionPlan]||u.subscriptionPlan||'—');
-    expiryText = u.subscriptionExpiry ? '⏰ Expires: '+fmtDate(u.subscriptionExpiry) : '♾️ Lifetime';
-  } else if(u.subscriptionStatus==='suspended'){
-    statusText = '🚫 Suspended';
-  } else {
-    const reg = u.createdAt ? new Date(u.createdAt) : now;
-    const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
-    const daysLeft = Math.max(0,Math.ceil((trialEnd-now)/(24*60*60*1000)));
-    statusText = daysLeft>0 ? `⏳ Trial (${daysLeft}d left)` : '🔴 Trial Expired';
-    expiryText = daysLeft>0 ? '⏰ Trial ends: '+fmtDate(trialEnd) : '';
+// Fallback: if db-ready never fires, try after 3 seconds
+setTimeout(()=>{
+  if(allUsers.length === 0 && document.getElementById('usersTable').innerHTML.includes('Loading')){
+    console.log('[Admin] Fallback load triggered');
+    if(firebase.apps.length && firebase.auth().currentUser) loadUsers();
   }
-  document.getElementById('uStatus').textContent = statusText;
-  document.getElementById('uPlan').textContent = planText||'No Plan';
-  document.getElementById('uExpiry').textContent = expiryText;
-  document.getElementById('uRegistered').textContent = u.createdAt ? '📅 Joined: '+fmtDate(u.createdAt) : '';
+}, 3000);
 
-  // Load collections
-  const [invoices, clients, products, payments] = await Promise.all([
-    db.collection('users/'+targetUid+'/invoices').get(),
-    db.collection('users/'+targetUid+'/clients').get(),
-    db.collection('users/'+targetUid+'/products').get(),
-    db.collection('users/'+targetUid+'/payments').get(),
-  ]);
-
-  const invList = invoices.docs.map(d=>({_id:d.id,...d.data()}));
-  const cliList = clients.docs.map(d=>({_id:d.id,...d.data()}));
-  const proList = products.docs.map(d=>({_id:d.id,...d.data()}));
-  const payList = payments.docs.map(d=>({_id:d.id,...d.data()}));
-
-  // Stats
-  const totalRev = invList.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  document.getElementById('sInvoices').textContent = invList.length;
-  document.getElementById('sClients').textContent = cliList.length;
-  document.getElementById('sProducts').textContent = proList.length;
-  document.getElementById('sRevenue').textContent = '₹'+totalRev.toLocaleString('en-IN');
-
-  // Invoices table
-  document.getElementById('invCount').textContent = invList.length+' invoices';
-  document.getElementById('invoicesTable').innerHTML = invList.length
-    ? invList.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).map((inv,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td><span class="inv-no">${inv.invoiceNo||'—'}</span></td>
-        <td style="font-weight:500">${inv.clientName||'—'}</td>
-        <td style="font-size:12px">${fmtDate(inv.date)}</td>
-        <td style="font-size:12px">${fmtDate(inv.due)}</td>
-        <td style="font-weight:700">${fmt(inv.total)}</td>
-        <td style="color:#d97706">${fmt(inv.totalGST)}</td>
-        <td><span class="badge badge-${inv.status||'draft'}">${inv.status||'Draft'}</span></td>
-      </tr>`).join('')
-    : '<tr><td colspan="8" class="empty">No invoices found</td></tr>';
-
-  // Clients table
-  document.getElementById('clientCount').textContent = cliList.length+' customers';
-  document.getElementById('clientsTable').innerHTML = cliList.length
-    ? cliList.map((cl,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td style="font-weight:600">${cl.name||'—'}</td>
-        <td style="font-size:12px">${cl.phone||'—'}</td>
-        <td><span style="font-family:monospace;font-size:11px;background:#eff6ff;color:#2f81f7;padding:2px 8px;border-radius:5px">${cl.gstin||'—'}</span></td>
-        <td style="font-size:12px">${cl.state||'—'}</td>
-        <td><span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">${cl.gstcat||'—'}</span></td>
-        <td style="font-size:12px">${fmtDate(cl.createdAt)}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="7" class="empty">No customers found</td></tr>';
-
-  // Products table
-  document.getElementById('productCount').textContent = proList.length+' products';
-  document.getElementById('productsTable').innerHTML = proList.length
-    ? proList.map((p,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td style="font-weight:600">${p.name||'—'}</td>
-        <td style="font-family:monospace;font-size:11px">${p.hsn||'—'}</td>
-        <td style="font-weight:700">${fmt(p.price)}</td>
-        <td><span class="badge" style="background:#fff7ed;color:#d97706;border:1px solid #fed7aa">${p.gst||0}%</span></td>
-        <td style="font-size:12px;color:#6b7a90">${p.category||'—'}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="6" class="empty">No products found</td></tr>';
-
-  // Payments table
-  document.getElementById('paymentCount').textContent = payList.length+' payments';
-  document.getElementById('paymentsTable').innerHTML = payList.length
-    ? payList.map((p,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td><span class="inv-no">${p.invoiceNo||'—'}</span></td>
-        <td style="font-weight:500">${p.clientName||'—'}</td>
-        <td style="font-weight:700;color:#16a34a">${fmt(p.amount)}</td>
-        <td><span class="badge badge-paid">${p.method||'—'}</span></td>
-        <td style="font-size:12px">${fmtDate(p.date||p.createdAt)}</td>
-        <td style="font-size:11px;font-family:monospace;color:#6b7a90">${p.ref||p.utr||'—'}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="7" class="empty">No payments found</td></tr>';
+async function loadUsers(){
+  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
+  
+  // Wait for firebase to be ready
+  let attempts = 0;
+  while(!firebase.apps.length && attempts < 20){
+    await new Promise(r=>setTimeout(r,200));
+    attempts++;
+  }
+  
+  try {
+    const db = firebase.firestore();
+    console.log('[Admin] Loading users from Firestore...');
+    const snap = await db.collection('users').get();
+    console.log('[Admin] Users found:', snap.size);
+    
+    if(snap.empty){
+      document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">No users registered yet</td></tr>';
+      document.getElementById('statTotal').textContent = '0';
+      return;
+    }
+    
+    allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderUsers(allUsers);
+  } catch(e){
+    console.error('[Admin] Error:', e.code, e.message);
+    let errMsg = e.message;
+    if(e.code === 'permission-denied'){
+      errMsg = 'Firestore permission denied. Check Rules.';
+    }
+    document.getElementById('usersTable').innerHTML = 
+      '<tr><td colspan="7" class="empty" style="color:#ef4444">❌ Error: '+errMsg+'<br/><small>Check browser console (F12) for details</small></td></tr>';
+  }
 }
+
+function getStatus(u){
+  if(u.isAdmin) return 'admin';
+  if(u.subscriptionStatus==='suspended') return 'suspended';
+  if(u.subscriptionStatus==='active'){
+    const exp = u.subscriptionExpiry ? new Date(u.subscriptionExpiry) : null;
+    if(!exp || exp > new Date()) return 'active';
+  }
+  const reg = u.createdAt ? new Date(u.createdAt) : new Date();
+  const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+  const daysLeft = Math.ceil((trialEnd-new Date())/(24*60*60*1000));
+  if(daysLeft > 0) return 'trial:'+daysLeft;
+  return 'expired';
+}
+
+function getSuspendBtn(st, uid){
+  if(st==='suspended'){
+    return '<button class="btn btn-sm" style="background:#16a34a;color:#fff" onclick="unsuspendUser(\''+uid+'\')"><span class="material-icons-round">lock_open</span></button>';
+  }
+  return '<button class="btn btn-danger btn-sm" onclick="suspendUser(\''+uid+'\')"><span class="material-icons-round">block</span></button>';
+}
+
+function renderUsers(users){
+  const now = new Date();
+  let trial=0,active=0,expired=0;
+  if(!users.length){
+    document.getElementById('usersTable').innerHTML='<tr><td colspan="8" class="empty">No users found</td></tr>';
+    return;
+  }
+  document.getElementById('usersTable').innerHTML = users.map((u,i)=>{
+    const st = getStatus(u);
+    let badge='', expInfo='';
+    if(st==='admin'){ badge='<span class="badge badge-admin">Admin</span>'; }
+    else if(st==='active'){
+      badge='<span class="badge badge-active">✅ Active</span>'; active++;
+      const actDate = u.subscriptionActivatedAt ? new Date(u.subscriptionActivatedAt).toLocaleDateString('en-IN') : null;
+      const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('en-IN') : null;
+      const planLabel = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly'}[u.subscriptionPlan]||u.subscriptionPlan||'';
+      expInfo = (planLabel?'<b>'+planLabel+'</b><br/>':'')+(actDate?'From: '+actDate+'<br/>':'')+(expDate?'Upto: '+expDate:'Lifetime');
+    }
+    else if(st.startsWith('trial')){
+      const d=st.split(':')[1];
+      badge=`<span class="badge badge-trial">⏳ Trial (${d}d left)</span>`; trial++;
+      const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : null;
+      expInfo = d+' days left'+(regDate?'<br/><span style="font-size:11px;color:#9ca3af">Joined: '+regDate+'</span>':'');
+    }
+    else if(st==='suspended'){ badge='<span class="badge" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca">🚫 Suspended</span>'; expInfo='Account suspended'; }
+    else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
+
+    // License key display
+    const keyHtml = u.licenseKey
+      ? `<span style="font-family:monospace;font-size:11px;background:#f0f4f8;padding:2px 7px;border-radius:5px;color:#7c3aed;font-weight:700;letter-spacing:1px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${u.licenseKey}');this.textContent='Copied!';setTimeout(()=>this.textContent='${u.licenseKey}',1500)">${u.licenseKey}</span>`
+      : '<span style="color:#d1d5db;font-size:11px">—</span>';
+
+    return `<tr>
+      <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+      <td style="font-weight:500">${u.email||'—'}</td>
+      <td>${u.name||u.displayName||'—'}</td>
+      <td>${badge}</td>
+      <td style="font-size:12px;color:#6b7a90">${expInfo}</td>
+      <td>${keyHtml}</td>
+      <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
+      <td><div class="actions">
+        <button class="btn btn-sm" style="background:#f0f4f8;color:#1a2332;border:1px solid #e2e8f0" onclick="showDetail('${u.id}')" title="View Details"><span class="material-icons-round">info</span></button>
+        <button class="btn btn-sm" style="background:#eff6ff;color:#2f81f7;border:1px solid #bfdbfe" onclick="viewUserData('${u.id}')" title="View Data"><span class="material-icons-round">folder_open</span></button>
+        <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','quarterly')" title="Activate 3 Months"><span class="material-icons-round">calendar_month</span></button>
+        <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','halfyearly')" title="Activate 6 Months"><span class="material-icons-round">date_range</span></button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
+        ${getSuspendBtn(st, u.id)}
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('statTotal').textContent = users.length;
+  document.getElementById('statTrial').textContent = trial;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statExpired').textContent = expired;
+}
+
+const PLAN_MONTHS = {'3month':3,'6month':6,'12month':12};
+const PLAN_AMOUNTS = {'3month':1299,'6month':2399,'12month':3999};
+const PLAN_LABELS = {'3month':'3 Months','6month':'6 Months','12month':'12 Months'};
+let _activateUid = '';
+
+function openActivate(uid, plan){
+  _activateUid = uid;
+  // Find user info
+  const u = allUsers.find(x=>x.id===uid);
+  document.getElementById('activateSubtitle').textContent = u ? (u.name||u.email) + ' — ' + PLAN_LABELS[plan] : plan;
+  document.getElementById('act-plan').value = plan;
+  document.getElementById('act-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('act-txn').value = '';
+  document.getElementById('act-notes').value = '';
+  updateAmount();
+  document.getElementById('activateModal').style.display = 'flex';
+}
+
+function closeActivate(){
+  document.getElementById('activateModal').style.display = 'none';
+  _activateUid = '';
+}
+
+function updateAmount(){
+  const plan = document.getElementById('act-plan').value;
+  document.getElementById('act-amount').value = PLAN_AMOUNTS[plan];
+  // Show expiry preview
+  const months = PLAN_MONTHS[plan];
+  const exp = new Date();
+  exp.setMonth(exp.getMonth() + months);
+  document.getElementById('expiryPreview').textContent =
+    '📅 Subscription active until: ' + exp.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+async function confirmActivate(){
+  if(!_activateUid) return;
+  const plan    = document.getElementById('act-plan').value;
+  const amount  = document.getElementById('act-amount').value;
+  const method  = document.getElementById('act-method').value;
+  const txn     = document.getElementById('act-txn').value.trim();
+  const date    = document.getElementById('act-date').value;
+  const notes   = document.getElementById('act-notes').value.trim();
+  const months  = PLAN_MONTHS[plan];
+  const now     = new Date();
+  const expiry  = new Date();
+  expiry.setMonth(expiry.getMonth() + months);
+
+  // Generate smart license key: KIDV-XXXX-XXXX-XXXX
+  function genKey(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    return `KIDV-${seg()}-${seg()}-${seg()}`;
+  }
+  const licenseKey = genKey();
+
+  await KIDV._db.collection('users').doc(_activateUid).set({
+    subscriptionStatus: 'active',
+    subscriptionPlan: plan,
+    subscriptionExpiry: expiry.toISOString(),
+    subscriptionActivatedAt: now.toISOString(),
+    activatedByAdmin: KIDV._user.email,
+    licenseKey: licenseKey,
+    licenseKeyGeneratedAt: now.toISOString(),
+    payment: {
+      amount: parseFloat(amount),
+      method: method,
+      txn: txn,
+      date: date,
+      notes: notes,
+      recordedAt: now.toISOString(),
+    }
+  },{merge:true});
+
+  closeActivate();
+  alert('✅ Activated: ' + PLAN_LABELS[plan] + '\nExpiry: ' + expiry.toLocaleDateString('en-IN') + '\nAmount: ₹' + amount + '\n\n🔑 License Key: ' + licenseKey + '\n(Share this key with the user)');
+  loadUsers();
+}
+
+async function activateUser(uid, plan){ openActivate(uid, plan); }
+
+async function suspendUser(uid){
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(user.isAdmin){ alert('Cannot suspend admin!'); return; }
+  if(!confirm('Suspend user: '+user.email+'?\n\nThey will be blocked from accessing the app.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'suspended',
+    suspendedAt: new Date().toISOString(),
+    suspendedBy: KIDV._user.email,
+  },{merge:true});
+  alert('✅ User suspended: '+user.email);
+  loadUsers();
+}
+
+async function unsuspendUser(uid){
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(!confirm('Unsuspend user: '+user.email+'?\n\nThey will regain access.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'trial',
+    suspendedAt: null,
+  },{merge:true});
+  alert('✅ User unsuspended: '+user.email);
+  loadUsers();
+}
+
+function viewUserData(uid){
+  window.open('admin-user-data.html?uid='+uid, '_blank');
+}
+
+function showDetail(uid){
+  const u = allUsers.find(x=>x.id===uid);
+  if(!u) return;
+
+  const planMap = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
+  const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+  document.getElementById('dAvatar').textContent = (u.name||u.email||'U').charAt(0).toUpperCase();
+  document.getElementById('dName').textContent = u.name || u.displayName || '—';
+  document.getElementById('dEmail').textContent = u.email || '—';
+
+  // Status
+  const st = getStatus(u);
+  let statusHtml = '—';
+  if(st==='admin') statusHtml = '<span style="color:#7c3aed">👑 Admin</span>';
+  else if(st==='active') statusHtml = '<span style="color:#16a34a">✅ Active</span>';
+  else if(st==='suspended') statusHtml = '<span style="color:#ef4444">🚫 Suspended</span>';
+  else if(st.startsWith('trial')) statusHtml = '<span style="color:#d97706">⏳ Trial ('+st.split(':')[1]+' days)</span>';
+  else statusHtml = '<span style="color:#ef4444">🔴 Expired</span>';
+  document.getElementById('dStatus').innerHTML = statusHtml;
+
+  // Plan & Amount
+  document.getElementById('dPlan').textContent = planMap[u.subscriptionPlan] || (u.subscriptionStatus==='trial'?'Free Trial':'—');
+  document.getElementById('dAmount').textContent = u.subscriptionAmount ? '₹'+parseInt(u.subscriptionAmount).toLocaleString('en-IN') : '—';
+  document.getElementById('dExpiry').textContent = u.subscriptionExpiry ? fmt(u.subscriptionExpiry) : (st.startsWith('trial')?'Trial period':'—');
+
+  // Payment
+  document.getElementById('dActivated').textContent = fmt(u.subscriptionActivatedAt);
+  document.getElementById('dActivatedBy').textContent = u.activatedByAdmin || (u.razorpayPaymentId?'Razorpay Auto':'—');
+  document.getElementById('dPaymentId').textContent = u.razorpayPaymentId || 'Manual / Not available';
+
+  // License Key
+  const keyEl = document.getElementById('dLicenseKey');
+  const keyDateEl = document.getElementById('dLicenseKeyDate');
+  if(u.licenseKey){
+    keyEl.textContent = u.licenseKey;
+    keyEl.dataset.key = u.licenseKey;
+    keyEl.title = 'Click to copy';
+    keyDateEl.textContent = u.licenseKeyGeneratedAt ? 'Generated: ' + fmt(u.licenseKeyGeneratedAt) : '';
+  } else {
+    keyEl.textContent = '— Not generated yet';
+    keyEl.dataset.key = '';
+    keyDateEl.textContent = 'Key will be generated on next activation';
+  }
+
+  // Account
+  document.getElementById('dRegistered').textContent = fmt(u.createdAt);
+  document.getElementById('dLastLogin').textContent = fmt(u.lastLogin);
+
+  // WA button
+  document.getElementById('dWaBtn').setAttribute('data-email', u.email||'');
+
+  document.getElementById('detailModal').style.display = 'flex';
+}
+
+function closeDetail(){
+  document.getElementById('detailModal').style.display = 'none';
+}
+
+function contactUserWA(){
+  const email = document.getElementById('dWaBtn').getAttribute('data-email');
+  const msg = 'Hi, this is KIDV Invoice support. Regarding your account: '+email;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+function filterUsers(q){
+  const filtered = allUsers.filter(u=>(u.email||'').toLowerCase().includes(q.toLowerCase())||(u.name||'').toLowerCase().includes(q.toLowerCase()));
+  renderUsers(filtered);
+}
+
+// ── ADD USER ────────────────────────────────────────────
+function openAddUser(){
+  document.getElementById('addUserModal').style.display='flex';
+  document.getElementById('au-name').value='';
+  document.getElementById('au-email').value='';
+  document.getElementById('au-mobile').value='';
+  document.getElementById('au-password').value='';
+  document.getElementById('au-plan').value='3month';
+  document.getElementById('au-amount').value='1299';
+  document.getElementById('au-method').value='UPI';
+  document.getElementById('au-txn').value='';
+  document.getElementById('au-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('au-notes').value='';
+  updateAddAmount();
+}
+function closeAddUser(){ document.getElementById('addUserModal').style.display='none'; }
+
+const AU_AMOUNTS={'3month':1299,'6month':2399,'12month':3999};
+function updateAddAmount(){
+  const p=document.getElementById('au-plan').value;
+  document.getElementById('au-amount').value=AU_AMOUNTS[p]||1299;
+}
+
+async function confirmAddUser(){
+  const name    = document.getElementById('au-name').value.trim();
+  const email   = document.getElementById('au-email').value.trim();
+  const mobile  = document.getElementById('au-mobile').value.trim();
+  const password= document.getElementById('au-password').value;
+  const plan    = document.getElementById('au-plan').value;
+  const amount  = parseFloat(document.getElementById('au-amount').value)||0;
+  const method  = document.getElementById('au-method').value;
+  const txn     = document.getElementById('au-txn').value.trim();
+  const date    = document.getElementById('au-date').value;
+  const notes   = document.getElementById('au-notes').value.trim();
+
+  if(!email){ alert('Email is required'); return; }
+  if(!password||password.length<6){ alert('Password must be at least 6 characters'); return; }
+
+  const btn=document.getElementById('au-submit-btn');
+  btn.disabled=true; btn.textContent='Creating...';
+
+  try{
+    // Create Firebase Auth user using Admin SDK via client SDK
+    // We use signInWithEmailAndPassword flow - create new credential
+    const secondaryApp = firebase.apps.find(a=>a.name==='secondary') ||
+      firebase.initializeApp(KIDV._auth.app.options, 'secondary');
+    const secAuth = secondaryApp.auth();
+
+    const cred = await secAuth.createUserWithEmailAndPassword(email, password);
+    await cred.user.updateProfile({displayName: name});
+    const uid = cred.user.uid;
+
+    // Generate license key
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const seg=()=>Array.from({length:4},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+    const licenseKey=`KIDV-${seg()}-${seg()}-${seg()}`;
+
+    // Calculate expiry
+    const months={'3month':3,'6month':6,'12month':12}[plan]||3;
+    const now=new Date();
+    const expiry=new Date();
+    expiry.setMonth(expiry.getMonth()+months);
+
+    // Save to Firestore
+    await KIDV._db.collection('users').doc(uid).set({
+      email, name, mobile,
+      isAdmin: false,
+      subscriptionStatus: 'active',
+      subscriptionPlan: plan,
+      subscriptionExpiry: expiry.toISOString(),
+      subscriptionActivatedAt: now.toISOString(),
+      activatedByAdmin: KIDV._user.email,
+      licenseKey, licenseKeyGeneratedAt: now.toISOString(),
+      payment:{ amount, method, txn, date, notes, recordedAt: now.toISOString() },
+      createdAt: now.toISOString(),
+      lastLogin: now.toISOString(),
+      addedByAdmin: true,
+    });
+
+    // Sign out secondary app
+    await secAuth.signOut();
+
+    closeAddUser();
+    alert('✅ User Created!\n\nEmail: '+email+'\nPassword: '+password+'\nPlan: '+plan+'\nExpiry: '+expiry.toLocaleDateString('en-IN')+'\n\n🔑 License Key: '+licenseKey+'\n\nShare credentials with user.');
+    loadUsers();
+  } catch(e){
+    alert('❌ Error: '+e.message);
+  } finally {
+    btn.disabled=false;
+    btn.textContent='✅ Create User';
+  }
+}
+
 </script>
+
+<!-- Add New User Modal -->
+<div id="addUserModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:1001;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:540px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <div style="font-size:19px;font-weight:700;color:#1a2332">➕ Add New User</div>
+        <div style="font-size:13px;color:#6b7a90;margin-top:3px">Create account + activate subscription</div>
+      </div>
+      <button onclick="closeAddUser()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:22px;line-height:1">✕</button>
+    </div>
+
+    <!-- User Details -->
+    <div style="background:#f8faff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">👤 User Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Full Name *</label>
+          <input id="au-name" type="text" placeholder="Ramesh Patel" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Mobile</label>
+          <input id="au-mobile" type="tel" placeholder="+91 9999999999" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Email Address *</label>
+          <input id="au-email" type="email" placeholder="user@example.com" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Password *</label>
+          <input id="au-password" type="text" placeholder="Min 6 characters" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none;font-family:monospace"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscription -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">💳 Subscription Plan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Plan Type</label>
+          <select id="au-plan" onchange="updateAddAmount()" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none">
+            <option value="3month">3 Months — ₹1,299</option>
+            <option value="6month">6 Months — ₹2,399</option>
+            <option value="12month">12 Months — ₹3,999</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Amount Paid (₹)</label>
+          <input id="au-amount" type="number" value="1299" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">💰 Payment Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Mode</label>
+          <select id="au-method" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none">
+            <option>UPI</option><option>Bank Transfer</option><option>Cash</option>
+            <option>Cheque</option><option>PhonePe</option><option>Google Pay</option><option>Razorpay</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Transaction / UTR No.</label>
+          <input id="au-txn" type="text" placeholder="TXN123456789" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Date</label>
+          <input id="au-date" type="date" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Notes</label>
+          <input id="au-notes" type="text" placeholder="Any notes..." style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#1d4ed8">
+      🔑 <strong>License Key</strong> will be auto-generated and shown after creation.<br/>
+      📧 Share the email + password with the user to login.
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeAddUser()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;font-family:Outfit,sans-serif;font-size:14px;cursor:pointer;color:#6b7a90">Cancel</button>
+      <button id="au-submit-btn" onclick="confirmAddUser()" style="padding:10px 24px;border:none;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,0.3)">✅ Create User</button>
+    </div>
+  </div>
+</div>
+
+<!-- Activate + Payment Modal -->
+<div id="activateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:480px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
+    <div style="font-size:18px;font-weight:700;color:#1a2332;margin-bottom:6px">Activate Subscription</div>
+    <div style="font-size:13px;color:#6b7a90;margin-bottom:24px" id="activateSubtitle">User activation</div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Plan</label>
+        <select id="act-plan" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none" onchange="updateAmount()">
+          <option value="3month">3 Months — ₹1,299</option>
+          <option value="6month">6 Months — ₹2,399</option>
+          <option value="12month">12 Months — ₹3,999</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Amount Paid (₹)</label>
+        <input type="number" id="act-amount" value="1299" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Method</label>
+        <select id="act-method" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none">
+          <option>UPI</option>
+          <option>Bank Transfer</option>
+          <option>Cash</option>
+          <option>Cheque</option>
+          <option>Razorpay</option>
+          <option>PhonePe</option>
+          <option>Google Pay</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Transaction / UTR No.</label>
+        <input type="text" id="act-txn" placeholder="TXN123456789" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Date</label>
+      <input type="date" id="act-date" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Notes (optional)</label>
+      <input type="text" id="act-notes" placeholder="Any notes about this payment..." style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <!-- Expiry preview -->
+    <div id="expiryPreview" style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0369a1;font-weight:500"></div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeActivate()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;font-family:Outfit,sans-serif;font-size:14px;cursor:pointer;color:#6b7a90">Cancel</button>
+      <button onclick="confirmActivate()" style="padding:10px 24px;border:none;border-radius:10px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">✅ Activate Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- User Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;width:520px;max-width:95vw;box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;">
+    <!-- Header -->
+    <div style="background:#1e293b;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="dAvatar" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;">A</div>
+        <div>
+          <div id="dName" style="font-size:15px;font-weight:700;color:#fff;">—</div>
+          <div id="dEmail" style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">—</div>
+        </div>
+      </div>
+      <button onclick="closeDetail()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px;">
+
+      <!-- Subscription Status -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">📦 Subscription</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Status</div>
+              <div id="dStatus" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Plan</div>
+              <div id="dPlan" style="font-size:14px;font-weight:700;color:#2f81f7;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Amount Paid</div>
+              <div id="dAmount" style="font-size:14px;font-weight:700;color:#16a34a;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Expiry Date</div>
+              <div id="dExpiry" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">💳 Payment Details</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated On</div>
+              <div id="dActivated" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated By</div>
+              <div id="dActivatedBy" style="font-size:12px;color:#6b7a90;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Razorpay Payment ID</div>
+              <div id="dPaymentId" style="font-size:12px;font-family:monospace;color:#374151;word-break:break-all;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;background:#faf5ff;border-top:1.5px solid #e9d5ff;">
+              <div style="font-size:10.5px;color:#7c3aed;text-transform:uppercase;font-weight:600;margin-bottom:6px;">🔑 License Key</div>
+              <div id="dLicenseKey" style="font-size:14px;font-family:monospace;color:#7c3aed;font-weight:800;letter-spacing:2px;word-break:break-all;cursor:pointer;" title="Click to copy" onclick="if(this.dataset.key){navigator.clipboard.writeText(this.dataset.key);const orig=this.textContent;this.textContent='✅ Copied!';setTimeout(()=>this.textContent=orig,1500);}">—</div>
+              <div id="dLicenseKeyDate" style="font-size:11px;color:#9ca3af;margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Info -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">👤 Account Info</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Registered On</div>
+              <div id="dRegistered" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Last Login</div>
+              <div id="dLastLogin" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 24px;border-top:1.5px solid #f0f4f8;display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeDetail()" style="padding:9px 20px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f0f4f8;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Close</button>
+      <button id="dWaBtn" onclick="contactUserWA()" style="padding:9px 20px;border-radius:10px;border:none;background:#25d366;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        <span class="material-icons-round" style="font-size:16px">whatsapp</span>WhatsApp User
+      </button>
+    </div>
+  </div>
+</div>
   <script src="kidv-common.js"></script>
 </body>
 </html>
