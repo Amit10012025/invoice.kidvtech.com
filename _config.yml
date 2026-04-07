@@ -1,0 +1,9 @@
+# GitHub Pages — Disable Jekyll
+plugins: []
+exclude:
+  - "*.py"
+  - "*.sql"
+  - "*.zip"
+  - "env.example"
+  - "SETUP.md"
+  - "backend/"

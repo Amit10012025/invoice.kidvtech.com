@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KIDV Invoice – Products & Services</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Quotations</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-dash:#2f81f7;--c-clients:#3fb950;--c-products:#f0883e;--c-invoice:#39d0d8;--c-quote:#bc8cff;--c-payment:#58a6ff;}
+:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-invoice:#39d0d8;--c-clients:#3fb950;--c-products:#f0883e;--c-quote:#bc8cff;--c-payment:#58a6ff;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
 .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
@@ -17,186 +17,84 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
 .rail-item .material-icons-round{font-size:22px;}
 .rail-item:hover{background:#f0f4f8;color:#fff;}
-.rail-item.active{background:rgba(240,136,62,0.15);color:var(--c-products);border-color:rgba(240,136,62,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item.active{background:rgba(188,140,255,0.15);color:var(--c-quote);border-color:rgba(188,140,255,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
 .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
 .rail-spacer{flex:1;}
 .flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
 .flyout.open{transform:translateX(0);}
 .flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-products);}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-quote);}
 .flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
 .flyout-link .material-icons-round{font-size:18px;}
 .flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
-.flyout-link.active{color:var(--text);background:rgba(240,136,62,0.1);border-left-color:var(--c-products);}
+.flyout-link.active{color:var(--text);background:rgba(188,140,255,0.1);border-left-color:var(--c-quote);}
 .overlay{display:none;position:fixed;inset:0;z-index:180;}
 .overlay.show{display:block;}
 .main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
 .main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
 .page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
 .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-primary:hover{box-shadow:0 6px 20px rgba(47,129,247,0.45);transform:translateY(-1px);}
+.btn-primary:hover{transform:translateY(-1px);}
 .btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
 .btn-ghost:hover{background:#f0f4f8;}
-.btn .material-icons-round{font-size:18px;}
+.btn-sm{padding:6px 12px;font-size:12.5px;}
+.btn .material-icons-round,.btn-sm .material-icons-round{font-size:16px;}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
-.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;width:260px;}
-.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
-.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;}
-.search-bar input::placeholder{color:var(--muted);}
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;}
-.tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;}
-.tab.active{background:var(--surface2);color:var(--text);}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.product-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;transition:transform .18s,box-shadow .18s;position:relative;}
-.product-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-.pc-type{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px;margin-bottom:12px;}
-.pc-type.goods{background:rgba(240,136,62,0.12);color:var(--c-products);}
-.pc-type.service{background:rgba(57,208,216,0.12);color:var(--c-invoice);}
-.pc-name{font-size:15px;font-weight:600;margin-bottom:4px;}
-.pc-hsn{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:monospace;}
-.pc-price{font-size:22px;font-weight:700;color:var(--text);}
-.pc-price span{font-size:13px;color:var(--muted);font-weight:400;}
-.pc-gst{font-size:12px;color:var(--muted);margin-top:2px;}
-.pc-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
-.pc-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border-radius:8px;font-size:12.5px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .15s;}
-.pc-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.15);}
-.pc-btn .material-icons-round{font-size:15px;}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
+td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
+.badge-sent{background:rgba(188,140,255,0.12);color:var(--c-quote);}
+.badge-accepted{background:rgba(63,185,80,0.12);color:#3fb950;}
+.badge-rejected{background:rgba(248,81,73,0.12);color:#f85149;}
+.badge-draft{background:rgba(125,133,144,0.12);color:#7d8590;}
+.badge-expired{background:rgba(240,136,62,0.12);color:#f0883e;}
+.q-no{font-weight:600;color:var(--c-quote);}
+.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
+.action-btn:hover{color:var(--text);background:#f5f7fa;}
+.action-btn .material-icons-round{font-size:18px;}
 /* Modal */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
 .modal-bg.open{display:flex;}
-.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:720px;max-width:98vw;}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
 .modal-title{font-size:16px;font-weight:600;}
 .modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
 .modal-close .material-icons-round{font-size:20px;}
 .modal-body{padding:24px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
 .form-row.full{grid-template-columns:1fr;}
 .form-group{display:flex;flex-direction:column;gap:6px;}
 .form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.form-group input,.form-group select,.form-group textarea{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--c-products);}
+.form-group input,.form-group select{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--c-quote);}
 .form-group select option{background:#fff;color:#1a2332;}
+.section-label{font-size:11px;font-weight:600;color:var(--c-quote);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.line-items-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+.line-items-table th{padding:8px 10px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
+.line-items-table td{padding:6px 6px;border-bottom:1px solid var(--border);}
+.li-input{background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;width:100%;transition:border-color .18s;}
+.li-input:focus{border-color:var(--c-quote);}
+.li-del{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;}
+.li-del:hover{color:#f85149;}
+.li-del .material-icons-round{font-size:16px;}
+.totals-box{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:16px;}
+.total-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13.5px;}
+.total-row.grand{font-size:16px;font-weight:700;border-top:1px solid var(--border);margin-top:8px;padding-top:12px;color:var(--c-quote);}
 .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:20px 24px;border-top:1px solid var(--border);}
-.section-label{font-size:11px;font-weight:600;color:var(--c-products);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
-<script src="firebase-config.js">
-// ── HSN/SAC Master Data (Common Codes) ───────────────────────────────────
-const HSN_DATA = [
-  // Services (SAC)
-  {code:'9954',desc:'Construction Services'},
-  {code:'9963',desc:'Accommodation, food & beverage services'},
-  {code:'9971',desc:'Financial and related services'},
-  {code:'9972',desc:'Real estate services'},
-  {code:'9973',desc:'Leasing or rental services'},
-  {code:'9981',desc:'Research and development services'},
-  {code:'9982',desc:'Legal and accounting services'},
-  {code:'9983',desc:'Other professional, technical and business services'},
-  {code:'9984',desc:'Telecommunications, broadcasting services'},
-  {code:'9985',desc:'Support services'},
-  {code:'9986',desc:'Support services to agriculture'},
-  {code:'9987',desc:'Maintenance, repair and installation services'},
-  {code:'9988',desc:'Manufacturing services on physical inputs'},
-  {code:'9989',desc:'Other manufacturing services'},
-  {code:'9991',desc:'Public administration and other government services'},
-  {code:'9992',desc:'Education services'},
-  {code:'9993',desc:'Human health and social care services'},
-  {code:'9994',desc:'Sewage and waste collection services'},
-  {code:'9995',desc:'Services of membership organisations'},
-  {code:'9996',desc:'Recreational, cultural and sporting services'},
-  {code:'9997',desc:'Other services'},
-  {code:'9998',desc:'Domestic services'},
-  {code:'9999',desc:'Services provided by extraterritorial organisations'},
-  // Goods (HSN)
-  {code:'0101',desc:'Live horses, asses, mules and hinnies'},
-  {code:'0201',desc:'Meat of bovine animals, fresh or chilled'},
-  {code:'1001',desc:'Wheat and meslin'},
-  {code:'1006',desc:'Rice'},
-  {code:'1701',desc:'Cane or beet sugar'},
-  {code:'2201',desc:'Waters, including natural or artificial mineral waters'},
-  {code:'2710',desc:'Petroleum oils and oils from bituminous minerals'},
-  {code:'3004',desc:'Medicaments for retail sale'},
-  {code:'3204',desc:'Synthetic organic colouring matter'},
-  {code:'3301',desc:'Essential oils and resinoids'},
-  {code:'3401',desc:'Soap; organic surface-active products for washing the skin'},
-  {code:'3406',desc:'Candles, tapers and the like'},
-  {code:'3601',desc:'Propellent powders'},
-  {code:'3701',desc:'Photographic plates, film, paper'},
-  {code:'3901',desc:'Polymers of ethylene, in primary forms'},
-  {code:'3920',desc:'Other plates, sheets, film, foil and strip of plastics'},
-  {code:'4001',desc:'Natural rubber, balata, gutta-percha'},
-  {code:'4011',desc:'New pneumatic tyres, of rubber'},
-  {code:'4901',desc:'Printed books, brochures, leaflets'},
-  {code:'5001',desc:'Silk-worm cocoons suitable for reeling'},
-  {code:'5201',desc:'Cotton, not carded or combed'},
-  {code:'5208',desc:'Woven fabrics of cotton'},
-  {code:'6101',desc:'Men's overcoats, raincoats of knitted fabric'},
-  {code:'6109',desc:'T-shirts, singlets and other vests, knitted'},
-  {code:'6203',desc:'Men's suits, ensembles, jackets'},
-  {code:'6401',desc:'Waterproof footwear with outer soles and uppers of rubber'},
-  {code:'7101',desc:'Pearls, natural or cultured'},
-  {code:'7108',desc:'Gold (including gold plated with platinum)'},
-  {code:'7113',desc:'Articles of jewellery and parts thereof'},
-  {code:'8414',desc:'Air or vacuum pumps, compressors, fans'},
-  {code:'8415',desc:'Air conditioning machines'},
-  {code:'8418',desc:'Refrigerators, freezers'},
-  {code:'8471',desc:'Automatic data processing machines (computers)'},
-  {code:'8481',desc:'Taps, cocks, valves, fittings for pipes'},
-  {code:'8483',desc:'Transmission shafts, cranks, bearing housings'},
-  {code:'8501',desc:'Electric motors and generators'},
-  {code:'8502',desc:'Electric generating sets and rotary converters'},
-  {code:'8504',desc:'Electrical transformers, static converters'},
-  {code:'8517',desc:'Telephone sets, smartphones'},
-  {code:'8525',desc:'Transmission apparatus for radio-broadcasting'},
-  {code:'8536',desc:'Electrical apparatus for switching/protecting circuits'},
-  {code:'8544',desc:'Insulated wire, cable, other insulated electric conductors'},
-  {code:'8703',desc:'Motor cars and other motor vehicles'},
-  {code:'8711',desc:'Motorcycles and cycles fitted with an auxiliary motor'},
-  {code:'9401',desc:'Seats (other than those of heading 9402)'},
-  {code:'9403',desc:'Other furniture and parts thereof'},
-  {code:'9405',desc:'Lamps and lighting fittings'},
-  {code:'9503',desc:'Tricycles, scooters, pedal cars and similar wheeled toys'},
-  {code:'9504',desc:'Video game consoles and machines'},
-  {code:'9506',desc:'Articles and equipment for sports'},
-  {code:'9619',desc:'Sanitary towels, tampons, nappies'},
-];
-
-function searchHSN(val){
-  const drop = document.getElementById('hsnDropdown');
-  if(!val || val.length < 2){ drop.style.display='none'; return; }
-  const q = val.toLowerCase();
-  const matches = HSN_DATA.filter(h => h.code.startsWith(val) || h.desc.toLowerCase().includes(q)).slice(0,8);
-  if(!matches.length){ drop.style.display='none'; return; }
-  drop.innerHTML = matches.map(h => 
-    `<div onclick="selectHSN('${h.code}','${h.desc.replace(/'/g,"\'")}')" 
-     style="padding:8px 12px;cursor:pointer;border-bottom:1px solid #f0f4f8;font-size:12.5px" 
-     onmouseover="this.style.background='#f0f4f8'" onmouseout="this.style.background=''">
-      <span style="font-weight:700;color:#2f81f7;font-family:monospace">${h.code}</span>
-      <span style="color:#6b7a90;margin-left:8px">${h.desc}</span>
-    </div>`
-  ).join('');
-  drop.style.display='';
-}
-
-function selectHSN(code, desc){
-  document.getElementById('f-hsn').value = code;
-  document.getElementById('hsnDropdown').style.display='none';
-  // Optionally fill description if empty
-  const descEl = document.getElementById('f-desc');
-  if(descEl && !descEl.value) descEl.value = desc;
-}
-
-document.addEventListener('click', e=>{ 
-  if(!e.target.closest('#hsnDropdown') && e.target.id!=='f-hsn')
-    document.getElementById('hsnDropdown').style.display='none'; 
-});
-
-</script>
+<script src="firebase-config.js"></script>
 <script src="subscription.js"></script>
 </head>
 <body>
@@ -205,9 +103,9 @@ document.addEventListener('click', e=>{
   <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
   <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
   <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item active" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
   <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item active" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
   <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
   <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
   <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
@@ -218,128 +116,174 @@ document.addEventListener('click', e=>{
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
 <div class="flyout" id="flyout">
-  <div class="flyout-header"><div class="flyout-title">Products & Services</div></div>
-  <a class="flyout-link active" href="products.html"><span class="material-icons-round">inventory_2</span>All Items</a>
-  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_box</span>Add Item</a>
-  <a class="flyout-link" href="#"><span class="material-icons-round">category</span>Categories</a>
-  <a class="flyout-link" href="#"><span class="material-icons-round">sell</span>Price List</a>
+  <div class="flyout-header"><div class="flyout-title">Quotations</div></div>
+  <a class="flyout-link active" href="quotations.html"><span class="material-icons-round">request_quote</span>All Quotations</a>
+  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_circle</span>New Quotation</a>
+  <a class="flyout-link" href="invoices.html"><span class="material-icons-round">receipt_long</span>Invoices</a>
 </div>
 
 <main class="main" id="main">
   <div class="topbar">
-    <div><div class="page-title">Products & Services</div><div class="page-subtitle">Manage items, HSN codes & GST rates</div></div>
+    <div><div class="page-title">Quotations</div><div class="page-subtitle">Create estimates & convert to invoices</div></div>
     <div class="topbar-right">
-      <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search items..." id="searchInput" oninput="filterProducts()" /></div>
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add_box</span>Add Item</button>
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add</span>New Quotation</button>
       <div class="avatar">A</div>
     </div>
   </div>
-
-  <div class="tabs">
-    <div class="tab active" onclick="setTab('all',this)">All Items</div>
-    <div class="tab" onclick="setTab('goods',this)">Goods</div>
-    <div class="tab" onclick="setTab('service',this)">Services</div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">All Quotations</div><span id="qCount" style="font-size:13px;color:var(--muted)">0 quotations</span></div>
+    <table>
+      <thead><tr><th>#</th><th>Client</th><th>Date</th><th>Valid Until</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="quotBody"></tbody>
+    </table>
   </div>
-
-  <div class="products-grid" id="productsGrid"></div>
 </main>
 
 <!-- Modal -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Add New Item</div>
+      <div class="modal-title">New Quotation</div>
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body">
-      <div class="section-label">Item Details</div>
-      <div class="form-row"><div class="form-group"><label>Item Name *</label><input type="text" id="f-name" placeholder="e.g. Web Development" /></div><div class="form-group"><label>Type *</label><select id="f-type"><option value="service">Service</option><option value="goods">Goods</option></select></div></div>
-      <div class="form-row full"><div class="form-group"><label>Description</label><input type="text" id="f-desc" placeholder="Brief description" /></div></div>
-      <div class="section-label" style="margin-top:20px">GST & Pricing</div>
-      <div class="form-row"><div class="form-group"><label>HSN / SAC Code</label>
-          <div style="position:relative">
-            <input type="text" id="f-hsn" placeholder="Type or search HSN/SAC..." maxlength="8" oninput="searchHSN(this.value)" autocomplete="off"/>
-            <div id="hsnDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:0 0 10px 10px;z-index:100;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
-          </div>
-        </div><div class="form-group"><label>GST Rate (%)</label><select id="f-gst"><option value="0">0% (Exempt)</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div></div>
-      <div class="form-row"><div class="form-group"><label>Unit Price (₹) *</label><input type="number" id="f-price" placeholder="0.00" min="0" step="0.01" /></div><div class="form-group"><label>Unit</label><select id="f-unit"><option>Nos</option><option>Hrs</option><option>Days</option><option>Months</option><option>Kg</option><option>Ltr</option><option>Mtr</option><option>Sq.Ft</option></select></div></div>
+      <div class="form-row three">
+        <div class="form-group"><label>Quote No *</label><input type="text" id="f-qno" placeholder="QT-001"/></div>
+        <div class="form-group"><label>Date *</label><input type="date" id="f-date"/></div>
+        <div class="form-group"><label>Valid Until</label><input type="date" id="f-valid"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Client *</label><select id="f-client"><option value="">Select Client</option></select></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="f-subject" placeholder="e.g. Website Development Proposal"/></div>
+      </div>
+      <div class="section-label">Line Items</div>
+      <table class="line-items-table">
+        <thead><tr><th style="width:40%">Description</th><th style="width:8%">Qty</th><th style="width:15%">Rate (₹)</th><th style="width:8%">GST%</th><th style="width:15%">Amount</th><th style="width:5%"></th></tr></thead>
+        <tbody id="lineItems"></tbody>
+      </table>
+      <button class="btn btn-ghost btn-sm" onclick="addLine()"><span class="material-icons-round">add</span>Add Line</button>
+      <div class="totals-box" style="margin-top:16px">
+        <div class="total-row"><span>Subtotal</span><span id="t-sub">₹0.00</span></div>
+        <div class="total-row"><span>GST</span><span id="t-gst">₹0.00</span></div>
+        <div class="total-row grand"><span>TOTAL</span><span id="t-total">₹0.00</span></div>
+      </div>
+      <div class="form-row" style="margin-top:16px">
+        <div class="form-group"><label>Notes</label><input type="text" id="f-notes" placeholder="Terms & conditions or notes..."/></div>
+        <div class="form-group"><label>Status</label><select id="f-status"><option value="draft">Draft</option><option value="sent">Sent</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option></select></div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveProduct()"><span class="material-icons-round">save</span>Save Item</button>
+      <button class="btn btn-ghost" onclick="saveQuote()"><span class="material-icons-round">save</span>Save Draft</button>
+      <button class="btn btn-primary" onclick="saveQuote('sent')"><span class="material-icons-round">send</span>Mark as Sent</button>
     </div>
   </div>
 </div>
 
 <script>
-let products=[], editIdx=-1, currentTab='all';
-async function loadProducts(){
-  products=await KIDV.list('products');
-  renderProducts();
-}
-document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
-document.addEventListener('kidv:db-ready',loadProducts);
+let quotes=JSON.parse(localStorage.getItem('kidv-quotes')||'[]');
+let clients=JSON.parse(localStorage.getItem('kidv-clients')||'[]');
+let products=JSON.parse(localStorage.getItem('kidv-products')||'[]');
 
 function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
 function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
+function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
 
-function setTab(t,el){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderProducts();}
-
-function renderProducts(list){
-  if(!list) list=currentTab==='all'?products:products.filter(p=>p.type===currentTab);
-  const grid=document.getElementById('productsGrid');
-  if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px">No items yet. <a href="#" onclick="openModal()" style="color:var(--c-products)">Add first item →</a></div>`;return;}
-  grid.innerHTML=list.map((p,i)=>`
-    <div class="product-card">
-      <div class="pc-type ${p.type}">${p.type==='goods'?'📦 Goods':'🛠 Service'}</div>
-      <div class="pc-name">${p.name}</div>
-      <div class="pc-hsn">HSN/SAC: ${p.hsn||'—'}</div>
-      <div class="pc-price">₹${parseFloat(p.price||0).toLocaleString('en-IN')} <span>/ ${p.unit||'Nos'}</span></div>
-      <div class="pc-gst">GST: ${p.gst}% ${p.gst>0?'(CGST '+p.gst/2+'% + SGST '+p.gst/2+'%)':''}</div>
-      <div class="pc-actions">
-        <button class="pc-btn" onclick="editProduct(${i})"><span class="material-icons-round">edit</span>Edit</button>
-        <button class="pc-btn" onclick="deleteProduct(${i})"><span class="material-icons-round">delete</span>Delete</button>
-      </div>
-    </div>`).join('');
+function renderQuotes(){
+  const tbody=document.getElementById('quotBody');
+  if(!quotes.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No quotations yet. <a href="#" onclick="openModal()" style="color:var(--c-quote)">Create first quotation →</a></td></tr>`;return;}
+  tbody.innerHTML=quotes.map((q,i)=>`
+    <tr>
+      <td><span class="q-no">${q.qno||'—'}</span></td>
+      <td>${q.clientName||'—'}<br/><span style="font-size:12px;color:var(--muted)">${q.subject||''}</span></td>
+      <td>${q.date||'—'}</td>
+      <td>${q.valid||'—'}</td>
+      <td style="font-weight:600">${fmt(q.total)}</td>
+      <td><span class="badge badge-${q.status||'draft'}">${q.status||'Draft'}</span></td>
+      <td>
+        <button class="action-btn" onclick="convertToInvoice(${i})" title="Convert to Invoice"><span class="material-icons-round">receipt_long</span></button>
+        <button class="action-btn" onclick="deleteQuote(${i})" title="Delete"><span class="material-icons-round">delete</span></button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('qCount').textContent=quotes.length+' quotations';
 }
 
-function filterProducts(){const q=document.getElementById('searchInput').value.toLowerCase();renderProducts(products.filter(p=>(p.name+p.hsn+p.desc).toLowerCase().includes(q)));}
-
-function openModal(idx=-1){
-  editIdx=idx;
-  if(idx>=0){
-    const p=products[idx];
-    document.getElementById('modalTitle').textContent='Edit Item';
-    document.getElementById('f-name').value=p.name||'';
-    document.getElementById('f-type').value=p.type||'service';
-    document.getElementById('f-desc').value=p.desc||'';
-    document.getElementById('f-hsn').value=p.hsn||'';
-    document.getElementById('f-gst').value=p.gst||'18';
-    document.getElementById('f-price').value=p.price||'';
-    document.getElementById('f-unit').value=p.unit||'Nos';
-  } else {
-    document.getElementById('modalTitle').textContent='Add New Item';
-    ['f-name','f-desc','f-hsn','f-price'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('f-type').value='service';
-    document.getElementById('f-gst').value='18';
-    document.getElementById('f-unit').value='Nos';
-  }
+function openModal(){
+  const sel=document.getElementById('f-client');
+  sel.innerHTML='<option value="">Select Client</option>'+clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
+  const next='QT-'+String(quotes.length+1).padStart(3,'0');
+  document.getElementById('f-qno').value=next;
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  const v=new Date();v.setDate(v.getDate()+15);
+  document.getElementById('f-valid').value=v.toISOString().split('T')[0];
+  document.getElementById('lineItems').innerHTML='';
+  addLine();
   document.getElementById('modalBg').classList.add('open');
 }
 function closeModal(){document.getElementById('modalBg').classList.remove('open');}
 
-async function saveProduct(){
-  const name=document.getElementById('f-name').value.trim();
-  const price=document.getElementById('f-price').value;
-  if(!name||!price){alert('Name and price are required');return;}
-  const p={name,type:document.getElementById('f-type').value,desc:document.getElementById('f-desc').value,hsn:document.getElementById('f-hsn').value,gst:document.getElementById('f-gst').value,price:parseFloat(price),unit:document.getElementById('f-unit').value};
-  if(editIdx>=0){const id=products[editIdx]._id||editIdx;await KIDV.set('products',id,p);products[editIdx]={...p,_id:id};}
-  else{const id=await KIDV.add('products',p);products.push({...p,_id:id});}
-  closeModal();renderProducts();
+function addLine(){
+  const tbody=document.getElementById('lineItems');
+  const tr=document.createElement('tr');
+  const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}">${p.name}</option>`).join('');
+  tr.innerHTML=`
+    <td><select class="li-input" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" data-field="desc"/></td>
+    <td><input class="li-input" type="number" value="1" min="1" data-field="qty" oninput="calcTotals()"/></td>
+    <td><input class="li-input" type="number" placeholder="0.00" data-field="rate" oninput="calcTotals()"/></td>
+    <td><select class="li-input" data-field="gst" onchange="calcTotals()"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></td>
+    <td><input class="li-input" readonly data-field="amount" value="0.00"/></td>
+    <td><button class="li-del" onclick="this.closest('tr').remove();calcTotals()"><span class="material-icons-round">close</span></button></td>`;
+  tbody.appendChild(tr);
 }
-async function deleteProduct(i){if(confirm('Delete?')){const id=products[i]._id||i;await KIDV.delete('products',id);products.splice(i,1);renderProducts();}}
-function editProduct(i){openModal(i);}
+function fillLine(sel){
+  const opt=sel.options[sel.selectedIndex];
+  if(!opt.value) return;
+  const tr=sel.closest('tr');
+  tr.querySelector('[data-field="rate"]').value=opt.dataset.price||'';
+  tr.querySelector('[data-field="gst"]').value=opt.dataset.gst||'18';
+  calcTotals();
+}
+function calcTotals(){
+  let sub=0,gst=0;
+  document.querySelectorAll('#lineItems tr').forEach(tr=>{
+    const qty=parseFloat(tr.querySelector('[data-field="qty"]')?.value||1);
+    const rate=parseFloat(tr.querySelector('[data-field="rate"]')?.value||0);
+    const g=parseFloat(tr.querySelector('[data-field="gst"]')?.value||18);
+    const amt=qty*rate;
+    tr.querySelector('[data-field="amount"]').value=amt.toFixed(2);
+    sub+=amt;gst+=amt*g/100;
+  });
+  document.getElementById('t-sub').textContent=fmt(sub);
+  document.getElementById('t-gst').textContent=fmt(gst);
+  document.getElementById('t-total').textContent=fmt(sub+gst);
+}
+function saveQuote(s){
+  const qno=document.getElementById('f-qno').value.trim();
+  const cIdx=document.getElementById('f-client').value;
+  if(!qno||cIdx===''){alert('Quote No and Client required');return;}
+  const lines=Array.from(document.querySelectorAll('#lineItems tr')).map(tr=>({desc:tr.querySelector('[data-field="desc"]')?.value||'',qty:tr.querySelector('[data-field="qty"]')?.value,rate:tr.querySelector('[data-field="rate"]')?.value,gst:tr.querySelector('[data-field="gst"]')?.value,amount:tr.querySelector('[data-field="amount"]')?.value}));
+  const sub=lines.reduce((a,l)=>a+parseFloat(l.amount||0),0);
+  const gst=lines.reduce((a,l)=>a+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
+  quotes.push({qno,date:document.getElementById('f-date').value,valid:document.getElementById('f-valid').value,clientIdx:cIdx,clientName:clients[cIdx]?.name,subject:document.getElementById('f-subject').value,lines,total:(sub+gst).toFixed(2),status:s||document.getElementById('f-status').value,notes:document.getElementById('f-notes').value});
+  localStorage.setItem('kidv-quotes',JSON.stringify(quotes));
+  closeModal();renderQuotes();
+}
+function deleteQuote(i){if(confirm('Delete?')){quotes.splice(i,1);localStorage.setItem('kidv-quotes',JSON.stringify(quotes));renderQuotes();}}
+function convertToInvoice(i){
+  const q=quotes[i];
+  // Store pending conversion and redirect
+  localStorage.setItem('kidv-convert-quote',JSON.stringify(q));
+  alert('Opening Invoices page. The quotation data will be pre-filled.');
+  location.href='invoices.html';
+}
+renderQuotes();
 
+document.addEventListener('kidv:db-ready', ()=>{
+  if(window.KIDV && KIDV.isAdmin){
+    const b = document.getElementById('adminBtn');
+    if(b) b.style.display = '';
+  }
+});
 </script>
   <script src="kidv-common.js"></script>
 </body>

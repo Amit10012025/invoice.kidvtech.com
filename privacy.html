@@ -2,255 +2,79 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Payments</title>
+<title>KIDV Invoice – Privacy Policy</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
-<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-invoice:#39d0d8;--c-clients:#3fb950;--c-products:#f0883e;--c-quote:#bc8cff;--c-payment:#58a6ff;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
-.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
-.rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:#f0f4f8;color:#fff;}
-.rail-item.active{background:rgba(88,166,255,0.15);color:var(--c-payment);border-color:rgba(88,166,255,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-.rail-spacer{flex:1;}
-.flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
-.flyout.open{transform:translateX(0);}
-.flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-payment);}
-.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
-.flyout-link .material-icons-round{font-size:18px;}
-.flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
-.flyout-link.active{color:var(--text);background:rgba(88,166,255,0.1);border-left-color:var(--c-payment);}
-.overlay{display:none;position:fixed;inset:0;z-index:180;}
-.overlay.show{display:block;}
-.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
-.main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:12px;}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
-.btn-ghost:hover{background:#f0f4f8;}
-.btn .material-icons-round{font-size:18px;}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
-.stats-row{display:flex;gap:16px;margin-bottom:24px;}
-.mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:14px 20px;display:flex;align-items:center;gap:12px;flex:1;}
-.ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.ms-val{font-size:20px;font-weight:700;}.ms-label{font-size:12px;color:var(--muted);}
-.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
-.card-title{font-size:14px;font-weight:600;}
-table{width:100%;border-collapse:collapse;}
-th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
-td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:#f8faff;}
-.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
-.badge-received{background:rgba(63,185,80,0.12);color:#3fb950;}
-.badge-partial{background:rgba(240,136,62,0.12);color:#f0883e;}
-.badge-refunded{background:rgba(88,166,255,0.12);color:var(--c-payment);}
-.pay-method{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);}
-.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
-.action-btn:hover{color:var(--text);background:#f5f7fa;}
-.action-btn .material-icons-round{font-size:18px;}
-/* Modal */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
-.modal-bg.open{display:flex;}
-.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:520px;max-width:95vw;}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
-.modal-title{font-size:16px;font-weight:600;}
-.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
-.modal-close .material-icons-round{font-size:20px;}
-.modal-body{padding:24px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.form-row.full{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.form-group input,.form-group select{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--c-payment);}
-.form-group select option{background:#fff;color:#1a2332;}
-.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:20px 24px;border-top:1px solid var(--border);}
-::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
+.page{max-width:760px;margin:0 auto;padding:48px 24px;}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:16px;padding:32px;margin-bottom:28px;color:#fff;}
+.header h1{font-size:26px;font-weight:700;margin-bottom:6px;}
+.header p{font-size:13px;color:rgba(255,255,255,0.5);}
+.card{background:#fff;border-radius:14px;padding:28px;margin-bottom:16px;border:1px solid #e2e8f0;}
+.card h2{font-size:16px;font-weight:700;color:#1a2332;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f0f4f8;}
+.card p,.card li{font-size:13.5px;color:#6b7a90;line-height:1.8;margin-bottom:8px;}
+.card ul{padding-left:18px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:#2f81f7;text-decoration:none;font-size:14px;font-weight:600;margin-bottom:24px;}
 </style>
-<script src="firebase-config.js"></script>
-<script src="subscription.js"></script>
 </head>
 <body>
-<nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item active" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
-  <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
-</nav>
-<div class="flyout" id="flyout">
-  <div class="flyout-header"><div class="flyout-title">Payments</div></div>
-  <a class="flyout-link active" href="payments.html"><span class="material-icons-round">payments</span>All Payments</a>
-  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_card</span>Record Payment</a>
-  <a class="flyout-link" href="invoices.html"><span class="material-icons-round">warning_amber</span>Overdue Invoices</a>
-</div>
-
-<main class="main" id="main">
-  <div class="topbar">
-    <div><div class="page-title">Payments</div><div class="page-subtitle">Track received payments & outstanding dues</div></div>
-    <div class="topbar-right">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add_card</span>Record Payment</button>
-      <div class="avatar">A</div>
-    </div>
-  </div>
-
-  <div class="stats-row">
-    <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.12);color:#3fb950"><span class="material-icons-round">check_circle</span></div><div><div class="ms-val" id="s-received">₹0</div><div class="ms-label">Total Received</div></div></div>
-    <div class="mini-stat"><div class="ms-icon" style="background:rgba(240,136,62,0.12);color:#f0883e"><span class="material-icons-round">schedule</span></div><div><div class="ms-val" id="s-pending">₹0</div><div class="ms-label">Pending</div></div></div>
-    <div class="mini-stat"><div class="ms-icon" style="background:rgba(248,81,73,0.12);color:#f85149"><span class="material-icons-round">warning_amber</span></div><div><div class="ms-val" id="s-overdue">₹0</div><div class="ms-label">Overdue</div></div></div>
-    <div class="mini-stat"><div class="ms-icon" style="background:rgba(88,166,255,0.12);color:var(--c-payment)"><span class="material-icons-round">receipt_long</span></div><div><div class="ms-val" id="s-count">0</div><div class="ms-label">Transactions</div></div></div>
+<div class="page">
+  <a class="back-btn" href="index.html">← Back to App</a>
+  <div class="header">
+    <h1>Privacy Policy</h1>
+    <p>Last updated: April 2026 | KIDV Tech, Ahmedabad, Gujarat</p>
   </div>
 
   <div class="card">
-    <div class="card-header"><div class="card-title">Payment History</div></div>
-    <table>
-      <thead><tr><th>Invoice</th><th>Client</th><th>Date</th><th>Amount</th><th>Method</th><th>Ref No</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody id="paymentsBody"></tbody>
-    </table>
+    <h2>1. Information We Collect</h2>
+    <p>KIDV Invoice collects the following information when you use our service:</p>
+    <ul>
+      <li>Account information: Name, email address, mobile number</li>
+      <li>Business information: Company name, GSTIN, address, bank details</li>
+      <li>Invoice data: Customer details, product/service details, transaction amounts</li>
+      <li>Usage data: Login times, features used, device information</li>
+    </ul>
   </div>
-</main>
 
-<!-- Modal -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Record Payment</div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>Payment Type *</label>
-          <select id="f-paytype" onchange="onPayTypeChange()">
-            <option value="against">Against Invoice</option>
-            <option value="advance">Advance Payment</option>
-          </select>
-        </div>
-        <div id="invoiceRow"><div class="form-group"><label>Invoice *</label><select id="f-invoice"><option value="">Select Invoice</option></select></div></div>
-        <div id="advanceRow" style="display:none"><div class="form-group"><label>Advance Ref / Purpose</label><input type="text" id="f-advance-ref" placeholder="e.g. Order #123 advance deposit"/></div></div>
-        <div class="form-group"><label>Payment Date *</label><input type="date" id="f-date"/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Amount Received (₹) *</label><input type="number" id="f-amount" placeholder="0.00" min="0" step="0.01"/></div>
-        <div class="form-group"><label>Payment Method</label><select id="f-method"><option>Bank Transfer</option><option>UPI</option><option>Cheque</option><option>Cash</option><option>NEFT</option><option>RTGS</option><option>Credit Card</option></select></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Reference / UTR No</label><input type="text" id="f-ref" placeholder="UTR or Cheque no"/></div>
-        <div class="form-group"><label>Status</label><select id="f-status"><option value="received">Received</option><option value="partial">Partial</option></select></div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group"><label>Remarks</label><input type="text" id="f-remarks" placeholder="Optional notes"/></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="savePayment()"><span class="material-icons-round">save</span>Record Payment</button>
-    </div>
+  <div class="card">
+    <h2>2. How We Use Your Information</h2>
+    <ul>
+      <li>To provide and operate the KIDV Invoice service</li>
+      <li>To generate GST-compliant invoices on your behalf</li>
+      <li>To send important account and subscription notifications</li>
+      <li>To improve our software and customer support</li>
+      <li>To comply with legal obligations under Indian law</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>3. Data Storage & Security</h2>
+    <p>Your data is stored securely on Google Firebase (Cloud Firestore), hosted in Google's data centers. We implement industry-standard security measures including SSL encryption, Firebase Authentication, and Row-Level Security to protect your information.</p>
+    <p>Your invoice and business data is private and accessible only to your account.</p>
+  </div>
+
+  <div class="card">
+    <h2>4. Data Sharing</h2>
+    <p>We do not sell, trade, or share your personal information with third parties, except:</p>
+    <ul>
+      <li>Google Firebase (our cloud infrastructure provider)</li>
+      <li>When required by Indian law or court order</li>
+      <li>With your explicit consent</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>5. Your Rights</h2>
+    <p>You have the right to: access your data, correct inaccurate data, delete your account and data, and export your invoice data. Contact us at support@kidvtech.com for any data requests.</p>
+  </div>
+
+  <div class="card">
+    <h2>6. Contact</h2>
+    <p>For privacy-related questions: <strong>support@kidvtech.com</strong> | WhatsApp: <strong>+91 79844 86885</strong></p>
+    <p>KIDV Tech, Ahmedabad, Gujarat, India — kidvtech.com</p>
   </div>
 </div>
-
-<script>
-let payments=[], invoices=[];
-async function loadPayments(){
-  [payments,invoices]=await Promise.all([DB.list('payments'),DB.list('invoices')]);
-  renderPayments();
-}
-document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
-document.addEventListener('kidv:db-ready',loadPayments);
-
-function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
-function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
-function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
-
-function renderPayments(){
-  const tbody=document.getElementById('paymentsBody');
-  if(!payments.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No payments recorded yet. <a href="#" onclick="openModal()" style="color:var(--c-payment)">Record first payment →</a></td></tr>`;return;}
-  tbody.innerHTML=payments.map((p,i)=>`
-    <tr>
-      <td style="font-weight:600;color:${p.payType==='advance'?'#7c3aed':'var(--c-payment)'}">${p.payType==='advance'?'<span style="background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;border-radius:10px;padding:2px 8px;font-size:11px">Advance</span> '+(p.advanceRef||'—'):(p.invoiceNo||'—')}</td>
-      <td>${p.clientName||'—'}</td>
-      <td>${p.date||'—'}</td>
-      <td style="font-weight:600;color:#3fb950">${fmt(p.amount)}</td>
-      <td><span class="pay-method"><span class="material-icons-round" style="font-size:14px">account_balance</span>${p.method||'—'}</span></td>
-      <td style="font-family:monospace;font-size:12px">${p.ref||'—'}</td>
-      <td><span class="badge badge-${p.status||'received'}">${p.status||'Received'}</span></td>
-      <td><button class="action-btn" onclick="deletePayment(${i})"><span class="material-icons-round">delete</span></button></td>
-    </tr>`).join('');
-  // Stats
-  const total=payments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
-  const invPending=invoices.filter(i=>i.status==='pending').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  const invOverdue=invoices.filter(i=>i.status==='overdue').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  document.getElementById('s-received').textContent='₹'+total.toLocaleString('en-IN');
-  document.getElementById('s-pending').textContent='₹'+invPending.toLocaleString('en-IN');
-  document.getElementById('s-overdue').textContent='₹'+invOverdue.toLocaleString('en-IN');
-  document.getElementById('s-count').textContent=payments.length;
-}
-
-function openModal(){
-  const sel=document.getElementById('f-invoice');
-  const unpaid=invoices.filter(i=>i.status!=='paid');
-  sel.innerHTML='<option value="">Select Invoice</option>'+unpaid.map((inv,i)=>`<option value="${invoices.indexOf(inv)}">${inv.invoiceNo} — ${inv.clientName} (₹${parseFloat(inv.total).toLocaleString('en-IN')})</option>`).join('');
-  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('modalBg').classList.add('open');
-}
-function closeModal(){document.getElementById('modalBg').classList.remove('open');}
-
-async function savePayment(){
-  const iIdx=document.getElementById('f-invoice').value;
-  const amount=document.getElementById('f-amount').value;
-  if(iIdx===''||!amount){alert('Invoice and amount required');return;}
-  const inv=invoices[iIdx];
-  const payType = document.getElementById('f-paytype').value;
-  const advRef  = document.getElementById('f-advance-ref')?.value||'';
-  const p={
-    payType: payType,
-    invoiceIdx:payType==='against'?iIdx:'',
-    invoiceNo: payType==='against'?(inv?.invoiceNo||''):'',
-    clientName: payType==='against'?(inv?.clientName||''):
-                (document.getElementById('f-client')?.options[document.getElementById('f-client')?.selectedIndex]?.text||'Advance'),
-    advanceRef: advRef,
-    date:document.getElementById('f-date').value,
-    amount:parseFloat(amount),
-    method:document.getElementById('f-method').value,
-    ref:document.getElementById('f-ref').value,
-    status:document.getElementById('f-status').value,
-    remarks:document.getElementById('f-remarks').value
-  };
-  const pid=await KIDV.add('payments',p);
-  payments.push({...p,_id:pid});
-  if(inv&&parseFloat(amount)>=parseFloat(inv.total||0)){
-    invoices[iIdx].status='paid';
-    const invId=invoices[iIdx]._id||iIdx;
-    await KIDV.set('invoices',invId,invoices[iIdx]);
-  }
-  closeModal();renderPayments();
-}
-async function deletePayment(i){if(confirm('Delete?')){const id=payments[i]._id||i;await KIDV.delete('payments',id);payments.splice(i,1);renderPayments();}}
-</script>
-  <script src="kidv-common.js"></script>
 </body>
 </html>

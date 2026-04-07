@@ -2,102 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Quotations</title>
+<title>KIDV Invoice – Reports</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-invoice:#39d0d8;--c-clients:#3fb950;--c-products:#f0883e;--c-quote:#bc8cff;--c-payment:#58a6ff;}
+:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--surface3:#1f2937;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--accent2:#39d0d8;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-dash:#2f81f7;--c-clients:#3fb950;--c-products:#f0883e;--c-invoice:#39d0d8;--c-quote:#bc8cff;--c-payment:#58a6ff;--c-reports:#f7c948;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
 .rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
 .rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
 .rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:#f0f4f8;color:#fff;}
-.rail-item.active{background:rgba(188,140,255,0.15);color:var(--c-quote);border-color:rgba(188,140,255,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.rail-item.active{background:rgba(247,201,72,0.15);color:var(--c-reports);border-color:rgba(247,201,72,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
 .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
 .rail-spacer{flex:1;}
+
 .flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);}
 .flyout.open{transform:translateX(0);}
 .flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-quote);}
-.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-reports);}
+.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;cursor:pointer;}
 .flyout-link .material-icons-round{font-size:18px;}
 .flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
-.flyout-link.active{color:var(--text);background:rgba(188,140,255,0.1);border-left-color:var(--c-quote);}
+.flyout-link.active{color:var(--text);background:rgba(247,201,72,0.08);border-left-color:var(--c-reports);}
 .overlay{display:none;position:fixed;inset:0;z-index:180;}
 .overlay.show{display:block;}
-.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
+
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;min-height:100vh;}
 .main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-size:22px;font-weight:700;color:#1a2332;}
+.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
 .topbar-right{display:flex;align-items:center;gap:12px;}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
 .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
 .btn-primary:hover{transform:translateY(-1px);}
 .btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
 .btn-ghost:hover{background:#f0f4f8;}
-.btn-sm{padding:6px 12px;font-size:12.5px;}
-.btn .material-icons-round,.btn-sm .material-icons-round{font-size:16px;}
+.btn .material-icons-round{font-size:18px;}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
-.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.filter-label{font-size:13px;color:var(--muted);font-weight:500;}
+.filter-tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.ftab{padding:6px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;border:none;background:none;font-family:'Outfit',sans-serif;}
+.ftab.active{background:var(--surface2);color:var(--text);}
+.filter-select{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;}
+.filter-select option{background:#fff;color:#1a2332;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);padding:20px 22px;position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.stat-card.c1::after{background:var(--gradient);}
+.stat-card.c2::after{background:linear-gradient(90deg,#3fb950,#2ea043);}
+.stat-card.c3::after{background:linear-gradient(90deg,#f0883e,#e67e22);}
+.stat-card.c4::after{background:linear-gradient(90deg,#f85149,#da3633);}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.stat-card.c1 .stat-icon{background:rgba(57,208,216,0.12);color:var(--c-invoice);}
+.stat-card.c2 .stat-icon{background:rgba(63,185,80,0.12);color:var(--c-clients);}
+.stat-card.c3 .stat-icon{background:rgba(240,136,62,0.12);color:var(--c-products);}
+.stat-card.c4 .stat-icon{background:rgba(248,81,73,0.12);color:#f85149;}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.06em;}
+.stat-value{font-size:26px;font-weight:700;margin:6px 0 4px;line-height:1;}
+.stat-change{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:3px;}
+.stat-change.up{color:#3fb950;}
+.stat-change.down{color:#f85149;}
+.stat-change .material-icons-round{font-size:14px;}
+
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px;}
+.chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px;}
+@media(max-width:1100px){.chart-grid{grid-template-columns:1fr;}.chart-grid-3{grid-template-columns:1fr;}}
+
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
 .card-title{font-size:14px;font-weight:600;}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.card-body{padding:20px;}
+.chart-wrap{position:relative;padding:16px 20px 20px;}
+
 table{width:100%;border-collapse:collapse;}
 th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
-td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
+td{padding:12px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f8faff;}
+
 .badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
-.badge-sent{background:rgba(188,140,255,0.12);color:var(--c-quote);}
-.badge-accepted{background:rgba(63,185,80,0.12);color:#3fb950;}
-.badge-rejected{background:rgba(248,81,73,0.12);color:#f85149;}
+.badge-paid{background:rgba(63,185,80,0.12);color:#3fb950;}
+.badge-pending{background:rgba(240,136,62,0.12);color:#f0883e;}
+.badge-overdue{background:rgba(248,81,73,0.12);color:#f85149;}
 .badge-draft{background:rgba(125,133,144,0.12);color:#7d8590;}
-.badge-expired{background:rgba(240,136,62,0.12);color:#f0883e;}
-.q-no{font-weight:600;color:var(--c-quote);}
-.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
-.action-btn:hover{color:var(--text);background:#f5f7fa;}
-.action-btn .material-icons-round{font-size:18px;}
-/* Modal */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
-.modal-bg.open{display:flex;}
-.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:720px;max-width:98vw;}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
-.modal-title{font-size:16px;font-weight:600;}
-.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
-.modal-close .material-icons-round{font-size:20px;}
-.modal-body{padding:24px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.form-row.three{grid-template-columns:1fr 1fr 1fr;}
-.form-row.full{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.form-group input,.form-group select{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--c-quote);}
-.form-group select option{background:#fff;color:#1a2332;}
-.section-label{font-size:11px;font-weight:600;color:var(--c-quote);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.line-items-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
-.line-items-table th{padding:8px 10px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
-.line-items-table td{padding:6px 6px;border-bottom:1px solid var(--border);}
-.li-input{background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;width:100%;transition:border-color .18s;}
-.li-input:focus{border-color:var(--c-quote);}
-.li-del{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;}
-.li-del:hover{color:#f85149;}
-.li-del .material-icons-round{font-size:16px;}
-.totals-box{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:16px;}
-.total-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13.5px;}
-.total-row.grand{font-size:16px;font-weight:700;border-top:1px solid var(--border);margin-top:8px;padding-top:12px;color:var(--c-quote);}
-.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:20px 24px;border-top:1px solid var(--border);}
+
+.gst-section{margin-bottom:20px;}
+.gst-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.gst-box{background:#ffffff;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px 18px;}
+.gst-box-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.gst-box-val{font-size:20px;font-weight:700;}
+.gst-box-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.prog-label{font-size:13px;min-width:120px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prog-bar-bg{flex:1;height:7px;background:rgba(0,0,0,0.04);border-radius:4px;overflow:hidden;}
+.prog-bar{height:100%;border-radius:4px;transition:width .6s ease;}
+.prog-val{font-size:13px;font-weight:600;min-width:70px;text-align:right;}
+
+.rank-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--surface2);}
+.rank-1{background:rgba(247,201,72,0.15);color:var(--c-reports);}
+.rank-2{background:rgba(125,133,144,0.15);color:#aaa;}
+.rank-3{background:rgba(240,136,62,0.12);color:#cd7f32;}
+
+.month-badge{background:rgba(247,201,72,0.1);border:1px solid rgba(247,201,72,0.2);color:var(--c-reports);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;}
+
+.tab-section{display:none;}
+.tab-section.active{display:block;}
+
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
 <script src="firebase-config.js"></script>
 <script src="subscription.js"></script>
 </head>
 <body>
+
 <nav class="rail">
   <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
   <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
@@ -105,184 +139,666 @@ tr:hover td{background:#f8faff;}
   <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
   <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
   <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item active" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
   <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
   <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-item active" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
   <div class="rail-spacer"></div>
   <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
   <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
+
 <div class="flyout" id="flyout">
-  <div class="flyout-header"><div class="flyout-title">Quotations</div></div>
-  <a class="flyout-link active" href="quotations.html"><span class="material-icons-round">request_quote</span>All Quotations</a>
-  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_circle</span>New Quotation</a>
-  <a class="flyout-link" href="invoices.html"><span class="material-icons-round">receipt_long</span>Invoices</a>
+  <div class="flyout-header"><div class="flyout-title">Reports</div></div>
+  <a class="flyout-link active" href="reports.html"><span class="material-icons-round">bar_chart</span>Overview</a>
+  <a class="flyout-link" href="#" onclick="setTab('gst')"><span class="material-icons-round">receipt</span>GST Summary</a>
+  <a class="flyout-link" href="#" onclick="setTab('clients')"><span class="material-icons-round">people_alt</span>Client Report</a>
+  <a class="flyout-link" href="#" onclick="setTab('products')"><span class="material-icons-round">inventory_2</span>Product Report</a>
+  <a class="flyout-link" href="#" onclick="exportReport()"><span class="material-icons-round">download</span>Export Report</a>
 </div>
 
 <main class="main" id="main">
   <div class="topbar">
-    <div><div class="page-title">Quotations</div><div class="page-subtitle">Create estimates & convert to invoices</div></div>
+    <div>
+      <div class="page-title">Reports & Analytics</div>
+      <div class="page-subtitle">Business insights · <span class="month-badge" id="currentPeriod">FY 2025-26</span></div>
+    </div>
     <div class="topbar-right">
-      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add</span>New Quotation</button>
-      <div class="avatar">A</div>
+      <select class="filter-select" id="yearFilter" onchange="buildAll()">
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+      </select>
+      <button class="btn btn-ghost" onclick="exportReport()"><span class="material-icons-round">download</span>Export</button>
+      <div class="avatar" id="navAvatar">A</div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header"><div class="card-title">All Quotations</div><span id="qCount" style="font-size:13px;color:var(--muted)">0 quotations</span></div>
-    <table>
-      <thead><tr><th>#</th><th>Client</th><th>Date</th><th>Valid Until</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody id="quotBody"></tbody>
-    </table>
+
+  <!-- Filter Tabs -->
+  <div class="filter-bar">
+    <span class="filter-label">View:</span>
+    <div class="filter-tabs">
+      <button class="ftab active" id="ftab-overview" onclick="setTab('overview')">Overview</button>
+      <button class="ftab" id="ftab-gst" onclick="setTab('gst')">GST</button>
+      <button class="ftab" id="ftab-clients" onclick="setTab('clients')">Clients</button>
+      <button class="ftab" id="ftab-products" onclick="setTab('products')">Products</button>
+    </div>
   </div>
+
+  <!-- ══ OVERVIEW TAB ══ -->
+  <div class="tab-section active" id="tab-overview">
+    <div class="stats-grid">
+      <div class="stat-card c1">
+        <div class="stat-icon"><span class="material-icons-round">receipt_long</span></div>
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="s-revenue">₹0</div>
+        <div class="stat-change up"><span class="material-icons-round">trending_up</span><span>This year</span></div>
+      </div>
+      <div class="stat-card c2">
+        <div class="stat-icon"><span class="material-icons-round">check_circle</span></div>
+        <div class="stat-label">Collected</div>
+        <div class="stat-value" id="s-collected">₹0</div>
+        <div class="stat-change" id="s-coll-pct" style="color:var(--muted)">of total invoiced</div>
+      </div>
+      <div class="stat-card c3">
+        <div class="stat-icon"><span class="material-icons-round">schedule</span></div>
+        <div class="stat-label">Outstanding</div>
+        <div class="stat-value" id="s-outstanding">₹0</div>
+        <div class="stat-change" id="s-out-count" style="color:var(--muted)">pending invoices</div>
+      </div>
+      <div class="stat-card c4">
+        <div class="stat-icon"><span class="material-icons-round">warning_amber</span></div>
+        <div class="stat-label">Overdue</div>
+        <div class="stat-value" id="s-overdue">₹0</div>
+        <div class="stat-change down" id="s-ov-count"><span class="material-icons-round">arrow_downward</span><span>invoices</span></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Monthly Revenue</div><div class="card-sub">Invoiced vs Collected per month</div></div>
+        </div>
+        <div class="chart-wrap" style="height:280px">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Invoice Status</div><div class="card-sub">Breakdown by status</div></div>
+        </div>
+        <div class="chart-wrap" style="height:280px;display:flex;align-items:center;justify-content:center">
+          <canvas id="statusChart" style="max-width:220px"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid-3">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Payment Methods</div></div>
+        <div class="card-body" id="payMethodBody">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No payment data yet</div>
+        </div>
+      </div>
+      <div class="card" style="grid-column:span 2">
+        <div class="card-header"><div class="card-title">Invoice Count by Month</div></div>
+        <div class="chart-wrap" style="height:180px">
+          <canvas id="countChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Invoice Ledger</div>
+        <a href="invoices.html" style="font-size:12px;color:var(--accent);text-decoration:none;font-weight:500">View All →</a>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>Client</th><th>Date</th><th>Taxable</th><th>GST</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody id="ledgerBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ GST TAB ══ -->
+  <div class="tab-section" id="tab-gst">
+    <div class="gst-section">
+      <div class="gst-grid" style="margin-bottom:20px">
+        <div class="gst-box">
+          <div class="gst-box-label">Total Taxable Value</div>
+          <div class="gst-box-val" id="g-taxable">₹0.00</div>
+          <div class="gst-box-sub">Sum of all invoice subtotals</div>
+        </div>
+        <div class="gst-box">
+          <div class="gst-box-label">Total GST Collected</div>
+          <div class="gst-box-val" id="g-total-gst" style="color:var(--c-invoice)">₹0.00</div>
+          <div class="gst-box-sub">CGST + SGST + IGST</div>
+        </div>
+        <div class="gst-box">
+          <div class="gst-box-label">Total Invoice Value</div>
+          <div class="gst-box-val" id="g-grand">₹0.00</div>
+          <div class="gst-box-sub">Taxable + GST</div>
+        </div>
+      </div>
+      <div class="gst-grid">
+        <div class="gst-box" style="border-color:rgba(57,208,216,0.2)">
+          <div class="gst-box-label" style="color:var(--c-invoice)">CGST (Intra-State)</div>
+          <div class="gst-box-val" id="g-cgst">₹0.00</div>
+          <div class="gst-box-sub">Central GST collected</div>
+        </div>
+        <div class="gst-box" style="border-color:rgba(57,208,216,0.2)">
+          <div class="gst-box-label" style="color:var(--c-invoice)">SGST (Intra-State)</div>
+          <div class="gst-box-val" id="g-sgst">₹0.00</div>
+          <div class="gst-box-sub">State GST collected</div>
+        </div>
+        <div class="gst-box" style="border-color:rgba(88,166,255,0.2)">
+          <div class="gst-box-label" style="color:var(--c-payment)">IGST (Inter-State)</div>
+          <div class="gst-box-val" id="g-igst">₹0.00</div>
+          <div class="gst-box-sub">Integrated GST collected</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Monthly GST Collection</div></div>
+        <div class="chart-wrap" style="height:260px"><canvas id="gstChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">GST Rate Breakdown</div></div>
+        <div class="chart-wrap" style="height:260px;display:flex;align-items:center;justify-content:center"><canvas id="gstRateChart" style="max-width:220px"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">GST Invoice Wise Detail</div></div>
+      <table>
+        <thead><tr><th>Invoice</th><th>Client</th><th>Date</th><th>Taxable</th><th>CGST</th><th>SGST</th><th>IGST</th><th>Total GST</th></tr></thead>
+        <tbody id="gstLedgerBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ CLIENTS TAB ══ -->
+  <div class="tab-section" id="tab-clients">
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Top Clients by Revenue</div></div>
+        <div class="card-body" id="topClientsBody">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No data yet</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Client Revenue Chart</div></div>
+        <div class="chart-wrap" style="height:260px;display:flex;align-items:center;justify-content:center">
+          <canvas id="clientChart" style="max-width:220px"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Client Summary</div></div>
+      <table>
+        <thead><tr><th>#</th><th>Client</th><th>Invoices</th><th>Total Billed</th><th>Collected</th><th>Outstanding</th></tr></thead>
+        <tbody id="clientTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ PRODUCTS TAB ══ -->
+  <div class="tab-section" id="tab-products">
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Top Products / Services by Revenue</div></div>
+        <div class="card-body" id="topProductsBody">
+          <div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No data yet</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Product Revenue Chart</div></div>
+        <div class="chart-wrap" style="height:260px;display:flex;align-items:center;justify-content:center">
+          <canvas id="productChart" style="max-width:220px"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">All Products Summary</div></div>
+      <table>
+        <thead><tr><th>#</th><th>Product / Service</th><th>HSN/SAC</th><th>Times Billed</th><th>Total Qty</th><th>Total Revenue</th></tr></thead>
+        <tbody id="productTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </main>
 
-<!-- Modal -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">New Quotation</div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row three">
-        <div class="form-group"><label>Quote No *</label><input type="text" id="f-qno" placeholder="QT-001"/></div>
-        <div class="form-group"><label>Date *</label><input type="date" id="f-date"/></div>
-        <div class="form-group"><label>Valid Until</label><input type="date" id="f-valid"/></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Client *</label><select id="f-client"><option value="">Select Client</option></select></div>
-        <div class="form-group"><label>Subject</label><input type="text" id="f-subject" placeholder="e.g. Website Development Proposal"/></div>
-      </div>
-      <div class="section-label">Line Items</div>
-      <table class="line-items-table">
-        <thead><tr><th style="width:40%">Description</th><th style="width:8%">Qty</th><th style="width:15%">Rate (₹)</th><th style="width:8%">GST%</th><th style="width:15%">Amount</th><th style="width:5%"></th></tr></thead>
-        <tbody id="lineItems"></tbody>
-      </table>
-      <button class="btn btn-ghost btn-sm" onclick="addLine()"><span class="material-icons-round">add</span>Add Line</button>
-      <div class="totals-box" style="margin-top:16px">
-        <div class="total-row"><span>Subtotal</span><span id="t-sub">₹0.00</span></div>
-        <div class="total-row"><span>GST</span><span id="t-gst">₹0.00</span></div>
-        <div class="total-row grand"><span>TOTAL</span><span id="t-total">₹0.00</span></div>
-      </div>
-      <div class="form-row" style="margin-top:16px">
-        <div class="form-group"><label>Notes</label><input type="text" id="f-notes" placeholder="Terms & conditions or notes..."/></div>
-        <div class="form-group"><label>Status</label><select id="f-status"><option value="draft">Draft</option><option value="sent">Sent</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option></select></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-ghost" onclick="saveQuote()"><span class="material-icons-round">save</span>Save Draft</button>
-      <button class="btn btn-primary" onclick="saveQuote('sent')"><span class="material-icons-round">send</span>Mark as Sent</button>
-    </div>
-  </div>
-</div>
-
 <script>
-let quotes=JSON.parse(localStorage.getItem('kidv-quotes')||'[]');
-let clients=JSON.parse(localStorage.getItem('kidv-clients')||'[]');
-let products=JSON.parse(localStorage.getItem('kidv-products')||'[]');
+// ── Global State ─────────────────────────────────────────
+let allInvoices = [], allClients = [], allPayments = [], allProducts = [];
+let charts = {};
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
-function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
-function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
-
-function renderQuotes(){
-  const tbody=document.getElementById('quotBody');
-  if(!quotes.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No quotations yet. <a href="#" onclick="openModal()" style="color:var(--c-quote)">Create first quotation →</a></td></tr>`;return;}
-  tbody.innerHTML=quotes.map((q,i)=>`
-    <tr>
-      <td><span class="q-no">${q.qno||'—'}</span></td>
-      <td>${q.clientName||'—'}<br/><span style="font-size:12px;color:var(--muted)">${q.subject||''}</span></td>
-      <td>${q.date||'—'}</td>
-      <td>${q.valid||'—'}</td>
-      <td style="font-weight:600">${fmt(q.total)}</td>
-      <td><span class="badge badge-${q.status||'draft'}">${q.status||'Draft'}</span></td>
-      <td>
-        <button class="action-btn" onclick="convertToInvoice(${i})" title="Convert to Invoice"><span class="material-icons-round">receipt_long</span></button>
-        <button class="action-btn" onclick="deleteQuote(${i})" title="Delete"><span class="material-icons-round">delete</span></button>
-      </td>
-    </tr>`).join('');
-  document.getElementById('qCount').textContent=quotes.length+' quotations';
+// ── Utility ──────────────────────────────────────────────
+function fmt(n){ return '₹' + parseFloat(n||0).toLocaleString('en-IN', {minimumFractionDigits:2}); }
+function fmtShort(n){
+  n = parseFloat(n||0);
+  if(n >= 10000000) return '₹' + (n/10000000).toFixed(2) + 'Cr';
+  if(n >= 100000)   return '₹' + (n/100000).toFixed(2) + 'L';
+  if(n >= 1000)     return '₹' + (n/1000).toFixed(1) + 'K';
+  return '₹' + n.toFixed(0);
 }
 
-function openModal(){
-  const sel=document.getElementById('f-client');
-  sel.innerHTML='<option value="">Select Client</option>'+clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
-  const next='QT-'+String(quotes.length+1).padStart(3,'0');
-  document.getElementById('f-qno').value=next;
-  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
-  const v=new Date();v.setDate(v.getDate()+15);
-  document.getElementById('f-valid').value=v.toISOString().split('T')[0];
-  document.getElementById('lineItems').innerHTML='';
-  addLine();
-  document.getElementById('modalBg').classList.add('open');
+// ── Tab Switching ─────────────────────────────────────────
+function setTab(name) {
+  // Hide all tab sections
+  document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+  // Remove active from all ftabs
+  document.querySelectorAll('.ftab').forEach(el => el.classList.remove('active'));
+  // Show selected
+  const section = document.getElementById('tab-' + name);
+  const btn = document.getElementById('ftab-' + name);
+  if(section) section.classList.add('active');
+  if(btn) btn.classList.add('active');
+  // Rebuild charts for that tab
+  if(allInvoices.length > 0) {
+    if(name === 'overview') buildOverview();
+    if(name === 'gst')      buildGST();
+    if(name === 'clients')  buildClients();
+    if(name === 'products') buildProducts();
+  }
 }
-function closeModal(){document.getElementById('modalBg').classList.remove('open');}
 
-function addLine(){
-  const tbody=document.getElementById('lineItems');
-  const tr=document.createElement('tr');
-  const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}">${p.name}</option>`).join('');
-  tr.innerHTML=`
-    <td><select class="li-input" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" data-field="desc"/></td>
-    <td><input class="li-input" type="number" value="1" min="1" data-field="qty" oninput="calcTotals()"/></td>
-    <td><input class="li-input" type="number" placeholder="0.00" data-field="rate" oninput="calcTotals()"/></td>
-    <td><select class="li-input" data-field="gst" onchange="calcTotals()"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></td>
-    <td><input class="li-input" readonly data-field="amount" value="0.00"/></td>
-    <td><button class="li-del" onclick="this.closest('tr').remove();calcTotals()"><span class="material-icons-round">close</span></button></td>`;
-  tbody.appendChild(tr);
+// ── Flyout ───────────────────────────────────────────────
+function toggleFlyout(){
+  const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');
+  f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');
 }
-function fillLine(sel){
-  const opt=sel.options[sel.selectedIndex];
-  if(!opt.value) return;
-  const tr=sel.closest('tr');
-  tr.querySelector('[data-field="rate"]').value=opt.dataset.price||'';
-  tr.querySelector('[data-field="gst"]').value=opt.dataset.gst||'18';
-  calcTotals();
+function closeFlyout(){
+  document.getElementById('flyout').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('main').classList.remove('shifted');
 }
-function calcTotals(){
-  let sub=0,gst=0;
-  document.querySelectorAll('#lineItems tr').forEach(tr=>{
-    const qty=parseFloat(tr.querySelector('[data-field="qty"]')?.value||1);
-    const rate=parseFloat(tr.querySelector('[data-field="rate"]')?.value||0);
-    const g=parseFloat(tr.querySelector('[data-field="gst"]')?.value||18);
-    const amt=qty*rate;
-    tr.querySelector('[data-field="amount"]').value=amt.toFixed(2);
-    sub+=amt;gst+=amt*g/100;
+
+// ── Destroy old chart safely ──────────────────────────────
+function destroyChart(id){
+  if(charts[id]){ charts[id].destroy(); delete charts[id]; }
+}
+
+// ── MAIN BUILD ────────────────────────────────────────────
+function buildAll(){
+  const year = parseInt(document.getElementById('yearFilter').value);
+  const filtered = allInvoices.filter(inv => {
+    if(!inv.date) return false;
+    return new Date(inv.date).getFullYear() === year;
   });
-  document.getElementById('t-sub').textContent=fmt(sub);
-  document.getElementById('t-gst').textContent=fmt(gst);
-  document.getElementById('t-total').textContent=fmt(sub+gst);
+  allInvoices._filtered = filtered;
+  buildOverview(filtered);
+  buildGST(filtered);
+  buildClients(filtered);
+  buildProducts(filtered);
 }
-function saveQuote(s){
-  const qno=document.getElementById('f-qno').value.trim();
-  const cIdx=document.getElementById('f-client').value;
-  if(!qno||cIdx===''){alert('Quote No and Client required');return;}
-  const lines=Array.from(document.querySelectorAll('#lineItems tr')).map(tr=>({desc:tr.querySelector('[data-field="desc"]')?.value||'',qty:tr.querySelector('[data-field="qty"]')?.value,rate:tr.querySelector('[data-field="rate"]')?.value,gst:tr.querySelector('[data-field="gst"]')?.value,amount:tr.querySelector('[data-field="amount"]')?.value}));
-  const sub=lines.reduce((a,l)=>a+parseFloat(l.amount||0),0);
-  const gst=lines.reduce((a,l)=>a+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
-  quotes.push({qno,date:document.getElementById('f-date').value,valid:document.getElementById('f-valid').value,clientIdx:cIdx,clientName:clients[cIdx]?.name,subject:document.getElementById('f-subject').value,lines,total:(sub+gst).toFixed(2),status:s||document.getElementById('f-status').value,notes:document.getElementById('f-notes').value});
-  localStorage.setItem('kidv-quotes',JSON.stringify(quotes));
-  closeModal();renderQuotes();
-}
-function deleteQuote(i){if(confirm('Delete?')){quotes.splice(i,1);localStorage.setItem('kidv-quotes',JSON.stringify(quotes));renderQuotes();}}
-function convertToInvoice(i){
-  const q=quotes[i];
-  // Store pending conversion and redirect
-  localStorage.setItem('kidv-convert-quote',JSON.stringify(q));
-  alert('Opening Invoices page. The quotation data will be pre-filled.');
-  location.href='invoices.html';
-}
-renderQuotes();
 
-document.addEventListener('kidv:db-ready', ()=>{
-  if(window.KIDV && KIDV.isAdmin){
+// ── OVERVIEW ─────────────────────────────────────────────
+function buildOverview(invoices) {
+  if(!invoices) invoices = allInvoices._filtered || allInvoices;
+
+  const total     = invoices.reduce((s,i) => s + parseFloat(i.total||0), 0);
+  const collected = invoices.filter(i=>i.status==='paid').reduce((s,i) => s + parseFloat(i.total||0), 0);
+  const pending   = invoices.filter(i=>i.status==='pending');
+  const overdue   = invoices.filter(i=>i.status==='overdue');
+  const outstanding = pending.reduce((s,i) => s + parseFloat(i.total||0), 0);
+  const overdueAmt  = overdue.reduce((s,i) => s + parseFloat(i.total||0), 0);
+
+  document.getElementById('s-revenue').textContent     = fmtShort(total);
+  document.getElementById('s-collected').textContent   = fmtShort(collected);
+  document.getElementById('s-outstanding').textContent = fmtShort(outstanding);
+  document.getElementById('s-overdue').textContent     = fmtShort(overdueAmt);
+  document.getElementById('s-out-count').textContent   = pending.length + ' pending invoices';
+  document.getElementById('s-ov-count').innerHTML      = `<span class="material-icons-round" style="font-size:14px">warning_amber</span>${overdue.length} invoices`;
+  if(total > 0) {
+    const pct = Math.round(collected / total * 100);
+    document.getElementById('s-coll-pct').textContent = pct + '% of total invoiced';
+  }
+
+  // Monthly revenue chart
+  const monthlyInv = Array(12).fill(0);
+  const monthlyColl = Array(12).fill(0);
+  const monthlyCount = Array(12).fill(0);
+  invoices.forEach(inv => {
+    if(!inv.date) return;
+    const m = new Date(inv.date).getMonth();
+    monthlyInv[m] += parseFloat(inv.total||0);
+    monthlyCount[m]++;
+    if(inv.status === 'paid') monthlyColl[m] += parseFloat(inv.total||0);
+  });
+
+  destroyChart('revenue');
+  const rCtx = document.getElementById('revenueChart').getContext('2d');
+  charts['revenue'] = new Chart(rCtx, {
+    type: 'bar',
+    data: {
+      labels: MONTHS,
+      datasets: [
+        { label:'Invoiced', data: monthlyInv, backgroundColor:'rgba(47,129,247,0.7)', borderRadius:5, borderSkipped:false },
+        { label:'Collected', data: monthlyColl, backgroundColor:'rgba(63,185,80,0.7)', borderRadius:5, borderSkipped:false }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ labels:{ color:'#6b7a90', font:{family:'Outfit'} } } },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#6b7a90',font:{family:'Outfit'}} },
+        y:{ grid:{color:'rgba(0,0,0,0.04)'}, ticks:{color:'#6b7a90',font:{family:'Outfit'}, callback: v => fmtShort(v)} }
+      }
+    }
+  });
+
+  // Status donut
+  const statusCounts = {
+    paid:    invoices.filter(i=>i.status==='paid').length,
+    pending: pending.length,
+    overdue: overdue.length,
+    draft:   invoices.filter(i=>i.status==='draft'||!i.status).length
+  };
+  destroyChart('status');
+  const sCtx = document.getElementById('statusChart').getContext('2d');
+  charts['status'] = new Chart(sCtx, {
+    type:'doughnut',
+    data:{
+      labels:['Paid','Pending','Overdue','Draft'],
+      datasets:[{ data:[statusCounts.paid,statusCounts.pending,statusCounts.overdue,statusCounts.draft], backgroundColor:['#3fb950','#f0883e','#f85149','#7d8590'], borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:'#6b7a90',font:{family:'Outfit'},padding:12} } }, cutout:'65%' }
+  });
+
+  // Count chart
+  destroyChart('count');
+  const cCtx = document.getElementById('countChart').getContext('2d');
+  charts['count'] = new Chart(cCtx, {
+    type:'line',
+    data:{
+      labels:MONTHS,
+      datasets:[{ label:'Invoices', data:monthlyCount, borderColor:'#39d0d8', backgroundColor:'rgba(57,208,216,0.08)', fill:true, tension:0.4, pointBackgroundColor:'#39d0d8', pointRadius:4 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#6b7a90',font:{family:'Outfit'}}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#6b7a90',font:{family:'Outfit'},stepSize:1}}
+      }
+    }
+  });
+
+  // Payment methods
+  const methods = {};
+  allPayments.forEach(p => { methods[p.method||'Other'] = (methods[p.method||'Other']||0) + parseFloat(p.amount||0); });
+  const methKeys = Object.keys(methods);
+  if(methKeys.length > 0) {
+    const total = Object.values(methods).reduce((a,b)=>a+b,0);
+    document.getElementById('payMethodBody').innerHTML = methKeys.map(k => `
+      <div class="prog-row">
+        <div class="prog-label">${k}</div>
+        <div class="prog-bar-bg"><div class="prog-bar" style="width:${(methods[k]/total*100).toFixed(1)}%;background:var(--gradient)"></div></div>
+        <div class="prog-val">${fmtShort(methods[k])}</div>
+      </div>`).join('');
+  }
+
+  // Ledger
+  const recent = [...invoices].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,10);
+  document.getElementById('ledgerBody').innerHTML = recent.length
+    ? recent.map((inv,i) => {
+        const sub = parseFloat(inv.sub||0), gst = parseFloat(inv.totalGST||0), tot = parseFloat(inv.total||0);
+        const intra = inv.supply !== 'inter';
+        return `<tr>
+          <td style="font-weight:600;color:var(--c-invoice)">${inv.invoiceNo||'—'}</td>
+          <td>${inv.clientName||'—'}</td>
+          <td>${inv.date||'—'}</td>
+          <td>${fmt(sub)}</td>
+          <td>${fmt(gst)}</td>
+          <td style="font-weight:600">${fmt(tot)}</td>
+          <td><span class="badge badge-${inv.status||'draft'}">${inv.status||'Draft'}</span></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">No invoices found for selected year</td></tr>';
+}
+
+// ── GST ───────────────────────────────────────────────────
+function buildGST(invoices) {
+  if(!invoices) invoices = allInvoices._filtered || allInvoices;
+
+  let taxable=0, cgst=0, sgst=0, igst=0;
+  const monthlyGST = Array(12).fill(0);
+  const rateMap = {};
+
+  invoices.forEach(inv => {
+    const sub = parseFloat(inv.sub||0);
+    const gstTotal = parseFloat(inv.totalGST||0);
+    taxable += sub;
+    if(inv.supply === 'inter') {
+      igst += gstTotal;
+    } else {
+      cgst += gstTotal / 2;
+      sgst += gstTotal / 2;
+    }
+    if(inv.date) monthlyGST[new Date(inv.date).getMonth()] += gstTotal;
+    // Rate breakdown
+    (inv.lines||[]).forEach(l => {
+      const r = parseFloat(l.gst||18);
+      const amt = parseFloat(l.amount||0);
+      rateMap[r+'%'] = (rateMap[r+'%']||0) + (amt * r / 100);
+    });
+  });
+
+  const total = cgst + sgst + igst;
+  document.getElementById('g-taxable').textContent   = fmt(taxable);
+  document.getElementById('g-total-gst').textContent = fmt(total);
+  document.getElementById('g-grand').textContent     = fmt(taxable + total);
+  document.getElementById('g-cgst').textContent      = fmt(cgst);
+  document.getElementById('g-sgst').textContent      = fmt(sgst);
+  document.getElementById('g-igst').textContent      = fmt(igst);
+
+  // Monthly GST chart
+  destroyChart('gst');
+  const gCtx = document.getElementById('gstChart').getContext('2d');
+  charts['gst'] = new Chart(gCtx, {
+    type:'bar',
+    data:{
+      labels:MONTHS,
+      datasets:[{ label:'GST Collected', data:monthlyGST, backgroundColor:'rgba(57,208,216,0.7)', borderRadius:5, borderSkipped:false }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#6b7a90',font:{family:'Outfit'}}},
+        y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#6b7a90',font:{family:'Outfit'},callback:v=>fmtShort(v)}}
+      }
+    }
+  });
+
+  // GST Rate donut
+  destroyChart('gstRate');
+  const rCtx = document.getElementById('gstRateChart').getContext('2d');
+  const rKeys = Object.keys(rateMap);
+  charts['gstRate'] = new Chart(rCtx, {
+    type:'doughnut',
+    data:{
+      labels: rKeys.length ? rKeys : ['No Data'],
+      datasets:[{ data: rKeys.length ? rKeys.map(k=>rateMap[k]) : [1], backgroundColor:['#39d0d8','#2f81f7','#f0883e','#bc8cff','#3fb950'], borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:'#6b7a90',font:{family:'Outfit'},padding:10} } }, cutout:'60%' }
+  });
+
+  // GST ledger
+  document.getElementById('gstLedgerBody').innerHTML = invoices.length
+    ? [...invoices].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0)).slice(0,20).map(inv => {
+        const gst = parseFloat(inv.totalGST||0);
+        const intra = inv.supply !== 'inter';
+        return `<tr>
+          <td style="font-weight:600;color:var(--c-invoice)">${inv.invoiceNo||'—'}</td>
+          <td>${inv.clientName||'—'}</td>
+          <td>${inv.date||'—'}</td>
+          <td>${fmt(inv.sub||0)}</td>
+          <td>${fmt(intra ? gst/2 : 0)}</td>
+          <td>${fmt(intra ? gst/2 : 0)}</td>
+          <td>${fmt(intra ? 0 : gst)}</td>
+          <td style="font-weight:600;color:var(--c-invoice)">${fmt(gst)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:30px">No invoices found</td></tr>';
+}
+
+// ── CLIENTS ───────────────────────────────────────────────
+function buildClients(invoices) {
+  if(!invoices) invoices = allInvoices._filtered || allInvoices;
+
+  // Group by client
+  const clientMap = {};
+  invoices.forEach(inv => {
+    const name = inv.clientName || 'Unknown';
+    if(!clientMap[name]) clientMap[name] = { name, count:0, total:0, collected:0 };
+    clientMap[name].count++;
+    clientMap[name].total += parseFloat(inv.total||0);
+    if(inv.status === 'paid') clientMap[name].collected += parseFloat(inv.total||0);
+  });
+
+  const sorted = Object.values(clientMap).sort((a,b) => b.total - a.total);
+  const maxAmt = sorted[0]?.total || 1;
+  const colors = ['#2f81f7','#3fb950','#f0883e','#bc8cff','#58a6ff','#39d0d8','#f7c948','#f85149'];
+
+  // Top clients progress bars
+  document.getElementById('topClientsBody').innerHTML = sorted.slice(0,8).length
+    ? sorted.slice(0,8).map((c,i) => `
+      <div class="prog-row">
+        <div class="prog-label" title="${c.name}">${i < 3 ? ['🥇','🥈','🥉'][i] : (i+1)+'.'} ${c.name}</div>
+        <div class="prog-bar-bg"><div class="prog-bar" style="width:${(c.total/maxAmt*100).toFixed(1)}%;background:${colors[i%colors.length]}"></div></div>
+        <div class="prog-val">${fmtShort(c.total)}</div>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No invoice data yet</div>';
+
+  // Client pie chart
+  destroyChart('client');
+  const cCtx = document.getElementById('clientChart').getContext('2d');
+  const top5 = sorted.slice(0,5);
+  charts['client'] = new Chart(cCtx, {
+    type:'doughnut',
+    data:{
+      labels: top5.length ? top5.map(c=>c.name.substring(0,15)) : ['No Data'],
+      datasets:[{ data: top5.length ? top5.map(c=>c.total) : [1], backgroundColor: colors.slice(0, top5.length || 1), borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:'#6b7a90',font:{family:'Outfit',size:11},padding:8} } }, cutout:'60%' }
+  });
+
+  // Client table
+  document.getElementById('clientTableBody').innerHTML = sorted.length
+    ? sorted.map((c,i) => `<tr>
+        <td><div class="rank-num ${i<3?'rank-'+(i+1):''}">${i+1}</div></td>
+        <td style="font-weight:600">${c.name}</td>
+        <td>${c.count}</td>
+        <td style="font-weight:600">${fmt(c.total)}</td>
+        <td style="color:#3fb950;font-weight:600">${fmt(c.collected)}</td>
+        <td style="color:#f0883e;font-weight:600">${fmt(c.total - c.collected)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">No data available</td></tr>';
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────
+function buildProducts(invoices) {
+  if(!invoices) invoices = allInvoices._filtered || allInvoices;
+
+  // Group by product/description from line items
+  const prodMap = {};
+  invoices.forEach(inv => {
+    (inv.lines||[]).forEach(line => {
+      const name = line.desc || 'Unknown Item';
+      const hsn  = line.hsn || '—';
+      if(!prodMap[name]) prodMap[name] = { name, hsn, count:0, qty:0, revenue:0 };
+      prodMap[name].count++;
+      prodMap[name].qty     += parseFloat(line.qty||1);
+      prodMap[name].revenue += parseFloat(line.amount||0);
+    });
+  });
+
+  const sorted = Object.values(prodMap).sort((a,b) => b.revenue - a.revenue);
+  const maxRev = sorted[0]?.revenue || 1;
+  const colors = ['#2f81f7','#3fb950','#f0883e','#bc8cff','#58a6ff','#39d0d8','#f7c948','#f85149'];
+
+  // Top products progress bars
+  document.getElementById('topProductsBody').innerHTML = sorted.slice(0,8).length
+    ? sorted.slice(0,8).map((p,i) => `
+      <div class="prog-row">
+        <div class="prog-label" title="${p.name}">${i < 3 ? ['🥇','🥈','🥉'][i] : (i+1)+'.'} ${p.name}</div>
+        <div class="prog-bar-bg"><div class="prog-bar" style="width:${(p.revenue/maxRev*100).toFixed(1)}%;background:${colors[i%colors.length]}"></div></div>
+        <div class="prog-val">${fmtShort(p.revenue)}</div>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">No line item data yet.<br/>Add line items to invoices to see product report.</div>';
+
+  // Product pie chart
+  destroyChart('product');
+  const pCtx = document.getElementById('productChart').getContext('2d');
+  const top5 = sorted.slice(0,5);
+  charts['product'] = new Chart(pCtx, {
+    type:'doughnut',
+    data:{
+      labels: top5.length ? top5.map(p=>p.name.substring(0,15)) : ['No Data'],
+      datasets:[{ data: top5.length ? top5.map(p=>p.revenue) : [1], backgroundColor: colors.slice(0, top5.length || 1), borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{color:'#6b7a90',font:{family:'Outfit',size:11},padding:8} } }, cutout:'60%' }
+  });
+
+  // Products table
+  document.getElementById('productTableBody').innerHTML = sorted.length
+    ? sorted.map((p,i) => `<tr>
+        <td><div class="rank-num ${i<3?'rank-'+(i+1):''}">${i+1}</div></td>
+        <td style="font-weight:600">${p.name}</td>
+        <td style="font-family:monospace;font-size:12px">${p.hsn}</td>
+        <td>${p.count}</td>
+        <td>${p.qty.toFixed(0)}</td>
+        <td style="font-weight:600;color:var(--c-invoice)">${fmt(p.revenue)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">No product data. Add line items to invoices.</td></tr>';
+}
+
+// ── Export ────────────────────────────────────────────────
+function exportReport() {
+  const invoices = allInvoices._filtered || allInvoices;
+  if(!invoices.length){ alert('No data to export'); return; }
+  const rows = [
+    ['Invoice No','Client','Date','Due','Taxable','GST','Total','Status','Supply Type'],
+    ...invoices.map(i => [
+      i.invoiceNo||'', i.clientName||'', i.date||'', i.due||'',
+      i.sub||0, i.totalGST||0, i.total||0, i.status||'', i.supply||''
+    ])
+  ];
+  const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv,' + encodeURIComponent(csv);
+  a.download = 'kidv-report-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+// ── Load Data ─────────────────────────────────────────────
+document.addEventListener('kidv:db-ready', async () => {
+  if(window.KIDV && KIDV.isAdmin) {
     const b = document.getElementById('adminBtn');
     if(b) b.style.display = '';
   }
+
+  try {
+    [allInvoices, allClients, allPayments, allProducts] = await Promise.all([
+      KIDV.list('invoices'),
+      KIDV.list('clients'),
+      KIDV.list('payments'),
+      KIDV.list('products'),
+    ]);
+  } catch(e) {
+    console.warn('[Reports] Data load error:', e);
+    allInvoices = []; allClients = []; allPayments = []; allProducts = [];
+  }
+
+  // Set current year in filter
+  document.getElementById('yearFilter').value = new Date().getFullYear().toString();
+  buildAll();
 });
 </script>
   <script src="kidv-common.js"></script>

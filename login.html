@@ -2,280 +2,533 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Customer Ledger</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<title>KIDV Invoice – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
-<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">  
 <style>
-:root{--rail-w:68px;--bg:#f0f4f8;--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-.rail-logo{width:42px;height:42px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:14px;cursor:pointer;}
-.rail-logo img{width:42px;height:42px;object-fit:cover;border-radius:12px;}
-.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
-.rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
-.rail-item.active{background:rgba(47,129,247,0.2);color:#2f81f7;}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-.rail-spacer{flex:1;}
-.main{margin-left:var(--rail-w);flex:1;padding:24px 28px;}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.page-title{font-size:22px;font-weight:700;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
-.btn .material-icons-round{font-size:18px;}
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;margin-bottom:20px;}
-.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.card-title{font-size:14px;font-weight:700;}
-select,input{font-family:'Outfit',sans-serif;font-size:13px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;color:#1a2332;outline:none;}
-select:focus,input:focus{border-color:#2f81f7;}
-table{width:100%;border-collapse:collapse;}
-th{padding:10px 16px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;background:#f8faff;border-bottom:2px solid #f0f4f8;text-align:left;}
-td{padding:12px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
-tr:last-child td{border:none;}
-tr:hover td{background:#f8faff;}
-.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-invoice{background:#eff6ff;color:#2f81f7;}
-.badge-payment{background:#f0fdf4;color:#16a34a;}
-.badge-debit{background:#fff7ed;color:#d97706;}
-.balance-row{background:#f8faff;font-weight:700;}
-.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
-.stat{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1.5px solid #e2e8f0;}
-.stat-val{font-size:24px;font-weight:800;}
-.stat-lbl{font-size:12px;color:var(--muted);margin-top:4px;}
-.positive{color:#16a34a;}.negative{color:#ef4444;}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;cursor:pointer;}
-@media print{
-  nav.rail,.topbar .btn,.topbar select{display:none!important}
-  body{background:#fff}
-  .main{margin-left:0;padding:10px}
-  table{font-size:11px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0e1f;--bg:#05070f;
+  --a1:#6366f1;--a2:#8b5cf6;--a3:#06b6d4;
+  --gold:#f59e0b;--green:#10b981;--rose:#f43f5e;
+  --border:#e4eaf5;--field:#f5f7fe;--gray:#64748b;
 }
+html,body{height:100%;overflow:hidden}
+body{font-family:'Outfit',sans-serif;background:var(--bg);display:flex}
+
+/* ── BG ── */
+canvas#bg{position:fixed;inset:0;z-index:0;opacity:.7}
+.noise{position:fixed;inset:0;z-index:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;display:flex;width:100%;height:100vh}
+
+/* ── LEFT ── */
+.left{width:58%;flex-shrink:0;display:flex;flex-direction:column;padding:40px 52px;position:relative;overflow:hidden}
+.left::after{content:'';position:absolute;top:80px;right:0;bottom:80px;width:1px;background:linear-gradient(180deg,transparent,rgba(99,102,241,0.2) 30%,rgba(99,102,241,0.25) 60%,transparent)}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:13px;margin-bottom:auto}
+.brand-logo{width:44px;height:44px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 1px rgba(99,102,241,0.4),0 8px 24px rgba(99,102,241,0.35)}
+.brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.brand-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.2px}
+.brand-tag{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:.08em;text-transform:uppercase}
+.live-pill{display:flex;align-items:center;gap:7px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:100px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#10b981;animation:lp 2s ease-in-out infinite;box-shadow:0 0 0 3px rgba(16,185,129,0.2)}
+@keyframes lp{50%{box-shadow:0 0 0 6px rgba(16,185,129,0.06)}}
+
+/* Hero */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--a1);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:'';width:20px;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:1px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:58px;color:#fff;line-height:1.05;letter-spacing:-.5px;margin-bottom:18px}
+.hero-title em{font-style:italic;background:linear-gradient(135deg,#a78bfa,#6366f1 40%,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:15px;line-height:1.8;color:rgba(255,255,255,0.38);margin-bottom:36px;max-width:420px}
+
+/* Feature grid */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:36px}
+.feat-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s,background .2s;cursor:default}
+.feat-card:hover{background:rgba(255,255,255,0.05);border-color:rgba(99,102,241,0.25)}
+.feat-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-icon .material-icons-round{font-size:16px}
+.fi-p{background:rgba(99,102,241,0.15);color:#a78bfa}
+.fi-g{background:rgba(16,185,129,0.15);color:#6ee7b7}
+.fi-c{background:rgba(6,182,212,0.15);color:#67e8f9}
+.fi-o{background:rgba(245,158,11,0.15);color:#fde68a}
+.fi-r{background:rgba(244,63,94,0.15);color:#fda4af}
+.fi-v{background:rgba(139,92,246,0.15);color:#c4b5fd}
+.feat-text{font-size:12.5px;color:rgba(255,255,255,0.55);font-weight:500;line-height:1.3}
+.feat-text strong{display:block;font-size:13px;color:rgba(255,255,255,0.75);font-weight:700;margin-bottom:2px}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,0.05);padding-top:24px;margin-top:auto}
+.stat{text-align:center;border-right:1px solid rgba(255,255,255,0.04)}
+.stat:last-child{border-right:none}
+.stat-v{font-family:'DM Serif Display',serif;font-size:26px;color:#fff;letter-spacing:-.3px}
+.stat-l{font-size:9.5px;color:rgba(255,255,255,0.22);text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+
+/* ── RIGHT ── */
+.right{flex:1;display:flex;align-items:center;justify-content:center;padding:28px 44px;overflow-y:auto;background:rgba(255,255,255,0.02);position:relative}
+
+/* Card */
+.card{width:100%;max-width:410px;background:#ffffff;border-radius:28px;padding:38px 36px 34px;box-shadow:0 0 0 1px rgba(10,14,31,0.1),0 4px 8px rgba(10,14,31,0.06),0 24px 56px rgba(10,14,31,0.2),0 48px 100px rgba(99,102,241,0.08);position:relative;overflow:hidden;animation:cIn .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes cIn{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4,#6366f1);background-size:200% 100%;animation:shimmer 3s linear infinite}
+@keyframes shimmer{0%{background-position:-100% 0}100%{background-position:100% 0}}
+.card::after{content:'';position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle at top right,rgba(99,102,241,0.06),transparent 70%);pointer-events:none}
+
+.card-head{text-align:center;margin-bottom:26px;position:relative;z-index:1}
+.card-icon{width:60px;height:60px;border-radius:17px;overflow:hidden;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 6px 22px rgba(99,102,241,0.3),0 0 0 4px rgba(99,102,241,0.08)}
+.card-icon img{width:100%;height:100%;object-fit:cover;border-radius:17px}
+.card-title{font-family:'DM Serif Display',serif;font-size:22px;color:#0a0e1f;letter-spacing:-.2px;margin-bottom:5px}
+.card-sub{font-size:12.5px;color:#64748b}
+
+/* Tabs */
+.tabs{display:flex;background:#f5f7fe;border:1.5px solid #e4eaf5;border-radius:14px;padding:4px;margin-bottom:22px;gap:3px;position:relative;z-index:1}
+.tab{flex:1;padding:9px 8px;border-radius:10px;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .2s;color:#64748b;background:none}
+.tab.active{background:#fff;color:#0a0e1f;box-shadow:0 2px 8px rgba(10,14,31,0.1)}
+
+/* Alerts */
+.alert{display:none;border-radius:11px;padding:10px 13px;margin-bottom:16px;font-size:12px;align-items:center;gap:7px;position:relative;z-index:1}
+.alert .material-icons-round{font-size:15px;flex-shrink:0}
+.ae{background:#fff4f6;border:1.5px solid #fecdd3;color:#e11d48;animation:shake .3s ease}
+.as{background:#f0fdf4;border:1.5px solid #bbf7d0;color:#16a34a}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.info-box{background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:11px;padding:10px 13px;margin-bottom:16px;font-size:12px;color:#4338ca;display:flex;align-items:flex-start;gap:7px;position:relative;z-index:1;line-height:1.5}
+.info-box .material-icons-round{font-size:15px;flex-shrink:0;margin-top:1px}
+
+/* Fields */
+.fg{margin-bottom:14px;position:relative;z-index:1}
+.fg label{display:block;font-size:10.5px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.iw{position:relative}
+.iw .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:#c8d0e0;pointer-events:none;z-index:1;transition:color .18s}
+.iw input{width:100%;padding:12px 13px 12px 41px;border:1.5px solid #e4eaf5;border-radius:11px;font-family:'Outfit',sans-serif;font-size:13.5px;color:#0a0e1f;background:#f5f7fe;outline:none;transition:border-color .18s,box-shadow .18s,background .18s}
+.iw input:focus{border-color:var(--a1);background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,0.1)}
+.iw:focus-within .ico{color:var(--a1)}
+.iw input::placeholder{color:#c4cede;font-size:13px}
+.eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:0;display:flex;z-index:2;transition:color .18s}
+.eye:hover{color:var(--a1)}
+.eye .material-icons-round{font-size:16px}
+.strength{margin-top:6px;display:none}
+.sbar{height:3px;border-radius:2px;background:#e4eaf5;overflow:hidden}
+.sfill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%}
+.stxt{font-size:10px;margin-top:4px;color:#94a3b8}
+.forgot{text-align:right;margin:-4px 0 14px}
+.forgot a{font-size:11.5px;color:var(--a1);font-weight:700;cursor:pointer}
+.forgot a:hover{text-decoration:underline}
+
+/* Buttons */
+.btn{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--a1) 0%,var(--a2) 100%);color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(99,102,241,0.35);position:relative;overflow:hidden;z-index:1}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.12),transparent);pointer-events:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(99,102,241,0.45)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn .material-icons-round{font-size:17px}
+.btn-ghost{width:100%;margin-top:9px;padding:11px;border:1.5px solid #e4eaf5;border-radius:12px;background:#f5f7fe;color:#64748b;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:6px;position:relative;z-index:1}
+.btn-ghost:hover{border-color:var(--a1);color:var(--a1);background:#fff}
+.btn-ghost .material-icons-round{font-size:15px}
+.spin{width:17px;height:17px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:none;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Steps */
+.steps{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:20px;position:relative;z-index:1}
+.sdot{width:7px;height:7px;border-radius:50%;background:#e4eaf5;transition:all .3s}
+.sdot.active{background:var(--a1);box-shadow:0 0 0 3px rgba(99,102,241,0.18);width:22px;border-radius:3px}
+.sdot.done{background:#10b981}
+
+/* Email verify */
+.ev-ico{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#6366f1,#06b6d4);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 6px 22px rgba(99,102,241,0.28)}
+.ev-ico .material-icons-round{color:#fff;font-size:32px}
+
+/* Security badges */
+.sec-badge{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid #f0f3fa;position:relative;z-index:1}
+.sec-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#b0bac9;font-weight:600}
+.sec-item .material-icons-round{font-size:12px;color:#94a3b8}
+.card-foot{text-align:center;margin-top:16px;font-size:11.5px;color:#94a3b8;display:flex;align-items:center;justify-content:center;gap:5px;position:relative;z-index:1}
+.card-foot a{color:var(--a1);font-weight:700;text-decoration:none}
+.card-foot a:hover{text-decoration:underline}
+.ev-note{font-size:11px;color:#94a3b8;margin-bottom:14px;padding:8px 10px;background:#f8faff;border-radius:8px;border:1px solid #e4eaf5;line-height:1.5}
+.ev-email{font-weight:700;color:#0a0e1f;background:#eef2ff;padding:2px 7px;border-radius:5px;border:1px solid rgba(99,102,241,0.2)}
+
+@media(max-width:960px){.left{display:none}body{background:#080c1a}.right{background:transparent;padding:20px 14px}.card{max-width:420px}}
 </style>
-<script src="firebase-config.js"></script>
-<script src="subscription.js"></script>
 </head>
 <body>
-<nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item active" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
-  <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile</div></div>
-</nav>
 
-<main class="main">
-  <div class="topbar">
-    <div>
-      <div class="page-title">Customer / Supplier Ledger</div>
-      <div class="page-subtitle">Invoice wise outstanding balance & payment history</div>
+<canvas id="bg"></canvas>
+<div class="noise"></div>
+
+<div class="wrap">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-logo"><img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:16px;font-weight:800;color:#fff\'>KI</span>'"/></div>
+      <div><div class="brand-name">KIDV Invoice</div><div class="brand-tag">by KIDV Tech · kidvtech.com</div></div>
+      <div style="margin-left:auto"><div class="live-pill"><div class="live-dot"></div>GST Ready</div></div>
     </div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <select id="typeFilter" onchange="loadLedger()">
-        <option value="customer">Customer</option>
-        <option value="supplier">Supplier</option>
-      </select>
-      <select id="partyFilter" onchange="loadLedger()" style="min-width:200px">
-        <option value="">Select Party</option>
-      </select>
-      <button class="btn btn-ghost" onclick="printLedger()"><span class="material-icons-round">print</span>Print</button>
+
+    <div class="hero">
+      <div class="eyebrow">India's #1 Invoicing Platform</div>
+      <div class="hero-title">Professional<br/><em>GST Invoicing</em><br/>Made Simple</div>
+      <p class="hero-desc">Create GST-compliant tax invoices, track payments in real-time, manage customers & generate returns — all from one beautiful dashboard.</p>
+
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="feat-icon fi-p"><span class="material-icons-round">receipt_long</span></div>
+          <div class="feat-text"><strong>GST Tax Invoices</strong>CGST, SGST & IGST ready</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon fi-g"><span class="material-icons-round">payments</span></div>
+          <div class="feat-text"><strong>Payment Tracking</strong>Real-time status updates</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon fi-c"><span class="material-icons-round">cloud_sync</span></div>
+          <div class="feat-text"><strong>Cloud Backup</strong>Auto-sync across devices</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon fi-o"><span class="material-icons-round">bar_chart</span></div>
+          <div class="feat-text"><strong>GST Returns</strong>GSTR-1, 3B reports</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon fi-r"><span class="material-icons-round">local_shipping</span></div>
+          <div class="feat-text"><strong>E-Way Bill</strong>Generate instantly</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon fi-v"><span class="material-icons-round">account_balance_wallet</span></div>
+          <div class="feat-text"><strong>Party Ledger</strong>Track all transactions</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat"><div class="stat-v">100%</div><div class="stat-l">GST Compliant</div></div>
+      <div class="stat"><div class="stat-v">₹4,999</div><div class="stat-l">Per Year</div></div>
+      <div class="stat"><div class="stat-v">24/7</div><div class="stat-l">Cloud Access</div></div>
+      <div class="stat"><div class="stat-v">🇮🇳</div><div class="stat-l">Made in India</div></div>
     </div>
   </div>
 
-  <!-- Summary -->
-  <div class="summary-grid" id="summaryGrid">
-    <div class="stat"><div class="stat-val" id="sTotalInvoiced">₹0</div><div class="stat-lbl">Total Invoiced</div></div>
-    <div class="stat"><div class="stat-val positive" id="sTotalPaid">₹0</div><div class="stat-lbl">Total Received</div></div>
-    <div class="stat"><div class="stat-val negative" id="sOutstanding">₹0</div><div class="stat-lbl">Outstanding</div></div>
-    <div class="stat"><div class="stat-val" id="sInvoiceCount">0</div><div class="stat-lbl">Total Invoices</div></div>
-  </div>
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon"><img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:20px;font-weight:800;color:#fff\'>KI</span>'"/></div>
+        <div class="card-title" id="cardTitle">Welcome back 👋</div>
+        <div class="card-sub" id="cardSub">Sign in to your KIDV Invoice account</div>
+      </div>
 
-  <!-- Ledger Table -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title" id="ledgerTitle">Select a party to view ledger</div>
-      <div style="font-size:12px;color:var(--muted)" id="ledgerPeriod"></div>
+      <div class="tabs" id="tabsRow">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+        <button class="tab" id="tabReg" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <div class="alert ae" id="errBox"><span class="material-icons-round">error_outline</span><span id="errMsg"></span></div>
+      <div class="alert as" id="succBox"><span class="material-icons-round">check_circle_outline</span><span id="succMsg"></span></div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="fg">
+          <label>Email Address</label>
+          <div class="iw"><span class="material-icons-round ico">mail_outline</span><input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <div class="iw">
+            <span class="material-icons-round ico">lock_outline</span>
+            <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+            <button class="eye" onclick="toggleEye('loginPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
+          </div>
+        </div>
+        <div class="forgot"><a onclick="doForgot()">Forgot password?</a></div>
+        <button class="btn" id="loginBtn" onclick="doLogin()">
+          <div class="spin" id="loginSpin"></div>
+          <span class="material-icons-round" id="loginIco">login</span>
+          <span id="loginTxt">Sign In</span>
+        </button>
+        <div class="sec-badge">
+          <div class="sec-item"><span class="material-icons-round">lock</span>SSL Secured</div>
+          <div class="sec-item"><span class="material-icons-round">verified_user</span>Firebase Auth</div>
+          <div class="sec-item"><span class="material-icons-round">cloud_done</span>GST Ready</div>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerForm" style="display:none">
+        <div class="steps"><div class="sdot active" id="sd1"></div><div class="sdot" id="sd2"></div><div class="sdot" id="sd3"></div></div>
+        <div class="info-box"><span class="material-icons-round">info</span>After registering, admin activates your account.</div>
+        <div class="fg"><label>Full Name *</label><div class="iw"><span class="material-icons-round ico">person_outline</span><input type="text" id="regName" placeholder="Your full name"/></div></div>
+        <div class="fg"><label>Email Address *</label><div class="iw"><span class="material-icons-round ico">mail_outline</span><input type="email" id="regEmail" placeholder="your@email.com"/></div></div>
+        <div class="fg"><label>Mobile Number *</label><div class="iw"><span class="material-icons-round ico">phone_iphone</span><input type="tel" id="regMobile" placeholder="+91 9999999999" maxlength="13"/></div></div>
+        <div class="fg">
+          <label>Password *</label>
+          <div class="iw">
+            <span class="material-icons-round ico">lock_outline</span>
+            <input type="password" id="regPass" placeholder="Min 6 characters" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doRegister()"/>
+            <button class="eye" onclick="toggleEye('regPass',this)" type="button"><span class="material-icons-round">visibility</span></button>
+          </div>
+          <div class="strength" id="strengthWrap"><div class="sbar"><div class="sfill" id="sfill"></div></div><div class="stxt" id="stxt"></div></div>
+        </div>
+        <button class="btn" id="regBtn" onclick="doRegister()">
+          <div class="spin" id="regSpin"></div>
+          <span class="material-icons-round" id="regIco">person_add</span>
+          <span id="regTxt">Create Account</span>
+        </button>
+      </div>
+
+      <!-- EMAIL VERIFY -->
+      <div id="emailVerifyPanel" style="display:none">
+        <div style="text-align:center;margin-bottom:16px;position:relative;z-index:1">
+          <div class="ev-ico"><span class="material-icons-round">mark_email_unread</span></div>
+          <div style="font-family:'DM Serif Display',serif;font-size:19px;color:#0a0e1f;margin-bottom:7px">Verify Your Email 📧</div>
+          <div style="font-size:12.5px;color:#64748b;line-height:1.7;margin-bottom:8px">Link sent to <span class="ev-email" id="verifyEmailDisplay"></span></div>
+          <div class="ev-note">📌 Check <strong>Spam/Junk folder</strong> — email comes from Firebase.<br/>Click link then press "I've Verified" below.</div>
+        </div>
+        <div id="emailVerifyStatus" style="font-size:12px;color:#64748b;text-align:center;margin-bottom:12px;min-height:18px;position:relative;z-index:1"></div>
+        <button class="btn" onclick="checkEmailVerified()"><span class="material-icons-round">refresh</span><span>I've Verified — Continue</span></button>
+        <button class="btn-ghost" onclick="resendVerification()"><span class="material-icons-round">send</span>Resend Email</button>
+        <button class="btn-ghost" style="margin-top:6px" onclick="cancelVerify()"><span class="material-icons-round">arrow_back</span>Use Different Email</button>
+      </div>
+
+      <!-- PHONE OTP -->
+      <div id="phoneOtpPanel" style="display:none">
+        <div style="text-align:center;margin-bottom:20px;position:relative;z-index:1">
+          <div style="width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 6px 20px rgba(99,102,241,0.28)"><span class="material-icons-round" style="color:#fff;font-size:28px">smartphone</span></div>
+          <div style="font-family:'DM Serif Display',serif;font-size:19px;color:#0a0e1f">Verify Mobile 📱</div>
+          <div style="font-size:12.5px;color:#64748b;margin-top:5px;line-height:1.6" id="phoneOtpSub">Enter the OTP sent to your number</div>
+        </div>
+        <div class="fg" style="position:relative;z-index:1">
+          <label>OTP Code</label>
+          <div class="iw"><span class="material-icons-round ico">pin</span><input type="number" id="otpInput" placeholder="000000" maxlength="6" onkeydown="if(event.key==='Enter')verifyOTP()" style="letter-spacing:8px;font-size:20px;font-weight:800;text-align:center;padding-left:13px;color:#0a0e1f"/></div>
+        </div>
+        <div style="text-align:center;font-size:11.5px;font-weight:600;color:#64748b;margin-bottom:14px;padding:8px 13px;background:#f5f7fe;border-radius:9px;border:1px solid #e4eaf5;position:relative;z-index:1" id="otpTimer"></div>
+        <button class="btn" id="otpBtn" onclick="verifyOTP()">
+          <div class="spin" id="otpSpin"></div>
+          <span class="material-icons-round" id="otpIco">verified</span>
+          <span id="otpTxt">Verify Mobile OTP</span>
+        </button>
+        <button class="btn-ghost" onclick="skipOTP()"><span class="material-icons-round">skip_next</span>Skip — Verify Later</button>
+        <button class="btn-ghost" style="margin-top:6px" onclick="cancelOTP()"><span class="material-icons-round">arrow_back</span>Go Back</button>
+        <div id="recaptcha-container"></div>
+      </div>
+
+      <div class="card-foot">Need help? <a href="https://wa.me/917984486885" target="_blank">📲 WhatsApp Support</a></div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:90px">Date</th>
-          <th style="width:80px">Vch Type</th>
-          <th style="width:100px">Vch No / Ref</th>
-          <th>Particulars / Narration</th>
-          <th style="text-align:right;width:110px">Debit (₹)</th>
-          <th style="text-align:right;width:110px">Credit (₹)</th>
-          <th style="text-align:right;width:120px">Balance (₹)</th>
-        </tr>
-      </thead>
-      <tbody id="ledgerBody">
-        <tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">Select a customer or supplier to view ledger</td></tr>
-      </tbody>
-    </table>
   </div>
-</main>
+</div>
 
+<!-- Animated background -->
 <script>
-const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
-const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+(function(){
+  const canvas=document.getElementById('bg');
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const colors=['rgba(99,102,241,','rgba(139,92,246,','rgba(6,182,212,','rgba(16,185,129,'];
+  for(let i=0;i<60;i++){
+    particles.push({
+      x:Math.random()*1920,y:Math.random()*1080,
+      r:Math.random()*2+0.5,
+      c:colors[Math.floor(Math.random()*colors.length)],
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      a:Math.random()*.5+.1
+    });
+  }
+  // Gradient orbs
+  const orbs=[
+    {x:.15,y:.3,r:400,c:'rgba(99,102,241,0.12)'},
+    {x:.85,y:.2,r:300,c:'rgba(6,182,212,0.09)'},
+    {x:.5,y:.8,r:350,c:'rgba(139,92,246,0.08)'},
+  ];
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Dark base
+    ctx.fillStyle='#05070f';
+    ctx.fillRect(0,0,W,H);
+    // Orbs
+    orbs.forEach(o=>{
+      const grd=ctx.createRadialGradient(o.x*W,o.y*H,0,o.x*W,o.y*H,o.r);
+      grd.addColorStop(0,o.c);grd.addColorStop(1,'transparent');
+      ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+    });
+    // Grid
+    ctx.strokeStyle='rgba(99,102,241,0.04)';ctx.lineWidth=1;
+    const gs=60;
+    for(let x=0;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    // Particles
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c+p.a+')';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
 
-let invoices=[], payments=[], clients=[], suppliers=[];
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const FIREBASE_CONFIG={apiKey:"AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",authDomain:"kidv-tech-project.firebaseapp.com",projectId:"kidv-tech-project",storageBucket:"kidv-tech-project.firebasestorage.app",messagingSenderId:"168663801953",appId:"1:168663801953:web:af953338df12480b4fca20"};
+if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+const auth=firebase.auth(),db=firebase.firestore();
+const ADMIN_EMAILS=['amit@kidvtech.com'];
+let _inRegFlow=false,_redirecting=false;
+let _regUser=null,_regData=null,_phoneConfirm=null,_timerHandle=null;
 
-document.addEventListener('kidv:db-ready', async()=>{
-  if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; }
-  
-  [invoices, payments, clients, suppliers] = await Promise.all([
-    KIDV.list('invoices'), KIDV.list('payments'),
-    KIDV.list('clients'), KIDV.list('suppliers')
-  ]);
-  
-  updatePartyDropdown();
+auth.onAuthStateChanged(async user=>{
+  if(_redirecting||_inRegFlow)return;
+  if(user){
+    _redirecting=true;
+    try{await db.collection('users').doc(user.uid).set({email:user.email,name:user.displayName||'',isAdmin:ADMIN_EMAILS.includes((user.email||'').toLowerCase()),lastLogin:new Date().toISOString(),createdAt:new Date().toISOString()},{merge:true});}catch(e){}
+    location.replace('index.html');
+  }
 });
 
-function updatePartyDropdown(){
-  const type = document.getElementById('typeFilter').value;
-  const list = type === 'customer' ? clients : suppliers;
-  const sel = document.getElementById('partyFilter');
-  sel.innerHTML = '<option value="">— Select Party —</option>';
-  list.forEach((p,i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = p.name + (p.gstin ? ' ('+p.gstin+')' : '');
-    sel.appendChild(opt);
-  });
-  document.getElementById('ledgerBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">Select a party to view ledger</td></tr>';
-  resetSummary();
+function showErr(msg){const b=document.getElementById('errBox');b.style.display='flex';document.getElementById('errMsg').textContent=msg;void b.offsetWidth;document.getElementById('succBox').style.display='none';}
+function showSucc(msg){document.getElementById('succBox').style.display='flex';document.getElementById('succMsg').textContent=msg;document.getElementById('errBox').style.display='none';}
+function hideAlerts(){document.getElementById('errBox').style.display='none';document.getElementById('succBox').style.display='none';}
+function toggleEye(id,btn){const i=document.getElementById(id),ic=btn.querySelector('.material-icons-round');i.type=i.type==='password'?'text':'password';ic.textContent=i.type==='password'?'visibility':'visibility_off';}
+function setLoad(type,on){
+  const m={login:['loginSpin','loginIco','loginTxt','loginBtn','Signing in...','Sign In'],reg:['regSpin','regIco','regTxt','regBtn','Please wait...','Create Account'],otp:['otpSpin','otpIco','otpTxt','otpBtn','Verifying...','Verify Mobile OTP']};
+  const[sp,ic,tx,bt,ld,id_]=m[type];
+  document.getElementById(sp).style.display=on?'block':'none';
+  document.getElementById(ic).style.display=on?'none':'inline';
+  document.getElementById(tx).textContent=on?ld:id_;
+  document.getElementById(bt).disabled=on;
+}
+function checkStrength(val){
+  const w=document.getElementById('strengthWrap'),f=document.getElementById('sfill'),t=document.getElementById('stxt');
+  if(!val){w.style.display='none';return;}w.style.display='';
+  let s=0;if(val.length>=6)s++;if(val.length>=10)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;
+  const l=[{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}][Math.min(s,4)];
+  f.style.width=l.w;f.style.background=l.c;t.textContent='Strength: '+l.t;t.style.color=l.c;
+}
+function stepDot(n){for(let i=1;i<=3;i++){const el=document.getElementById('sd'+i);if(!el)continue;el.classList.remove('active','done');if(i<n)el.classList.add('done');else if(i===n)el.classList.add('active');}}
+const ERR_MAP={'auth/user-not-found':'Email not found. Please create an account.','auth/wrong-password':'Incorrect password. Please try again.','auth/invalid-credential':'Invalid email or password.','auth/email-already-in-use':'Email already registered. Please sign in.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Please try again later.'};
+
+function switchTab(t){
+  const isLogin=t==='login';
+  document.getElementById('loginForm').style.display=isLogin?'':'none';
+  document.getElementById('registerForm').style.display=isLogin?'none':'';
+  document.getElementById('emailVerifyPanel').style.display='none';
+  document.getElementById('phoneOtpPanel').style.display='none';
+  document.getElementById('tabsRow').style.display='';
+  document.getElementById('tabLogin').classList.toggle('active',isLogin);
+  document.getElementById('tabReg').classList.toggle('active',!isLogin);
+  document.getElementById('cardTitle').textContent=isLogin?'Welcome back 👋':'Create Account ✨';
+  document.getElementById('cardSub').textContent=isLogin?'Sign in to your KIDV Invoice account':'Register your business account';
+  _inRegFlow=false;hideAlerts();
 }
 
-function resetSummary(){
-  ['sTotalInvoiced','sTotalPaid','sOutstanding','sInvoiceCount'].forEach(id=>{
-    document.getElementById(id).textContent = id==='sInvoiceCount'?'0':'₹0';
-  });
+async function doLogin(){
+  hideAlerts();
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){showErr('Please enter email and password.');return;}
+  setLoad('login',true);
+  try{await auth.signInWithEmailAndPassword(email,pass);}
+  catch(e){showErr(ERR_MAP[e.code]||e.message);setLoad('login',false);}
 }
 
-function loadLedger(){
-  const type = document.getElementById('typeFilter').value;
-  const idx = document.getElementById('partyFilter').value;
-  
-  if(idx === '') {
-    updatePartyDropdown();
-    return;
-  }
-  
-  const list = type === 'customer' ? clients : suppliers;
-  const party = list[parseInt(idx)];
-  if(!party) return;
-  
-  // Get invoices for this party
-  const partyInvoices = invoices.filter(inv =>
-    inv.clientName === party.name ||
-    inv.clientId === party._id ||
-    (party.gstin && inv.clientGSTIN === party.gstin)
-  );
-  
-  // Get payments for this party  
-  const partyPayments = payments.filter(p =>
-    p.clientName === party.name ||
-    p.clientId === party._id
-  );
-  
-  // Build ledger entries
-  let entries = [];
-  
-  partyInvoices.forEach(inv => {
-    entries.push({
-      date: inv.date || inv.createdAt,
-      type: 'invoice',
-      ref: inv.invoiceNo,
-      desc: 'Tax Invoice',
-      debit: parseFloat(inv.total||0),
-      credit: 0,
-    });
-  });
-  
-  partyPayments.forEach(pay => {
-    entries.push({
-      date: pay.date || pay.createdAt,
-      type: 'payment',
-      ref: pay.ref || pay.utr || '',
-      desc: 'Payment - ' + (pay.method||''),
-      debit: 0,
-      credit: parseFloat(pay.amount||0),
-    });
-  });
-  
-  // Sort by date
-  entries.sort((a,b) => new Date(a.date||0) - new Date(b.date||0));
-  
-  // Calculate running balance
-  let balance = 0;
-  let totalDebit = 0, totalCredit = 0;
-  
-  // Add opening balance row
-  const openingRow = `<tr style="background:#f0f9ff;border-bottom:2px solid #bae6fd">
-    <td colspan="6" style="font-weight:700;color:#0369a1;font-size:13px">Opening Balance</td>
-    <td style="text-align:right;font-weight:800;color:#0369a1">₹0.00</td>
-  </tr>`;
-
-  const rows = entries.map((e,ri) => {
-    balance += e.debit - e.credit;
-    totalDebit += e.debit;
-    totalCredit += e.credit;
-    const balStr = balance===0 ? '—' : fmt(Math.abs(balance))+' '+(balance>0?'Dr':'Cr');
-    const vchType = e.type==='invoice'?'Sales':e.type==='payment'?'Receipt':'Journal';
-    const vchColor = e.type==='invoice'?'#2f81f7':e.type==='payment'?'#16a34a':'#d97706';
-    return `<tr style="${ri%2===1?'background:#fafbff':''}">
-      <td style="font-size:12px;color:#374151">${fmtDate(e.date)}</td>
-      <td><span style="font-size:11px;font-weight:700;color:${vchColor}">${vchType}</span></td>
-      <td style="font-size:12px;font-weight:700;color:#2f81f7;font-family:monospace">${e.ref ? e.ref : (e.type==='payment' ? '<span style="color:#9ca3af;font-weight:400">No Ref</span>' : '—')}</td>
-      <td>
-        <div style="font-size:13px;font-weight:600;color:#1a2332">${e.desc}</div>
-        ${e.method?'<div style="font-size:11px;color:#9ca3af">Via: '+e.method+'</div>':''}
-        ${e.remarks?'<div style="font-size:11px;color:#9ca3af;font-style:italic">'+e.remarks+'</div>':''}
-      </td>
-      <td style="text-align:right;font-weight:700;color:${e.debit?'#ef4444':'#d1d5db'}">${e.debit?fmt(e.debit):'—'}</td>
-      <td style="text-align:right;font-weight:700;color:${e.credit?'#16a34a':'#d1d5db'}">${e.credit?fmt(e.credit):'—'}</td>
-      <td style="text-align:right;font-weight:700;font-size:13px;color:${balance>0?'#ef4444':balance<0?'#16a34a':'#9ca3af'}">${balStr}</td>
-    </tr>`;
-  });
-  
-  // Add closing balance row
-  rows.push(`<tr class="balance-row" style="background:#f0f4f8">
-    <td colspan="4" style="font-weight:700;text-align:right">Closing Balance</td>
-    <td style="text-align:right;font-weight:700;color:#ef4444">${fmt(totalDebit)}</td>
-    <td style="text-align:right;font-weight:700;color:#16a34a">${fmt(totalCredit)}</td>
-    <td style="text-align:right;font-weight:800;font-size:14px;color:${balance>0?'#ef4444':'#16a34a'}">${fmt(Math.abs(balance))} ${balance>0?'Dr':'Cr'}</td>
-  </tr>`);
-  
-  document.getElementById('ledgerBody').innerHTML = rows.length > 0 ? openingRow + rows.join('') : '<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af">No transactions found</td></tr>';
-  document.getElementById('ledgerTitle').textContent = party.name + ' — Ledger';
-  document.getElementById('ledgerPeriod').textContent = partyInvoices.length + ' invoices · ' + partyPayments.length + ' payments';
-  
-  // Update summary
-  const outstanding = totalDebit - totalCredit;
-  document.getElementById('sTotalInvoiced').textContent = fmt(totalDebit);
-  document.getElementById('sTotalPaid').textContent = fmt(totalCredit);
-  document.getElementById('sOutstanding').textContent = fmt(Math.max(0,outstanding));
-  document.getElementById('sInvoiceCount').textContent = partyInvoices.length;
+async function doRegister(){
+  hideAlerts();
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const mobile=document.getElementById('regMobile').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if(!name){showErr('Please enter your full name.');return;}
+  if(!email){showErr('Please enter your email address.');return;}
+  if(!mobile||mobile.replace(/\D/g,'').length<10){showErr('Please enter a valid mobile number.');return;}
+  if(!pass||pass.length<6){showErr('Password must be at least 6 characters.');return;}
+  setLoad('reg',true);_inRegFlow=true;
+  try{
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    await cred.user.updateProfile({displayName:name});
+    _regUser=cred.user;_regData={name,email,mobile};
+    try{await _regUser.sendEmailVerification({url:window.location.origin+'/login.html'});}catch(ve){}
+    setLoad('reg',false);showEmailVerifyPanel(email);
+  }catch(e){_inRegFlow=false;showErr(ERR_MAP[e.code]||e.message);setLoad('reg',false);}
 }
 
-function printLedger(){
-  window.print();
+function showEmailVerifyPanel(email){
+  document.getElementById('registerForm').style.display='none';
+  document.getElementById('tabsRow').style.display='none';
+  document.getElementById('emailVerifyPanel').style.display='';
+  document.getElementById('verifyEmailDisplay').textContent=email;
+  document.getElementById('emailVerifyStatus').textContent='';
+  document.getElementById('cardTitle').textContent='Check Your Email 📧';
+  document.getElementById('cardSub').textContent='Step 2 of 3';
+  stepDot(2);hideAlerts();showSucc('Verification email sent! Check inbox & spam.');
+}
+
+async function checkEmailVerified(){
+  if(!_regUser){showErr('Session expired. Please register again.');return;}
+  hideAlerts();
+  try{
+    await _regUser.reload();
+    if(_regUser.emailVerified){document.getElementById('emailVerifyStatus').textContent='';showPhoneOTPStep();}
+    else{const el=document.getElementById('emailVerifyStatus');el.style.color='#e11d48';el.textContent='⚠️ Not verified yet. Click the link in your email first.';}
+  }catch(e){showErr('Error: '+e.message);}
+}
+async function resendVerification(){if(!_regUser){showErr('Session expired.');return;}try{await _regUser.sendEmailVerification({url:window.location.origin+'/login.html'});showSucc('Verification email resent!');}catch(e){showErr(ERR_MAP[e.code]||e.message);}}
+function cancelVerify(){if(_regUser){_regUser.delete().catch(()=>{});_regUser=null;_regData=null;}_inRegFlow=false;document.getElementById('emailVerifyPanel').style.display='none';document.getElementById('tabsRow').style.display='';switchTab('register');}
+
+function showPhoneOTPStep(){
+  document.getElementById('emailVerifyPanel').style.display='none';
+  document.getElementById('phoneOtpPanel').style.display='';
+  document.getElementById('otpInput').value='';
+  document.getElementById('phoneOtpSub').textContent='Enter the OTP sent to '+(_regData?.mobile||'your number');
+  document.getElementById('cardTitle').textContent='Verify Mobile 📱';
+  document.getElementById('cardSub').textContent='Step 3 of 3 — Almost done!';
+  stepDot(3);hideAlerts();sendPhoneOTP();
+}
+async function sendPhoneOTP(){
+  if(!_regData?.mobile)return;
+  try{
+    if(window._rcv){try{window._rcv.clear();}catch(e){}}
+    window._rcv=new firebase.auth.RecaptchaVerifier('recaptcha-container',{size:'invisible',callback:()=>{}});
+    const raw=_regData.mobile.replace(/\D/g,'');
+    const e164=raw.startsWith('91')?'+'+raw:'+91'+raw;
+    _phoneConfirm=await auth.signInWithPhoneNumber(e164,window._rcv);
+    startTimer(120);showSucc('OTP sent to '+_regData.mobile);
+  }catch(e){console.warn('[OTP]',e);document.getElementById('otpTimer').textContent='OTP send failed — you may skip.';showErr('Could not send OTP. You may skip this step.');}
+}
+function startTimer(secs){clearInterval(_timerHandle);const el=document.getElementById('otpTimer');let left=secs;el.textContent='OTP expires in '+left+'s';_timerHandle=setInterval(()=>{left--;if(left<=0){clearInterval(_timerHandle);el.textContent='OTP expired.';}else el.textContent='OTP expires in '+left+'s';},1000);}
+async function verifyOTP(){
+  const code=document.getElementById('otpInput').value.trim();
+  if(!code||code.length<6){showErr('Enter the 6-digit OTP.');return;}
+  if(!_phoneConfirm){showErr('OTP expired. Please skip.');return;}
+  setLoad('otp',true);hideAlerts();
+  try{const cred=firebase.auth.PhoneAuthProvider.credential(_phoneConfirm.verificationId,code);await _regUser.linkWithCredential(cred);await completeRegistration(true);}
+  catch(e){showErr(e.code==='auth/invalid-verification-code'?'Invalid OTP.':(ERR_MAP[e.code]||e.message));setLoad('otp',false);}
+}
+async function skipOTP(){clearInterval(_timerHandle);await completeRegistration(false);}
+async function completeRegistration(mobileVerified){
+  clearInterval(_timerHandle);
+  try{
+    await db.collection('users').doc(_regUser.uid).set({email:_regData.email,name:_regData.name,mobile:_regData.mobile,isAdmin:ADMIN_EMAILS.includes(_regData.email.toLowerCase()),mobileVerified,status:'pending',createdAt:new Date().toISOString(),lastLogin:new Date().toISOString()});
+    const msg=encodeURIComponent('🆕 New Registration!\n\nName: '+_regData.name+'\nEmail: '+_regData.email+'\nMobile: '+_regData.mobile+'\n\nPlease activate their account.');
+    window.open('https://wa.me/917984486885?text='+msg,'_blank');
+    setLoad('otp',false);_inRegFlow=false;
+    alert('✅ Account created! Please wait for admin to activate your account.');
+    location.reload();
+  }catch(e){showErr('Registration error: '+e.message);setLoad('otp',false);}
+}
+function cancelOTP(){clearInterval(_timerHandle);_phoneConfirm=null;document.getElementById('phoneOtpPanel').style.display='none';document.getElementById('tabsRow').style.display='';switchTab('register');}
+
+async function doForgot(){
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email){showErr('Enter your email address above first.');return;}
+  try{await auth.sendPasswordResetEmail(email);hideAlerts();showSucc('Password reset email sent to '+email+'. Check your inbox.');}
+  catch(e){showErr(ERR_MAP[e.code]||e.message);}
 }
 </script>
 </body>

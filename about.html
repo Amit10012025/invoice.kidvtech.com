@@ -1,19 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>KIDV Invoice</title>
-<script>
-// GitHub Pages clean URL redirect
-var path = window.location.pathname;
-var search = window.location.search;
-// If path doesn't have extension, add .html
-if(path.split('/').pop().indexOf('.') === -1 && path.slice(-1) !== '/'){
-  window.location.replace(path + '.html' + search);
-} else {
-  window.location.replace('/');
-}
-</script>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – About Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo.jpg">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
+.page{max-width:860px;margin:0 auto;padding:48px 24px;}
+.hero{background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:20px;padding:48px;margin-bottom:32px;text-align:center;color:#fff;}
+.hero-logo{width:72px;height:72px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden;}
+.hero-logo img{width:100%;height:100%;object-fit:cover;border-radius:18px;}
+.hero h1{font-size:32px;font-weight:700;margin-bottom:10px;}
+.hero p{font-size:15px;color:rgba(255,255,255,0.6);max-width:500px;margin:0 auto;}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:20px;border:1px solid #e2e8f0;}
+.card h2{font-size:18px;font-weight:700;color:#1a2332;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.card h2 .material-icons-round{color:#2f81f7;font-size:22px;}
+.card p{font-size:14px;color:#6b7a90;line-height:1.8;margin-bottom:12px;}
+.card p:last-child{margin-bottom:0;}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+.feature-item{background:#f8faff;border-radius:12px;padding:16px;text-align:center;}
+.feature-item .material-icons-round{font-size:28px;color:#2f81f7;margin-bottom:8px;}
+.feature-item div{font-size:13px;font-weight:600;color:#1a2332;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+.contact-item{display:flex;align-items:center;gap:12px;background:#f8faff;border-radius:12px;padding:14px;}
+.contact-item .material-icons-round{color:#2f81f7;font-size:20px;}
+.contact-item div{font-size:13.5px;}
+.contact-item strong{display:block;color:#1a2332;font-weight:600;}
+.contact-item span{color:#6b7a90;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:#2f81f7;text-decoration:none;font-size:14px;font-weight:600;margin-bottom:24px;}
+.back-btn:hover{text-decoration:underline;}
+</style>
 </head>
-<body>Redirecting...</body>
+<body>
+<div class="page">
+  <a class="back-btn" href="index.html"><span class="material-icons-round">arrow_back</span>Back to App</a>
+
+  <div class="hero">
+    <div class="hero-logo"><img src="logo.jpg" alt="KI" onerror="this.parentElement.innerHTML='<span style=\'font-size:22px;font-weight:800;color:#fff\'>KI</span>'"/></div>
+    <h1>KIDV Invoice</h1>
+    <p>India's smart GST invoicing software — built for Indian businesses by KIDV Tech.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="material-icons-round">business</span>About KIDV Tech</h2>
+    <p>KIDV Tech is an Ahmedabad-based technology company dedicated to building affordable, reliable software solutions for Indian SMEs and businesses.</p>
+    <p>KIDV Invoice is our flagship product — a comprehensive GST billing and invoicing platform that helps businesses create professional tax invoices, manage customers & suppliers, track payments, and stay GST compliant.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="material-icons-round">star</span>Key Features</h2>
+    <div class="feature-grid">
+      <div class="feature-item"><span class="material-icons-round">receipt_long</span><div>GST Tax Invoices</div></div>
+      <div class="feature-item"><span class="material-icons-round">payments</span><div>Payment Tracking</div></div>
+      <div class="feature-item"><span class="material-icons-round">people_alt</span><div>Customer Management</div></div>
+      <div class="feature-item"><span class="material-icons-round">local_shipping</span><div>E-Way Bill</div></div>
+      <div class="feature-item"><span class="material-icons-round">bar_chart</span><div>GST Returns</div></div>
+      <div class="feature-item"><span class="material-icons-round">cloud_sync</span><div>Cloud Backup</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="material-icons-round">contact_support</span>Contact Us</h2>
+    <div class="contact-grid">
+      <div class="contact-item"><span class="material-icons-round">business</span><div><strong>KIDV Tech</strong><span>Ahmedabad, Gujarat, India</span></div></div>
+      <div class="contact-item"><span class="material-icons-round">language</span><div><strong>Website</strong><span>kidvtech.com</span></div></div>
+      <div class="contact-item"><span class="material-icons-round">phone</span><div><strong>WhatsApp Support</strong><span>+91 79844 86885</span></div></div>
+      <div class="contact-item"><span class="material-icons-round">email</span><div><strong>Email</strong><span>support@kidvtech.com</span></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="material-icons-round">info</span>Software Information</h2>
+    <p><strong>Product:</strong> KIDV Invoice v2.0</p>
+    <p><strong>Platform:</strong> Web-based (Cloud)</p>
+    <p><strong>Technology:</strong> Firebase (Google Cloud), HTML5, JavaScript</p>
+    <p><strong>GST Compliance:</strong> 100% GST-ready for Indian businesses</p>
+    <p><strong>Support:</strong> 24/7 via WhatsApp at +91 79844 86885</p>
+  </div>
+</div>
+</body>
 </html>

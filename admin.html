@@ -2,258 +2,754 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – About Us</title>
+<title>KIDV Invoice – Admin Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-:root{--rail-w:68px;--bg:#f0f4f8;--surface:#ffffff;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-
-/* RAIL */
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);text-decoration:none;cursor:pointer;}
-.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
-.rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:rgba(255,255,255,0.1);color:#fff;}
-.rail-item.active{background:rgba(47,129,247,0.2);color:#2f81f7;border-color:rgba(47,129,247,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-.rail-spacer{flex:1;}
-
-.main{margin-left:var(--rail-w);flex:1;padding:0;}
-
-/* HERO */
-.hero{background:linear-gradient(145deg,#0f1f3d 0%,#1a3a6b 55%,#0d3359 100%);padding:64px 60px 56px;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(47,129,247,0.12);}
-.hero::after{content:'';position:absolute;bottom:-60px;left:40%;width:200px;height:200px;border-radius:50%;background:rgba(57,208,216,0.08);}
-.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.35);color:#60a5fa;font-size:11.5px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:.04em;position:relative;z-index:1;}
-.hero-tag .material-icons-round{font-size:14px;}
-.hero-title{font-size:42px;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-1px;margin-bottom:16px;position:relative;z-index:1;}
-.hero-title span{background:linear-gradient(90deg,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;max-width:560px;position:relative;z-index:1;}
-.hero-logo{position:relative;z-index:1;margin-top:32px;display:flex;align-items:center;gap:16px;}
-.logo-box{width:56px;height:56px;background:var(--gradient);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;box-shadow:0 0 24px rgba(47,129,247,0.4);}
-.logo-name{font-size:24px;font-weight:800;color:#fff;}
-.logo-by{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;letter-spacing:.05em;}
-
-/* CONTENT */
-.content{max-width:900px;margin:0 auto;padding:48px 60px;}
-
-/* SECTION */
-.section{margin-bottom:48px;}
-.section-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(47,129,247,0.08);border:1px solid rgba(47,129,247,0.15);color:#2f81f7;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em;}
-.section-tag .material-icons-round{font-size:13px;}
-.section-title{font-size:26px;font-weight:800;color:#1a2332;margin-bottom:12px;letter-spacing:-0.3px;}
-.section-text{font-size:15px;color:#4b5563;line-height:1.8;}
-
-/* CARDS GRID */
-.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
-.feat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:24px;transition:transform .2s,box-shadow .2s,border-color .2s;}
-.feat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08);border-color:rgba(47,129,247,0.25);}
-.feat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
-.feat-title{font-size:15px;font-weight:700;color:#1a2332;margin-bottom:6px;}
-.feat-desc{font-size:13px;color:#6b7a90;line-height:1.6;}
-
-/* TEAM */
-.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:24px;}
-.team-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:24px;display:flex;align-items:center;gap:16px;}
-.team-avatar{width:60px;height:60px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
-.team-name{font-size:16px;font-weight:700;color:#1a2332;}
-.team-role{font-size:13px;color:#6b7a90;margin-top:2px;}
-.team-tag{display:inline-flex;align-items:center;gap:4px;background:#eff6ff;color:#2f81f7;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;margin-top:6px;}
-
-/* STATS */
-.stats-band{background:#1e293b;border-radius:20px;padding:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:32px 0;}
-.stat-item{text-align:center;padding:16px;border-right:1px solid rgba(255,255,255,0.08);}
-.stat-item:last-child{border-right:none;}
-.stat-val{font-size:32px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
-.stat-lbl{font-size:12px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:.06em;}
-
-/* CONTACT */
-.contact-box{background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid #bfdbfe;border-radius:20px;padding:32px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;}
-.contact-title{font-size:20px;font-weight:700;color:#1a2332;margin-bottom:6px;}
-.contact-sub{font-size:14px;color:#6b7a90;line-height:1.6;}
-.contact-btns{display:flex;flex-direction:column;gap:10px;}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .18s;text-decoration:none;white-space:nowrap;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-wa{background:#25d366;color:#fff;}
-.btn-wa:hover{background:#22c55e;}
-.btn .material-icons-round{font-size:17px;}
-
-/* FOOTER */
-.page-footer{background:#1e293b;padding:24px 60px;display:flex;align-items:center;justify-content:space-between;}
-.footer-links{display:flex;gap:20px;}
-.footer-links a{font-size:13px;color:rgba(255,255,255,0.45);text-decoration:none;transition:color .15s;}
-.footer-links a:hover{color:#fff;}
-.footer-copy{font-size:12px;color:rgba(255,255,255,0.3);}
-
-@media(max-width:768px){.cards-grid{grid-template-columns:1fr;}.team-grid{grid-template-columns:1fr;}.stats-band{grid-template-columns:1fr 1fr;}.content{padding:32px 24px;}.hero{padding:40px 24px;}.hero-title{font-size:28px;}.contact-box{grid-template-columns:1fr;}}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;color:#1a2332;}
+.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
+.topbar-title{font-size:16px;font-weight:700;color:#fff;}
+.admin-badge{background:#7c3aed;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;}
+.btn-danger{background:#ef4444;color:#fff;}
+.btn-success{background:#16a34a;color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn .material-icons-round{font-size:16px;}
+.main{padding:28px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.stat-val{font-size:28px;font-weight:800;color:#1a2332;}
+.stat-lbl{font-size:12px;color:#6b7a90;margin-top:4px;}
+.stat-icon{font-size:22px;margin-bottom:10px;}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;}
+.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;font-size:10.5px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #f0f4f8;}
+td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.badge-trial{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
+.badge-active{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
+.badge-expired{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
+.badge-admin{background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;}
+.actions{display:flex;gap:6px;}
+.search{background:#f0f4f8;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:13px;width:260px;outline:none;}
+.search:focus{border-color:#2f81f7;}
+.empty{text-align:center;padding:40px;color:#9ca3af;}
 </style>
-<script src="firebase-config.js"></script>
 </head>
 <body>
 
-<!-- RAIL NAV -->
-<nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
-  <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
-</nav>
-<main class="main">
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">KI</div>
+    <div class="topbar-title">KIDV Invoice — Admin Panel</div>
+    <div class="admin-badge">ADMIN ONLY</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index.html'"><span class="material-icons-round">arrow_back</span>Back to App</button>
+    <button class="btn btn-danger btn-sm" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Logout</button>
+  </div>
+</div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-logo">
-      <div class="logo-box">KI</div>
-      <div>
-        <div class="logo-name">KIDV Invoice</div>
-        <div class="logo-by">by KIDV Tech · kidvtech.com</div>
-      </div>
-    </div>
-    <div style="margin-top:32px">
-      <div class="hero-tag"><span class="material-icons-round">info</span>About Us</div>
-      <div class="hero-title">Smart Invoicing for<br/><span>Indian Business</span></div>
-      <div class="hero-sub">KIDV Invoice is a GST-compliant invoicing platform built specifically for Indian businesses — freelancers, consultants, traders & small enterprises.</div>
-    </div>
+<div class="main">
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat"><div class="stat-icon">👥</div><div class="stat-val" id="statTotal">—</div><div class="stat-lbl">Total Users</div></div>
+    <div class="stat"><div class="stat-icon">✅</div><div class="stat-val" id="statActive">—</div><div class="stat-lbl">Active Subscriptions</div></div>
+    <div class="stat"><div class="stat-icon">⏳</div><div class="stat-val" id="statTrial">—</div><div class="stat-lbl">On Trial</div></div>
+    <div class="stat"><div class="stat-icon">🔴</div><div class="stat-val" id="statExpired">—</div><div class="stat-lbl">Trial Expired</div></div>
   </div>
 
-  <div class="content">
-
-    <!-- OUR STORY -->
-    <div class="section">
-      <div class="section-tag"><span class="material-icons-round">auto_stories</span>Our Story</div>
-      <div class="section-title">Why We Built KIDV Invoice</div>
-      <div class="section-text">
-        KIDV Tech was founded in Ahmedabad, Gujarat with one mission: make professional invoicing accessible to every Indian business owner. We saw small business owners struggling with complex accounting software, manual Excel sheets, and expensive CA bills just to create a simple GST invoice.<br/><br/>
-        KIDV Invoice was born out of that frustration — a simple, affordable, fully GST-compliant invoicing tool that anyone can use without any accounting knowledge. From a freelance developer to a small textile trader in Surat, our platform serves businesses across India.
+  <!-- Users Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Users</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input class="search" placeholder="Search by email..." oninput="filterUsers(this.value)" id="searchInput"/>
+        <button onclick="openAddUser()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(16,185,129,0.3)"><span class="material-icons-round" style="font-size:16px">person_add</span>Add User</button>
+        <button class="btn btn-primary btn-sm" onclick="loadUsers()"><span class="material-icons-round">refresh</span>Refresh</button>
       </div>
     </div>
-
-    <!-- FEATURES -->
-    <div class="section">
-      <div class="section-tag"><span class="material-icons-round">star</span>What We Offer</div>
-      <div class="section-title">Everything You Need to Invoice</div>
-      <div class="cards-grid">
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(57,208,216,0.12);color:#39d0d8"><span class="material-icons-round">receipt_long</span></div>
-          <div class="feat-title">GST Tax Invoices</div>
-          <div class="feat-desc">CGST, SGST, IGST — fully compliant with Indian GST laws. Auto calculation, professional PDF download.</div>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(63,185,80,0.12);color:#3fb950"><span class="material-icons-round">people_alt</span></div>
-          <div class="feat-title">Client Management</div>
-          <div class="feat-desc">GSTIN auto-fetch, client database, track outstanding dues and payment history.</div>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(188,140,255,0.12);color:#bc8cff"><span class="material-icons-round">request_quote</span></div>
-          <div class="feat-title">Quotations</div>
-          <div class="feat-desc">Create professional estimates and convert them to invoices with one click.</div>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(240,136,62,0.12);color:#f0883e"><span class="material-icons-round">bar_chart</span></div>
-          <div class="feat-title">GST Returns</div>
-          <div class="feat-desc">Auto-generated GSTR-1 and GSTR-3B summaries. HSN-wise analysis and tax reports.</div>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(88,166,255,0.12);color:#58a6ff"><span class="material-icons-round">cloud_sync</span></div>
-          <div class="feat-title">Cloud Backup</div>
-          <div class="feat-desc">Firebase-powered cloud storage. Access your data from anywhere, on any device.</div>
-        </div>
-        <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(37,211,102,0.12);color:#25d366"><span class="material-icons-round">share</span></div>
-          <div class="feat-title">WhatsApp Sharing</div>
-          <div class="feat-desc">Share invoices directly on WhatsApp with your clients in one click.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STATS -->
-    <div class="stats-band">
-      <div class="stat-item"><div class="stat-val">14</div><div class="stat-lbl">Day Free Trial</div></div>
-      <div class="stat-item"><div class="stat-val">100%</div><div class="stat-lbl">GST Compliant</div></div>
-      <div class="stat-item"><div class="stat-val">₹499</div><div class="stat-lbl">Per Month</div></div>
-      <div class="stat-item"><div class="stat-val">24/7</div><div class="stat-lbl">Cloud Access</div></div>
-    </div>
-
-    <!-- TEAM -->
-    <div class="section">
-      <div class="section-tag"><span class="material-icons-round">groups</span>Our Team</div>
-      <div class="section-title">The People Behind KIDV</div>
-      <div class="team-grid">
-        <div class="team-card">
-          <div class="team-avatar">A</div>
-          <div>
-            <div class="team-name">Amit Patel</div>
-            <div class="team-role">Founder & Lead Developer</div>
-            <div class="team-tag"><span class="material-icons-round" style="font-size:12px">location_on</span>Ahmedabad, Gujarat</div>
-          </div>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar" style="background:linear-gradient(135deg,#3fb950,#22c55e)">K</div>
-          <div>
-            <div class="team-name">KIDV Tech Team</div>
-            <div class="team-role">Design & Development</div>
-            <div class="team-tag"><span class="material-icons-round" style="font-size:12px">code</span>Full Stack · Firebase</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONTACT -->
-    <div class="section">
-      <div class="contact-box">
-        <div>
-          <div class="contact-title">📞 Get In Touch</div>
-          <div class="contact-sub">Have questions about KIDV Invoice? Need help with your subscription or setup? We're here to help you 24/7.</div>
-          <div style="margin-top:14px;font-size:13px;color:#374151;line-height:2">
-            <div>📧 Email: <strong>amit@kidvtech.com</strong></div>
-            <div>📱 WhatsApp: <strong>+91 79844 86885</strong></div>
-            <div>🌐 Website: <strong>kidvtech.com</strong></div>
-            <div>📍 Address: <strong>Ahmedabad, Gujarat, India</strong></div>
-          </div>
-        </div>
-        <div class="contact-btns">
-          <a href="https://wa.me/917984486885" target="_blank" class="btn btn-wa"><span class="material-icons-round">whatsapp</span>WhatsApp Us</a>
-          <a href="mailto:amit@kidvtech.com" class="btn btn-primary"><span class="material-icons-round">mail</span>Send Email</a>
-        </div>
-      </div>
-    </div>
-
+    <table>
+      <thead><tr><th>#</th><th>Email</th><th>Name</th><th>Status</th><th>Trial / Expiry</th><th>License Key</th><th>Registered</th><th>Actions</th></tr></thead>
+      <tbody id="usersTable"><tr><td colspan="8" class="empty">Loading users...</td></tr></tbody>
+    </table>
   </div>
 
-  <!-- FOOTER -->
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let allUsers = [];
+
+document.addEventListener('kidv:db-ready', async()=>{
+  console.log('[Admin] db-ready fired. KIDV._ready:', KIDV._ready, 'isAdmin:', KIDV.isAdmin);
+  if(!KIDV._ready){ location.href='login.html'; return; }
+  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
+  loadUsers();
+});
+
+// Fallback: if db-ready never fires, try after 3 seconds
+setTimeout(()=>{
+  if(allUsers.length === 0 && document.getElementById('usersTable').innerHTML.includes('Loading')){
+    console.log('[Admin] Fallback load triggered');
+    if(firebase.apps.length && firebase.auth().currentUser) loadUsers();
+  }
+}, 3000);
+
+async function loadUsers(){
+  document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">Loading...</td></tr>';
   
+  // Wait for firebase to be ready
+  let attempts = 0;
+  while(!firebase.apps.length && attempts < 20){
+    await new Promise(r=>setTimeout(r,200));
+    attempts++;
+  }
+  
+  try {
+    const db = firebase.firestore();
+    console.log('[Admin] Loading users from Firestore...');
+    const snap = await db.collection('users').get();
+    console.log('[Admin] Users found:', snap.size);
+    
+    if(snap.empty){
+      document.getElementById('usersTable').innerHTML = '<tr><td colspan="7" class="empty">No users registered yet</td></tr>';
+      document.getElementById('statTotal').textContent = '0';
+      return;
+    }
+    
+    allUsers = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderUsers(allUsers);
+  } catch(e){
+    console.error('[Admin] Error:', e.code, e.message);
+    let errMsg = e.message;
+    if(e.code === 'permission-denied'){
+      errMsg = 'Firestore permission denied. Check Rules.';
+    }
+    document.getElementById('usersTable').innerHTML = 
+      '<tr><td colspan="7" class="empty" style="color:#ef4444">❌ Error: '+errMsg+'<br/><small>Check browser console (F12) for details</small></td></tr>';
+  }
+}
 
-</main>
-<div class="page-footer">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="width:32px;height:32px;background:var(--gradient);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">KI</div>
-      <div class="footer-copy">© 2026 KIDV Tech. All rights reserved.</div>
+function getStatus(u){
+  if(u.isAdmin) return 'admin';
+  if(u.subscriptionStatus==='suspended') return 'suspended';
+  if(u.subscriptionStatus==='active'){
+    const exp = u.subscriptionExpiry ? new Date(u.subscriptionExpiry) : null;
+    if(!exp || exp > new Date()) return 'active';
+  }
+  const reg = u.createdAt ? new Date(u.createdAt) : new Date();
+  const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
+  const daysLeft = Math.ceil((trialEnd-new Date())/(24*60*60*1000));
+  if(daysLeft > 0) return 'trial:'+daysLeft;
+  return 'expired';
+}
+
+function getSuspendBtn(st, uid){
+  if(st==='suspended'){
+    return '<button class="btn btn-sm" style="background:#16a34a;color:#fff" onclick="unsuspendUser(\''+uid+'\')"><span class="material-icons-round">lock_open</span></button>';
+  }
+  return '<button class="btn btn-danger btn-sm" onclick="suspendUser(\''+uid+'\')"><span class="material-icons-round">block</span></button>';
+}
+
+function renderUsers(users){
+  const now = new Date();
+  let trial=0,active=0,expired=0;
+  if(!users.length){
+    document.getElementById('usersTable').innerHTML='<tr><td colspan="8" class="empty">No users found</td></tr>';
+    return;
+  }
+  document.getElementById('usersTable').innerHTML = users.map((u,i)=>{
+    const st = getStatus(u);
+    let badge='', expInfo='';
+    if(st==='admin'){ badge='<span class="badge badge-admin">Admin</span>'; }
+    else if(st==='active'){
+      badge='<span class="badge badge-active">✅ Active</span>'; active++;
+      const actDate = u.subscriptionActivatedAt ? new Date(u.subscriptionActivatedAt).toLocaleDateString('en-IN') : null;
+      const expDate = u.subscriptionExpiry ? new Date(u.subscriptionExpiry).toLocaleDateString('en-IN') : null;
+      const planLabel = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly'}[u.subscriptionPlan]||u.subscriptionPlan||'';
+      expInfo = (planLabel?'<b>'+planLabel+'</b><br/>':'')+(actDate?'From: '+actDate+'<br/>':'')+(expDate?'Upto: '+expDate:'Lifetime');
+    }
+    else if(st.startsWith('trial')){
+      const d=st.split(':')[1];
+      badge=`<span class="badge badge-trial">⏳ Trial (${d}d left)</span>`; trial++;
+      const regDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN') : null;
+      expInfo = d+' days left'+(regDate?'<br/><span style="font-size:11px;color:#9ca3af">Joined: '+regDate+'</span>':'');
+    }
+    else if(st==='suspended'){ badge='<span class="badge" style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca">🚫 Suspended</span>'; expInfo='Account suspended'; }
+    else { badge='<span class="badge badge-expired">Expired</span>'; expired++; expInfo='Trial ended'; }
+
+    // License key display
+    const keyHtml = u.licenseKey
+      ? `<span style="font-family:monospace;font-size:11px;background:#f0f4f8;padding:2px 7px;border-radius:5px;color:#7c3aed;font-weight:700;letter-spacing:1px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${u.licenseKey}');this.textContent='Copied!';setTimeout(()=>this.textContent='${u.licenseKey}',1500)">${u.licenseKey}</span>`
+      : '<span style="color:#d1d5db;font-size:11px">—</span>';
+
+    return `<tr>
+      <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+      <td style="font-weight:500">${u.email||'—'}</td>
+      <td>${u.name||u.displayName||'—'}</td>
+      <td>${badge}</td>
+      <td style="font-size:12px;color:#6b7a90">${expInfo}</td>
+      <td>${keyHtml}</td>
+      <td style="font-size:12px;color:#9ca3af">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN'):'—'}</td>
+      <td><div class="actions">
+        <button class="btn btn-sm" style="background:#f0f4f8;color:#1a2332;border:1px solid #e2e8f0" onclick="showDetail('${u.id}')" title="View Details"><span class="material-icons-round">info</span></button>
+        <button class="btn btn-sm" style="background:#eff6ff;color:#2f81f7;border:1px solid #bfdbfe" onclick="viewUserData('${u.id}')" title="View Data"><span class="material-icons-round">folder_open</span></button>
+        <button class="btn btn-success btn-sm" onclick="activateUser('${u.id}','quarterly')" title="Activate 3 Months"><span class="material-icons-round">calendar_month</span></button>
+        <button class="btn btn-primary btn-sm" onclick="activateUser('${u.id}','halfyearly')" title="Activate 6 Months"><span class="material-icons-round">date_range</span></button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff" onclick="activateUser('${u.id}','yearly')" title="Activate Yearly"><span class="material-icons-round">workspace_premium</span></button>
+        ${getSuspendBtn(st, u.id)}
+      </div></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('statTotal').textContent = users.length;
+  document.getElementById('statTrial').textContent = trial;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statExpired').textContent = expired;
+}
+
+const PLAN_MONTHS = {'3month':3,'6month':6,'12month':12};
+const PLAN_AMOUNTS = {'3month':1299,'6month':2399,'12month':3999};
+const PLAN_LABELS = {'3month':'3 Months','6month':'6 Months','12month':'12 Months'};
+let _activateUid = '';
+
+function openActivate(uid, plan){
+  _activateUid = uid;
+  // Find user info
+  const u = allUsers.find(x=>x.id===uid);
+  document.getElementById('activateSubtitle').textContent = u ? (u.name||u.email) + ' — ' + PLAN_LABELS[plan] : plan;
+  document.getElementById('act-plan').value = plan;
+  document.getElementById('act-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('act-txn').value = '';
+  document.getElementById('act-notes').value = '';
+  updateAmount();
+  document.getElementById('activateModal').style.display = 'flex';
+}
+
+function closeActivate(){
+  document.getElementById('activateModal').style.display = 'none';
+  _activateUid = '';
+}
+
+function updateAmount(){
+  const plan = document.getElementById('act-plan').value;
+  document.getElementById('act-amount').value = PLAN_AMOUNTS[plan];
+  // Show expiry preview
+  const months = PLAN_MONTHS[plan];
+  const exp = new Date();
+  exp.setMonth(exp.getMonth() + months);
+  document.getElementById('expiryPreview').textContent =
+    '📅 Subscription active until: ' + exp.toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+}
+
+async function confirmActivate(){
+  if(!_activateUid) return;
+  const plan    = document.getElementById('act-plan').value;
+  const amount  = document.getElementById('act-amount').value;
+  const method  = document.getElementById('act-method').value;
+  const txn     = document.getElementById('act-txn').value.trim();
+  const date    = document.getElementById('act-date').value;
+  const notes   = document.getElementById('act-notes').value.trim();
+  const months  = PLAN_MONTHS[plan];
+  const now     = new Date();
+  const expiry  = new Date();
+  expiry.setMonth(expiry.getMonth() + months);
+
+  // Generate smart license key: KIDV-XXXX-XXXX-XXXX
+  function genKey(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const seg = () => Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    return `KIDV-${seg()}-${seg()}-${seg()}`;
+  }
+  const licenseKey = genKey();
+
+  await KIDV._db.collection('users').doc(_activateUid).set({
+    subscriptionStatus: 'active',
+    subscriptionPlan: plan,
+    subscriptionExpiry: expiry.toISOString(),
+    subscriptionActivatedAt: now.toISOString(),
+    activatedByAdmin: KIDV._user.email,
+    licenseKey: licenseKey,
+    licenseKeyGeneratedAt: now.toISOString(),
+    payment: {
+      amount: parseFloat(amount),
+      method: method,
+      txn: txn,
+      date: date,
+      notes: notes,
+      recordedAt: now.toISOString(),
+    }
+  },{merge:true});
+
+  closeActivate();
+  alert('✅ Activated: ' + PLAN_LABELS[plan] + '\nExpiry: ' + expiry.toLocaleDateString('en-IN') + '\nAmount: ₹' + amount + '\n\n🔑 License Key: ' + licenseKey + '\n(Share this key with the user)');
+  loadUsers();
+}
+
+async function activateUser(uid, plan){ openActivate(uid, plan); }
+
+async function suspendUser(uid){
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(user.isAdmin){ alert('Cannot suspend admin!'); return; }
+  if(!confirm('Suspend user: '+user.email+'?\n\nThey will be blocked from accessing the app.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'suspended',
+    suspendedAt: new Date().toISOString(),
+    suspendedBy: KIDV._user.email,
+  },{merge:true});
+  alert('✅ User suspended: '+user.email);
+  loadUsers();
+}
+
+async function unsuspendUser(uid){
+  const user = allUsers.find(u=>u.id===uid);
+  if(!user) return;
+  if(!confirm('Unsuspend user: '+user.email+'?\n\nThey will regain access.')) return;
+  await KIDV._db.collection('users').doc(uid).set({
+    subscriptionStatus:'trial',
+    suspendedAt: null,
+  },{merge:true});
+  alert('✅ User unsuspended: '+user.email);
+  loadUsers();
+}
+
+function viewUserData(uid){
+  window.open('admin-user-data.html?uid='+uid, '_blank');
+}
+
+function showDetail(uid){
+  const u = allUsers.find(x=>x.id===uid);
+  if(!u) return;
+
+  const planMap = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
+  const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+  document.getElementById('dAvatar').textContent = (u.name||u.email||'U').charAt(0).toUpperCase();
+  document.getElementById('dName').textContent = u.name || u.displayName || '—';
+  document.getElementById('dEmail').textContent = u.email || '—';
+
+  // Status
+  const st = getStatus(u);
+  let statusHtml = '—';
+  if(st==='admin') statusHtml = '<span style="color:#7c3aed">👑 Admin</span>';
+  else if(st==='active') statusHtml = '<span style="color:#16a34a">✅ Active</span>';
+  else if(st==='suspended') statusHtml = '<span style="color:#ef4444">🚫 Suspended</span>';
+  else if(st.startsWith('trial')) statusHtml = '<span style="color:#d97706">⏳ Trial ('+st.split(':')[1]+' days)</span>';
+  else statusHtml = '<span style="color:#ef4444">🔴 Expired</span>';
+  document.getElementById('dStatus').innerHTML = statusHtml;
+
+  // Plan & Amount
+  document.getElementById('dPlan').textContent = planMap[u.subscriptionPlan] || (u.subscriptionStatus==='trial'?'Free Trial':'—');
+  document.getElementById('dAmount').textContent = u.subscriptionAmount ? '₹'+parseInt(u.subscriptionAmount).toLocaleString('en-IN') : '—';
+  document.getElementById('dExpiry').textContent = u.subscriptionExpiry ? fmt(u.subscriptionExpiry) : (st.startsWith('trial')?'Trial period':'—');
+
+  // Payment
+  document.getElementById('dActivated').textContent = fmt(u.subscriptionActivatedAt);
+  document.getElementById('dActivatedBy').textContent = u.activatedByAdmin || (u.razorpayPaymentId?'Razorpay Auto':'—');
+  document.getElementById('dPaymentId').textContent = u.razorpayPaymentId || 'Manual / Not available';
+
+  // License Key
+  const keyEl = document.getElementById('dLicenseKey');
+  const keyDateEl = document.getElementById('dLicenseKeyDate');
+  if(u.licenseKey){
+    keyEl.textContent = u.licenseKey;
+    keyEl.dataset.key = u.licenseKey;
+    keyEl.title = 'Click to copy';
+    keyDateEl.textContent = u.licenseKeyGeneratedAt ? 'Generated: ' + fmt(u.licenseKeyGeneratedAt) : '';
+  } else {
+    keyEl.textContent = '— Not generated yet';
+    keyEl.dataset.key = '';
+    keyDateEl.textContent = 'Key will be generated on next activation';
+  }
+
+  // Account
+  document.getElementById('dRegistered').textContent = fmt(u.createdAt);
+  document.getElementById('dLastLogin').textContent = fmt(u.lastLogin);
+
+  // WA button
+  document.getElementById('dWaBtn').setAttribute('data-email', u.email||'');
+
+  document.getElementById('detailModal').style.display = 'flex';
+}
+
+function closeDetail(){
+  document.getElementById('detailModal').style.display = 'none';
+}
+
+function contactUserWA(){
+  const email = document.getElementById('dWaBtn').getAttribute('data-email');
+  const msg = 'Hi, this is KIDV Invoice support. Regarding your account: '+email;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+function filterUsers(q){
+  const filtered = allUsers.filter(u=>(u.email||'').toLowerCase().includes(q.toLowerCase())||(u.name||'').toLowerCase().includes(q.toLowerCase()));
+  renderUsers(filtered);
+}
+
+// ── ADD USER ────────────────────────────────────────────
+function openAddUser(){
+  document.getElementById('addUserModal').style.display='flex';
+  document.getElementById('au-name').value='';
+  document.getElementById('au-email').value='';
+  document.getElementById('au-mobile').value='';
+  document.getElementById('au-password').value='';
+  document.getElementById('au-plan').value='3month';
+  document.getElementById('au-amount').value='1299';
+  document.getElementById('au-method').value='UPI';
+  document.getElementById('au-txn').value='';
+  document.getElementById('au-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('au-notes').value='';
+  updateAddAmount();
+}
+function closeAddUser(){ document.getElementById('addUserModal').style.display='none'; }
+
+const AU_AMOUNTS={'3month':1299,'6month':2399,'12month':3999};
+function updateAddAmount(){
+  const p=document.getElementById('au-plan').value;
+  document.getElementById('au-amount').value=AU_AMOUNTS[p]||1299;
+}
+
+async function confirmAddUser(){
+  const name    = document.getElementById('au-name').value.trim();
+  const email   = document.getElementById('au-email').value.trim();
+  const mobile  = document.getElementById('au-mobile').value.trim();
+  const password= document.getElementById('au-password').value;
+  const plan    = document.getElementById('au-plan').value;
+  const amount  = parseFloat(document.getElementById('au-amount').value)||0;
+  const method  = document.getElementById('au-method').value;
+  const txn     = document.getElementById('au-txn').value.trim();
+  const date    = document.getElementById('au-date').value;
+  const notes   = document.getElementById('au-notes').value.trim();
+
+  if(!email){ alert('Email is required'); return; }
+  if(!password||password.length<6){ alert('Password must be at least 6 characters'); return; }
+
+  const btn=document.getElementById('au-submit-btn');
+  btn.disabled=true; btn.textContent='Creating...';
+
+  try{
+    // Create Firebase Auth user using Admin SDK via client SDK
+    // We use signInWithEmailAndPassword flow - create new credential
+    const secondaryApp = firebase.apps.find(a=>a.name==='secondary') ||
+      firebase.initializeApp(KIDV._auth.app.options, 'secondary');
+    const secAuth = secondaryApp.auth();
+
+    const cred = await secAuth.createUserWithEmailAndPassword(email, password);
+    await cred.user.updateProfile({displayName: name});
+    const uid = cred.user.uid;
+
+    // Generate license key
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const seg=()=>Array.from({length:4},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+    const licenseKey=`KIDV-${seg()}-${seg()}-${seg()}`;
+
+    // Calculate expiry
+    const months={'3month':3,'6month':6,'12month':12}[plan]||3;
+    const now=new Date();
+    const expiry=new Date();
+    expiry.setMonth(expiry.getMonth()+months);
+
+    // Save to Firestore
+    await KIDV._db.collection('users').doc(uid).set({
+      email, name, mobile,
+      isAdmin: false,
+      subscriptionStatus: 'active',
+      subscriptionPlan: plan,
+      subscriptionExpiry: expiry.toISOString(),
+      subscriptionActivatedAt: now.toISOString(),
+      activatedByAdmin: KIDV._user.email,
+      licenseKey, licenseKeyGeneratedAt: now.toISOString(),
+      payment:{ amount, method, txn, date, notes, recordedAt: now.toISOString() },
+      createdAt: now.toISOString(),
+      lastLogin: now.toISOString(),
+      addedByAdmin: true,
+    });
+
+    // Sign out secondary app
+    await secAuth.signOut();
+
+    closeAddUser();
+    alert('✅ User Created!\n\nEmail: '+email+'\nPassword: '+password+'\nPlan: '+plan+'\nExpiry: '+expiry.toLocaleDateString('en-IN')+'\n\n🔑 License Key: '+licenseKey+'\n\nShare credentials with user.');
+    loadUsers();
+  } catch(e){
+    alert('❌ Error: '+e.message);
+  } finally {
+    btn.disabled=false;
+    btn.textContent='✅ Create User';
+  }
+}
+
+</script>
+
+<!-- Add New User Modal -->
+<div id="addUserModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:1001;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:540px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+      <div>
+        <div style="font-size:19px;font-weight:700;color:#1a2332">➕ Add New User</div>
+        <div style="font-size:13px;color:#6b7a90;margin-top:3px">Create account + activate subscription</div>
+      </div>
+      <button onclick="closeAddUser()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:22px;line-height:1">✕</button>
     </div>
-    <div class="footer-links">
-      <a href="about.html">About</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms & Conditions</a>
-      <a href="https://wa.me/917984486885" target="_blank">Support</a>
+
+    <!-- User Details -->
+    <div style="background:#f8faff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">👤 User Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Full Name *</label>
+          <input id="au-name" type="text" placeholder="Ramesh Patel" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Mobile</label>
+          <input id="au-mobile" type="tel" placeholder="+91 9999999999" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Email Address *</label>
+          <input id="au-email" type="email" placeholder="user@example.com" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Password *</label>
+          <input id="au-password" type="text" placeholder="Min 6 characters" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none;font-family:monospace"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscription -->
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">💳 Subscription Plan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Plan Type</label>
+          <select id="au-plan" onchange="updateAddAmount()" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none">
+            <option value="3month">3 Months — ₹1,299</option>
+            <option value="6month">6 Months — ₹2,399</option>
+            <option value="12month">12 Months — ₹3,999</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Amount Paid (₹)</label>
+          <input id="au-amount" type="number" value="1299" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div style="background:#fefce8;border:1px solid #fde68a;border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">💰 Payment Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Mode</label>
+          <select id="au-method" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none">
+            <option>UPI</option><option>Bank Transfer</option><option>Cash</option>
+            <option>Cheque</option><option>PhonePe</option><option>Google Pay</option><option>Razorpay</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Transaction / UTR No.</label>
+          <input id="au-txn" type="text" placeholder="TXN123456789" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Date</label>
+          <input id="au-date" type="date" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Notes</label>
+          <input id="au-notes" type="text" placeholder="Any notes..." style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:13.5px;background:#fff;color:#1a2332;outline:none"/>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:#1d4ed8">
+      🔑 <strong>License Key</strong> will be auto-generated and shown after creation.<br/>
+      📧 Share the email + password with the user to login.
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeAddUser()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;font-family:Outfit,sans-serif;font-size:14px;cursor:pointer;color:#6b7a90">Cancel</button>
+      <button id="au-submit-btn" onclick="confirmAddUser()" style="padding:10px 24px;border:none;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(16,185,129,0.3)">✅ Create User</button>
     </div>
   </div>
-<script src="kidv-common.js"></script>
+</div>
+
+<!-- Activate + Payment Modal -->
+<div id="activateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:480px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,0.2);">
+    <div style="font-size:18px;font-weight:700;color:#1a2332;margin-bottom:6px">Activate Subscription</div>
+    <div style="font-size:13px;color:#6b7a90;margin-bottom:24px" id="activateSubtitle">User activation</div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Plan</label>
+        <select id="act-plan" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none" onchange="updateAmount()">
+          <option value="3month">3 Months — ₹1,299</option>
+          <option value="6month">6 Months — ₹2,399</option>
+          <option value="12month">12 Months — ₹3,999</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Amount Paid (₹)</label>
+        <input type="number" id="act-amount" value="1299" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Method</label>
+        <select id="act-method" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none">
+          <option>UPI</option>
+          <option>Bank Transfer</option>
+          <option>Cash</option>
+          <option>Cheque</option>
+          <option>Razorpay</option>
+          <option>PhonePe</option>
+          <option>Google Pay</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Transaction / UTR No.</label>
+        <input type="text" id="act-txn" placeholder="TXN123456789" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Payment Date</label>
+      <input type="date" id="act-date" style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <label style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Notes (optional)</label>
+      <input type="text" id="act-notes" placeholder="Any notes about this payment..." style="width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Outfit,sans-serif;font-size:14px;background:#f8faff;color:#1a2332;outline:none"/>
+    </div>
+
+    <!-- Expiry preview -->
+    <div id="expiryPreview" style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0369a1;font-weight:500"></div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="closeActivate()" style="padding:10px 20px;border:1.5px solid #e2e8f0;border-radius:10px;background:#fff;font-family:Outfit,sans-serif;font-size:14px;cursor:pointer;color:#6b7a90">Cancel</button>
+      <button onclick="confirmActivate()" style="padding:10px 24px;border:none;border-radius:10px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">✅ Activate Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- User Detail Modal -->
+<div id="detailModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;width:520px;max-width:95vw;box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;">
+    <!-- Header -->
+    <div style="background:#1e293b;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="dAvatar" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;">A</div>
+        <div>
+          <div id="dName" style="font-size:15px;font-weight:700;color:#fff;">—</div>
+          <div id="dEmail" style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">—</div>
+        </div>
+      </div>
+      <button onclick="closeDetail()" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:24px;">
+
+      <!-- Subscription Status -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">📦 Subscription</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Status</div>
+              <div id="dStatus" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Plan</div>
+              <div id="dPlan" style="font-size:14px;font-weight:700;color:#2f81f7;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Amount Paid</div>
+              <div id="dAmount" style="font-size:14px;font-weight:700;color:#16a34a;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Expiry Date</div>
+              <div id="dExpiry" style="font-size:14px;font-weight:700;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Details -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">💳 Payment Details</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated On</div>
+              <div id="dActivated" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;border-bottom:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Activated By</div>
+              <div id="dActivatedBy" style="font-size:12px;color:#6b7a90;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Razorpay Payment ID</div>
+              <div id="dPaymentId" style="font-size:12px;font-family:monospace;color:#374151;word-break:break-all;">—</div>
+            </div>
+            <div style="padding:14px 16px;grid-column:span 2;background:#faf5ff;border-top:1.5px solid #e9d5ff;">
+              <div style="font-size:10.5px;color:#7c3aed;text-transform:uppercase;font-weight:600;margin-bottom:6px;">🔑 License Key</div>
+              <div id="dLicenseKey" style="font-size:14px;font-family:monospace;color:#7c3aed;font-weight:800;letter-spacing:2px;word-break:break-all;cursor:pointer;" title="Click to copy" onclick="if(this.dataset.key){navigator.clipboard.writeText(this.dataset.key);const orig=this.textContent;this.textContent='✅ Copied!';setTimeout(()=>this.textContent=orig,1500);}">—</div>
+              <div id="dLicenseKeyDate" style="font-size:11px;color:#9ca3af;margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Info -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">👤 Account Info</div>
+        <div style="background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;overflow:hidden;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+            <div style="padding:14px 16px;border-right:1px solid #e2e8f0;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Registered On</div>
+              <div id="dRegistered" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+            <div style="padding:14px 16px;">
+              <div style="font-size:10.5px;color:#9ca3af;text-transform:uppercase;font-weight:600;margin-bottom:4px;">Last Login</div>
+              <div id="dLastLogin" style="font-size:13px;font-weight:600;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:16px 24px;border-top:1.5px solid #f0f4f8;display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeDetail()" style="padding:9px 20px;border-radius:10px;border:1.5px solid #e2e8f0;background:#f0f4f8;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">Close</button>
+      <button id="dWaBtn" onclick="contactUserWA()" style="padding:9px 20px;border-radius:10px;border:none;background:#25d366;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+        <span class="material-icons-round" style="font-size:16px">whatsapp</span>WhatsApp User
+      </button>
+    </div>
+  </div>
+</div>
+  <script src="kidv-common.js"></script>
 </body>
 </html>

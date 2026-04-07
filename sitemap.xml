@@ -1,648 +1,152 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Settings</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
-<meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
-<style>
-:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--surface3:#eef2f8;--border:rgba(0,0,0,0.08);--border-input:rgba(0,0,0,0.12);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-invoice:#39d0d8;--c-clients:#3fb950;--c-products:#f0883e;--c-quote:#bc8cff;--c-payment:#58a6ff;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
-.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
-.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
-.rail-item .material-icons-round{font-size:22px;}
-.rail-item:hover{background:#f0f4f8;color:#fff;}
-.rail-item.active{background:rgba(125,133,144,0.15);color:var(--muted);border-color:rgba(125,133,144,0.3);}
-.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-.rail-spacer{flex:1;}
-.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-.page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
-.topbar-right{display:flex;align-items:center;gap:12px;}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
-.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
-.btn-ghost:hover{background:#f0f4f8;}
-.btn .material-icons-round{font-size:18px;}
-.btn-danger{background:rgba(248,81,73,0.12);color:#f85149;border:1px solid rgba(248,81,73,0.2);}
-.btn-danger:hover{background:rgba(248,81,73,0.2);}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
-.settings-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;}
-.settings-nav{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:8px;height:fit-content;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-.snav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13.5px;color:#6b7a90;cursor:pointer;transition:all .18s;border-left:3px solid transparent;}
-.snav-item .material-icons-round{font-size:18px;}
-.snav-item:hover{background:#f0f4f8;color:#1a2332;}
-.snav-item.active{background:#eff6ff;color:#2f81f7;border-left-color:#2f81f7;font-weight:600;}
-.snav-item.active .material-icons-round{color:#2f81f7;}
-.settings-content{display:flex;flex-direction:column;gap:20px;min-height:400px;}
-.settings-panel{display:none;}
-.settings-panel.active{display:flex;flex-direction:column;gap:20px;}
-.card{background:#ffffff;border:1.5px solid #dde3ed;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1.5px solid #f0f4f8;}
-.card-title{font-size:15px;font-weight:700;color:#1a2332;}
-.card-desc{font-size:12px;color:#6b7a90;margin-top:2px;}
-.card-body{padding:22px;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.form-row.three{grid-template-columns:1fr 1fr 1fr;}
-.form-row.full{grid-template-columns:1fr;}
-.form-group{display:flex;flex-direction:column;gap:7px;}
-.form-group label{font-size:11px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.07em;}
-.form-group input,.form-group select,.form-group textarea{
-  background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;
-  padding:11px 14px;color:#1a2332;
-  font-family:'Outfit',sans-serif;font-size:13.5px;
-  outline:none;transition:border-color .18s,background .18s,box-shadow .18s;
-}
-.form-group input::placeholder,.form-group textarea::placeholder{color:#c0ccda;}
-.form-group input:hover,.form-group select:hover,.form-group textarea:hover{border-color:#c5d5e8;}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
-  border-color:#2f81f7;background:#fff;box-shadow:0 0 0 3px rgba(47,129,247,0.1);
-}
-.form-group input[readonly]{background:#f0f4f8;color:#6b7a90;cursor:not-allowed;}
-.form-group textarea{resize:vertical;min-height:80px;}
-.form-group select option{background:#fff;color:#1a2332;}
-.save-row{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;}
-.locked-field{background:#f0f4f8 !important;color:#9ca3af !important;cursor:not-allowed !important;border-color:#e2e8f0 !important;}
-.lock-notice{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#d97706;margin-bottom:16px;display:none;align-items:center;gap:8px;}
-.lock-notice .material-icons-round{font-size:16px;flex-shrink:0;}
-.fb-status{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;background:#f8faff;border:1.5px solid #e2e8f0;margin-bottom:20px;}
-.fb-dot{width:10px;height:10px;border-radius:50%;}
-.fb-dot.ok{background:#16a34a;box-shadow:0 0 8px rgba(22,163,74,0.4);}
-.fb-dot.err{background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,0.4);}
-.fb-dot.pending{background:#d97706;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.fb-label{font-size:13.5px;font-weight:600;color:#1a2332;}
-.fb-sub{font-size:12px;color:#6b7a90;}
-.info-box{background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;font-size:13px;color:#0369a1;line-height:1.6;margin-bottom:16px;}
-.info-box a{color:#2f81f7;font-weight:600;}
-.danger-box{background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
-.danger-label{font-size:14px;font-weight:600;color:#1a2332;}
-.danger-sub{font-size:12px;color:#6b7a90;margin-top:2px;}
-::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:4px;}
-</style>
-<script src="firebase-config.js"></script>
-<script src="subscription.js"></script>
-</head>
-<body>
-<nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
-  <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
-</nav>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-<main class="main">
-  <div class="topbar">
-    <div><div class="page-title">Settings</div><div class="page-subtitle">Configure company, GST & Firebase</div></div>
-    <div class="topbar-right"><div class="avatar">A</div></div>
-  </div>
+  <!-- PUBLIC / AUTH PAGES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/login.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/subscribe.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/expired.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 
-  <div class="settings-layout">
-    <!-- Nav -->
-    <div class="settings-nav">
-      <div class="snav-item active" onclick="showPanel('company',this)"><span class="material-icons-round">store</span>Company Profile</div>
-      <div class="snav-item" onclick="showPanel('gst',this)"><span class="material-icons-round">badge</span>GST Settings</div>
-      <div class="snav-item" onclick="showPanel('bank',this)"><span class="material-icons-round">account_balance</span>Bank Details</div>
-      <div class="snav-item admin-only" onclick="showPanel('firebase',this)" style="display:none"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
-      <div class="snav-item" onclick="showPanel('invoice',this)"><span class="material-icons-round">palette</span>Invoice Settings</div>
-      <div class="snav-item" onclick="showPanel('account',this)"><span class="material-icons-round">manage_accounts</span>My Account</div>
-      <div class="snav-item admin-only" onclick="showPanel('danger',this)" style="display:none"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
-    </div>
+  <!-- MAIN APP PAGES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/index.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/invoices.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/clients.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/products.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/quotations.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/payments.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/reports.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/settings.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 
-    <div class="settings-content">
+  <!-- INVOICE THEMES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/invoice-theme.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/invoice-theme-v2.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 
-      <!-- Company -->
-      <div class="settings-panel active" id="panel-company" style="display:flex;flex-direction:column;gap:20px;">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Company Profile</div><div class="card-desc">Your business details shown on invoices</div></div></div>
-          <div class="card-body">
-            <div class="lock-notice" id="companyLockNotice">
-              <span class="material-icons-round">lock</span>
-              Company Name, GST, PAN fields are locked after first save. Contact admin to change: <strong>+91 79844 86885</strong>
-            </div>
-            <div class="form-row"><div class="form-group"><label>Company Name *</label><input type="text" id="c-name" placeholder="KIDV Tech"/></div><div class="form-group"><label>Display Name</label><input type="text" id="c-display" placeholder="Short name on invoice header"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="info@kidvtech.com"/></div><div class="form-group"><label>Phone</label><input type="tel" id="c-phone" placeholder="+91 99999 99999"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Website</label><input type="text" id="c-web" placeholder="https://kidvtech.com"/></div><div class="form-group"><label>City</label><input type="text" id="c-city" placeholder="Ahmedabad"/></div></div>
-            <div class="form-row full"><div class="form-group"><label>Address</label><textarea id="c-address" placeholder="Full business address..."></textarea></div></div>
-            <div class="save-row"><button class="btn btn-primary" onclick="saveCompany()"><span class="material-icons-round">save</span>Save Company</button></div>
-          </div>
-        </div>
-      </div>
+  <!-- GST / COMPLIANCE PAGES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/gst-returns.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/einvoice.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/ewaybill.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/hsn-master.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 
-      <!-- GST -->
-      <div class="settings-panel" id="panel-gst">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">GST Configuration</div><div class="card-desc">Tax registration details for invoices</div></div></div>
-          <div class="card-body">
-            <div class="lock-notice" id="gstLockNotice">
-              <span class="material-icons-round">lock</span>
-              GSTIN and PAN are locked after first save. Contact admin to change.
-            </div>
-            <div class="form-row"><div class="form-group"><label>GSTIN *</label><input type="text" id="g-gstin" placeholder="24XXXXX0000X1ZX" maxlength="15" style="text-transform:uppercase;font-family:monospace"/></div><div class="form-group"><label>PAN</label><input type="text" id="g-pan" placeholder="XXXXX0000X" maxlength="10" style="text-transform:uppercase;font-family:monospace"/></div></div>
-            <div class="form-row three"><div class="form-group"><label>State</label><select id="g-state"><option>Gujarat</option><option>Maharashtra</option><option>Rajasthan</option><option>Delhi</option><option>Karnataka</option><option>Tamil Nadu</option><option>Other</option></select></div><div class="form-group"><label>State Code</label><input type="text" id="g-statecode" placeholder="24" maxlength="2"/></div><div class="form-group"><label>Default GST Type</label><select id="g-type"><option value="intra">Intra-State (CGST+SGST)</option><option value="inter">Inter-State (IGST)</option></select></div></div>
-            <div class="form-row"><div class="form-group"><label>Default GST Rate</label><select id="g-rate"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></div><div class="form-group"><label>Composition Dealer?</label><select id="g-comp"><option>No</option><option>Yes</option></select></div></div>
-            <div class="form-row full" style="margin-top:4px">
-              <div class="form-group">
-                <label>Jurisdiction (shown on invoice footer)</label>
-                <input type="text" id="g-jurisdiction" placeholder="e.g. Ahmedabad" />
-                <div style="font-size:11px;color:#9ca3af;margin-top:4px">Invoice par "SUBJECT TO [CITY] JURISDICTION" dikhashe</div>
-              </div>
-            </div>
-            <div class="save-row"><button class="btn btn-primary" onclick="saveGST()"><span class="material-icons-round">save</span>Save GST Settings</button></div>
-          </div>
-        </div>
-      </div>
+  <!-- ADMIN PAGES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/admin.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/admin-user-data.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
+  </url>
 
-      <!-- Bank -->
-      <div class="settings-panel" id="panel-bank">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Bank Account Details</div><div class="card-desc">Shown on invoice footer for payment</div></div></div>
-          <div class="card-body">
-            <div class="form-row"><div class="form-group"><label>Account Holder Name</label><input type="text" id="b-name" placeholder="Your full name or company name"/></div><div class="form-group"><label>Bank Name</label><input type="text" id="b-bank" placeholder="SBI / HDFC / ICICI..."/></div></div>
-            <div class="form-row"><div class="form-group"><label>Account Number</label><input type="text" id="b-acc" placeholder="XXXXXXXXXXXXXXXX"/></div><div class="form-group"><label>IFSC Code</label><input type="text" id="b-ifsc" placeholder="SBIN0001234" style="text-transform:uppercase"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Branch</label><input type="text" id="b-branch" placeholder="Branch name"/></div><div class="form-group"><label>UPI ID</label><input type="text" id="b-upi" placeholder="yourname@upi"/></div></div>
-            <div class="save-row"><button class="btn btn-primary" onclick="saveBank()"><span class="material-icons-round">save</span>Save Bank Details</button></div>
-          </div>
-        </div>
-      </div>
+  <!-- LEGAL / INFO PAGES -->
+  <url>
+    <loc>https://invoice.kidvtech.com/about.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/privacy.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://invoice.kidvtech.com/terms.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
-      <!-- Firebase -->
-      <div class="settings-panel" id="panel-firebase">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Firebase Configuration</div><div class="card-desc">Connect Firestore for cloud data sync</div></div></div>
-          <div class="card-body">
-            <div class="fb-status" id="fbStatus">
-              <div class="fb-dot pending" id="fbDot"></div>
-              <div><div class="fb-label" id="fbLabel">Not Connected</div><div class="fb-sub" id="fbSub">Enter your Firebase config below</div></div>
-            </div>
-            <div class="info-box">
-              📌 <strong>How to get Firebase config:</strong><br/>
-              1. Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a><br/>
-              2. Create project → Add Web App<br/>
-              3. Copy the <code>firebaseConfig</code> object values below<br/>
-              4. Enable Firestore Database in the console
-            </div>
-            <div class="form-row"><div class="form-group"><label>API Key</label><input type="text" id="fb-apikey" placeholder="AIzaSy..."/></div><div class="form-group"><label>Auth Domain</label><input type="text" id="fb-auth" placeholder="yourapp.firebaseapp.com"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Project ID</label><input type="text" id="fb-proj" placeholder="your-project-id"/></div><div class="form-group"><label>Storage Bucket</label><input type="text" id="fb-storage" placeholder="yourapp.appspot.com"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Messaging Sender ID</label><input type="text" id="fb-sender" placeholder="123456789"/></div><div class="form-group"><label>App ID</label><input type="text" id="fb-appid" placeholder="1:123456789:web:abc..."/></div></div>
-            <div class="save-row">
-              <button class="btn btn-ghost" onclick="testFirebase()"><span class="material-icons-round">wifi</span>Test Connection</button>
-              <button class="btn btn-primary" onclick="saveFirebase()"><span class="material-icons-round">save</span>Save & Connect</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Invoice Settings -->
-      <div class="settings-panel" id="panel-invoice">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Invoice Settings</div><div class="card-desc">Defaults for new invoices</div></div></div>
-          <div class="card-body">
-            <div class="form-row"><div class="form-group"><label>Invoice Prefix</label><input type="text" id="i-prefix" placeholder="INV-"/></div><div class="form-group"><label>Starting Number</label><input type="number" id="i-start" placeholder="1" min="1"/></div></div>
-            <div class="form-row"><div class="form-group"><label>Default Payment Terms</label><select id="i-terms"><option>Due on Receipt</option><option>Net 15</option><option selected>Net 30</option><option>Net 45</option><option>Net 60</option></select></div><div class="form-group"><label>Currency</label><select id="i-curr"><option value="INR">₹ INR (Indian Rupee)</option><option value="USD">$ USD</option></select></div></div>
-            <div class="form-row full"><div class="form-group"><label>Default Invoice Note</label><textarea id="i-note" placeholder="Thank you for your business!"></textarea></div></div>
-            <div class="form-row full"><div class="form-group"><label>Footer Text (on print)</label><input type="text" id="i-footer" placeholder="Generated by KIDV Invoice · kidvtech.com"/></div></div>
-            <div class="save-row"><button class="btn btn-primary" onclick="saveInvoiceSettings()"><span class="material-icons-round">save</span>Save Settings</button></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Danger Zone -->
-      <div class="settings-panel" id="panel-danger">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Data Management</div><div class="card-desc">Export or reset application data</div></div></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
-            <div class="danger-box">
-              <div><div class="danger-label">Export All Data</div><div class="danger-sub">Download all invoices, clients & products as JSON</div></div>
-              <button class="btn btn-ghost" onclick="exportData()"><span class="material-icons-round">download</span>Export JSON</button>
-            </div>
-            <div class="danger-box">
-              <div><div class="danger-label" style="color:#f0883e">Clear Invoices</div><div class="danger-sub">Delete all invoices (clients & products kept)</div></div>
-              <button class="btn btn-danger" onclick="clearData('kidv-invoices','invoices')"><span class="material-icons-round">delete_sweep</span>Clear Invoices</button>
-            </div>
-            <div class="danger-box">
-              <div><div class="danger-label" style="color:#f85149">Reset All Data</div><div class="danger-sub">⚠️ Permanently deletes ALL data from this browser</div></div>
-              <button class="btn btn-danger" onclick="resetAll()"><span class="material-icons-round">restart_alt</span>Reset Everything</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- My Account -->
-      <div class="settings-panel" id="panel-account">
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Profile Information</div><div class="card-desc">Your login account details</div></div></div>
-          <div class="card-body">
-            <div style="display:flex;align-items:center;gap:18px;padding:16px;background:#f8faff;border-radius:12px;margin-bottom:20px;border:1.5px solid #e2e8f0;">
-              <div id="accAvatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0">A</div>
-              <div>
-                <div id="accName" style="font-size:16px;font-weight:700;color:#1a2332">—</div>
-                <div id="accEmail" style="font-size:13px;color:#6b7a90;margin-top:3px">—</div>
-                <div id="accStatus" style="font-size:11px;color:#16a34a;margin-top:4px;font-weight:600">Loading...</div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label>Display Name</label><input type="text" id="acc-name" placeholder="Your full name"/></div>
-              <div class="form-group"><label>Email (read only)</label><input type="email" id="acc-email" readonly style="opacity:0.6;cursor:not-allowed;background:#f0f4f8"/></div>
-            </div>
-            <div class="save-row"><button class="btn btn-primary" onclick="saveDisplayName()"><span class="material-icons-round">save</span>Update Name</button></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Change Password</div><div class="card-desc">Update your login password securely</div></div></div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Current Password</label>
-                <div style="position:relative"><input type="password" id="pwd-current" placeholder="Enter current password" style="padding-right:44px"/><span class="material-icons-round" onclick="togglePwd('pwd-current',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#9ca3af;font-size:20px">visibility</span></div>
-              </div>
-              <div class="form-group" style="display:flex;align-items:flex-end">
-                <button class="btn btn-ghost" onclick="sendResetEmail()" style="width:100%;justify-content:center"><span class="material-icons-round">mail</span>Forgot? Send Reset Email</button>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>New Password</label>
-                <div style="position:relative"><input type="password" id="pwd-new" placeholder="Min 6 characters" style="padding-right:44px" oninput="checkStrength(this.value)"/><span class="material-icons-round" onclick="togglePwd('pwd-new',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#9ca3af;font-size:20px">visibility</span></div>
-                <div id="strengthBar" style="display:none;margin-top:6px"><div style="height:4px;border-radius:4px;background:#e2e8f0;overflow:hidden"><div id="strengthFill" style="height:100%;border-radius:4px;width:0%;transition:width .3s,background .3s"></div></div><div id="strengthText" style="font-size:11px;margin-top:4px;color:#6b7a90"></div></div>
-              </div>
-              <div class="form-group">
-                <label>Confirm New Password</label>
-                <div style="position:relative"><input type="password" id="pwd-confirm" placeholder="Re-enter new password" style="padding-right:44px"/><span class="material-icons-round" onclick="togglePwd('pwd-confirm',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#9ca3af;font-size:20px">visibility</span></div>
-              </div>
-            </div>
-            <div class="save-row"><button class="btn btn-primary" onclick="changePassword()" id="changePwdBtn"><span class="material-icons-round">lock_reset</span>Change Password</button></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div><div class="card-title">Subscription Status</div><div class="card-desc">Your current plan</div></div></div>
-          <div class="card-body">
-            <div id="subStatusBox" style="padding:16px;background:#f8faff;border-radius:12px;border:1.5px solid #e2e8f0;margin-bottom:16px;font-size:13px;color:#6b7a90">Loading...</div>
-            <div class="save-row">
-              <button class="btn btn-primary" onclick="location.href='subscribe.html'"><span class="material-icons-round">workspace_premium</span>Manage Subscription</button>
-              <button class="btn btn-ghost" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Sign Out</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</main>
-
-<script>
-function showPanel(id, el){
-  // Hide all panels with inline style (guaranteed)
-  document.querySelectorAll('.settings-panel').forEach(p=>{
-    p.classList.remove('active');
-    p.style.display = 'none';
-  });
-  // Deactivate nav
-  document.querySelectorAll('.snav-item').forEach(i=>i.classList.remove('active'));
-  // Show selected panel
-  const panel = document.getElementById('panel-' + id);
-  if(panel){
-    panel.classList.add('active');
-    panel.style.display = 'flex';
-    panel.style.flexDirection = 'column';
-    panel.style.gap = '20px';
-  }
-  if(el) el.classList.add('active');
-  if(id === 'account' && window.KIDV && KIDV._ready) setTimeout(loadAccountInfo, 100);
-}
-
-async function loadAll(){
-  const comp=await KIDV.getSettings('company');
-  if(comp.name) document.getElementById('c-name').value=comp.name;
-  if(comp.display) document.getElementById('c-display').value=comp.display;
-  if(comp.email) document.getElementById('c-email').value=comp.email;
-  if(comp.phone) document.getElementById('c-phone').value=comp.phone;
-  if(comp.web) document.getElementById('c-web').value=comp.web;
-  if(comp.city) document.getElementById('c-city').value=comp.city;
-  if(comp.address) document.getElementById('c-address').value=comp.address;
-
-  const gst=await KIDV.getSettings('gst');
-  if(gst.gstin) document.getElementById('g-gstin').value=gst.gstin;
-  if(gst.pan) document.getElementById('g-pan').value=gst.pan;
-  if(gst.state) document.getElementById('g-state').value=gst.state;
-  if(gst.statecode) document.getElementById('g-statecode').value=gst.statecode;
-  if(gst.jurisdiction) document.getElementById('g-jurisdiction').value=gst.jurisdiction;
-
-  const bank=await KIDV.getSettings('bank');
-  if(bank.name) document.getElementById('b-name').value=bank.name;
-  if(bank.bank) document.getElementById('b-bank').value=bank.bank;
-  if(bank.acc) document.getElementById('b-acc').value=bank.acc;
-  if(bank.ifsc) document.getElementById('b-ifsc').value=bank.ifsc;
-  if(bank.branch) document.getElementById('b-branch').value=bank.branch;
-  if(bank.upi) document.getElementById('b-upi').value=bank.upi;
-
-  const fb=JSON.parse(localStorage.getItem('kidv-firebase-config')||'{}'); // config stays local
-  if(fb.apiKey){
-    document.getElementById('fb-apikey').value=fb.apiKey;
-    document.getElementById('fb-auth').value=fb.authDomain||'';
-    document.getElementById('fb-proj').value=fb.projectId||'';
-    document.getElementById('fb-storage').value=fb.storageBucket||'';
-    document.getElementById('fb-sender').value=fb.messagingSenderId||'';
-    document.getElementById('fb-appid').value=fb.appId||'';
-    setFbStatus(true);
-  }
-
-  // ── Registration Lock — non-admin users ──────────────────
-  if(!KIDV.isAdmin){
-    const isCompanySaved = !!(comp.name && comp.name.trim());
-    const isGSTSaved     = !!(gst.gstin && gst.gstin.trim());
-
-    if(isCompanySaved){
-      // Lock Company Name and Display Name
-      ['c-name','c-display'].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el){ el.readOnly=true; el.classList.add('locked-field'); }
-      });
-      const notice = document.getElementById('companyLockNotice');
-      if(notice) notice.style.display='flex';
-    }
-
-    if(isGSTSaved){
-      // Lock GSTIN and PAN
-      ['g-gstin','g-pan'].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el){ el.readOnly=true; el.classList.add('locked-field'); }
-      });
-      const notice = document.getElementById('gstLockNotice');
-      if(notice) notice.style.display='flex';
-    }
-  }
-}
-
-async function saveCompany(){
-  const existing = await KIDV.getSettings('company');
-  const locked = !KIDV.isAdmin && existing.name && existing.name.trim();
-  const c={
-    name:    locked ? existing.name    : document.getElementById('c-name').value,
-    display: locked ? existing.display : document.getElementById('c-display').value,
-    email:document.getElementById('c-email').value,
-    phone:document.getElementById('c-phone').value,
-    web:document.getElementById('c-web').value,
-    city:document.getElementById('c-city').value,
-    address:document.getElementById('c-address').value
-  };
-  await KIDV.saveSettings('company',c);
-  showToast('Company profile saved! ✅');
-}
-async function saveGST(){
-  const existing = await KIDV.getSettings('gst');
-  const locked = !KIDV.isAdmin && existing.gstin && existing.gstin.trim();
-  const g={
-    gstin:    locked ? existing.gstin : document.getElementById('g-gstin').value.toUpperCase(),
-    pan:      locked ? existing.pan   : document.getElementById('g-pan').value.toUpperCase(),
-    state:document.getElementById('g-state').value,
-    statecode:document.getElementById('g-statecode').value,
-    type:document.getElementById('g-type').value,
-    rate:document.getElementById('g-rate').value,
-    jurisdiction: document.getElementById('g-jurisdiction').value.trim()
-  };
-  await KIDV.saveSettings('gst',g);
-  showToast('GST settings saved! ✅');
-}
-async function saveBank(){
-  const b={name:document.getElementById('b-name').value,bank:document.getElementById('b-bank').value,acc:document.getElementById('b-acc').value,ifsc:document.getElementById('b-ifsc').value.toUpperCase(),branch:document.getElementById('b-branch').value,upi:document.getElementById('b-upi').value};
-  await KIDV.saveSettings('bank',b);
-  showToast('Bank details saved! ✅');
-}
-function saveFirebase(){
-  const fb={apiKey:document.getElementById('fb-apikey').value,authDomain:document.getElementById('fb-auth').value,projectId:document.getElementById('fb-proj').value,storageBucket:document.getElementById('fb-storage').value,messagingSenderId:document.getElementById('fb-sender').value,appId:document.getElementById('fb-appid').value};
-  if(!fb.apiKey||!fb.projectId){alert('API Key and Project ID are required');return;}
-  localStorage.setItem('kidv-firebase-config',JSON.stringify(fb));
-  setFbStatus(true);
-  showToast('Firebase config saved! Reload to connect.');
-}
-function testFirebase(){showToast('Firebase SDK will be loaded on next page reload.');}
-function setFbStatus(ok){
-  const dot=document.getElementById('fbDot');
-  const label=document.getElementById('fbLabel');
-  const sub=document.getElementById('fbSub');
-  if(ok){dot.className='fb-dot ok';label.textContent='Config Saved';sub.textContent='Firebase will connect on reload';}
-  else{dot.className='fb-dot err';label.textContent='Not Connected';sub.textContent='Enter config below';}
-}
-function saveInvoiceSettings(){
-  const s={prefix:document.getElementById('i-prefix').value,start:document.getElementById('i-start').value,terms:document.getElementById('i-terms').value,currency:document.getElementById('i-curr').value,note:document.getElementById('i-note').value,footer:document.getElementById('i-footer').value};
-  localStorage.setItem('kidv-invoice-settings',JSON.stringify(s));
-  showToast('Invoice settings saved!');
-}
-function exportData(){
-  const data={clients:JSON.parse(localStorage.getItem('kidv-clients')||'[]'),products:JSON.parse(localStorage.getItem('kidv-products')||'[]'),invoices:JSON.parse(localStorage.getItem('kidv-invoices')||'[]'),quotes:JSON.parse(localStorage.getItem('kidv-quotes')||'[]'),payments:JSON.parse(localStorage.getItem('kidv-payments')||'[]'),exportedAt:new Date().toISOString()};
-  const a=document.createElement('a');
-  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
-  a.download='kidv-invoice-backup-'+new Date().toISOString().split('T')[0]+'.json';
-  a.click();
-}
-function clearData(key,label){if(confirm('Clear all '+label+'?')){localStorage.removeItem(key);showToast(label+' cleared!');}}
-function resetAll(){if(confirm('⚠️ This will delete ALL data. Are you sure?')){['kidv-clients','kidv-products','kidv-invoices','kidv-quotes','kidv-payments','kidv-company','kidv-gst','kidv-bank','kidv-firebase-config'].forEach(k=>localStorage.removeItem(k));showToast('All data cleared!');}}
-
-// Toast
-function showToast(msg,type='success'){
-  let t=document.getElementById('toast');
-  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:30px;right:30px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3)';document.body.appendChild(t);}
-  t.innerHTML='<span class="material-icons-round" style="color:#3fb950;font-size:18px">check_circle</span>'+msg;
-  t.style.opacity='1';t.style.transform='translateY(0)';
-  setTimeout(()=>{t.style.opacity='0';},2500);
-}
-
-document.addEventListener('kidv:db-ready', ()=>{ 
-  if(window.KIDV && KIDV.isAdmin){
-    // Show admin rail button
-    const b = document.getElementById('adminBtn');
-    if(b) b.style.display = '';
-    // Show admin-only nav items
-    document.querySelectorAll('.snav-item.admin-only').forEach(el => el.style.display = '');
-  }
-});
-document.addEventListener('kidv:db-ready', loadAll);
-
-// Force show first panel on load
-window.addEventListener('DOMContentLoaded', ()=>{
-  document.querySelectorAll('.settings-panel').forEach(p=>{
-    p.style.display = 'none';
-  });
-  const first = document.getElementById('panel-company');
-  if(first){
-    first.style.display = 'flex';
-    first.style.flexDirection = 'column';
-    first.style.gap = '20px';
-    first.classList.add('active');
-  }
-  // Set first nav item active
-  const firstNav = document.querySelector('.snav-item');
-  if(firstNav) firstNav.classList.add('active');
-});
-
-// ── My Account Functions ─────────────────────────────
-function checkStrength(val){
-  const bar=document.getElementById('strengthBar');
-  const fill=document.getElementById('strengthFill');
-  const text=document.getElementById('strengthText');
-  if(!val){bar.style.display='none';return;}
-  bar.style.display='';
-  let score=0;
-  if(val.length>=6)score++;if(val.length>=10)score++;
-  if(/[A-Z]/.test(val))score++;if(/[0-9]/.test(val))score++;if(/[^A-Za-z0-9]/.test(val))score++;
-  const levels=[{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}];
-  const lvl=levels[Math.min(score,4)];
-  fill.style.width=lvl.w;fill.style.background=lvl.c;
-  text.textContent='Strength: '+lvl.t;text.style.color=lvl.c;
-}
-
-async function loadAccountInfo(){
-  const user = firebase.auth().currentUser;
-  if(!user) return;
-  document.getElementById('accAvatar').textContent = (user.displayName||user.email||'U').charAt(0).toUpperCase();
-  document.getElementById('accName').textContent = user.displayName||'—';
-  document.getElementById('accEmail').textContent = user.email||'—';
-  document.getElementById('acc-name').value = user.displayName||'';
-  document.getElementById('acc-email').value = user.email||'';
-
-  // Sub status
-  try{
-    const doc = await KIDV._db.collection('users').doc(user.uid).get();
-    const data = doc.exists ? doc.data() : {};
-    const now = new Date();
-    let statusHtml = '';
-    if(data.subscriptionStatus==='active'){
-      const exp = data.subscriptionExpiry ? new Date(data.subscriptionExpiry) : null;
-      const plan = (data.subscriptionPlan||'').toUpperCase();
-      statusHtml = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <span style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">✅ Active — ${plan}</span>
-        ${exp?`<span style="font-size:12px;color:#6b7a90">Expires: ${exp.toLocaleDateString('en-IN')}</span>`:'<span style="font-size:12px;color:#16a34a">Lifetime</span>'}
-      </div>`;
-      document.getElementById('accStatus').textContent = '✅ Active Subscription';
-    } else {
-      const reg = data.createdAt ? new Date(data.createdAt) : now;
-      const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
-      const daysLeft = Math.max(0,Math.ceil((trialEnd-now)/(24*60*60*1000)));
-      if(daysLeft>0){
-        statusHtml = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <span style="background:#fff7ed;color:#d97706;border:1px solid #fed7aa;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">⏳ Trial — ${daysLeft} day${daysLeft===1?'':'s'} left</span>
-          <a href="subscribe.html" style="font-size:12px;color:#2f81f7;font-weight:600">Upgrade now →</a>
-        </div>`;
-        document.getElementById('accStatus').textContent = `⏳ Trial: ${daysLeft} days left`;
-      } else {
-        statusHtml = `<div><span style="background:#fef2f2;color:#ef4444;border:1px solid #fecaca;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700">🔴 Trial Expired</span> <a href="subscribe.html" style="font-size:12px;color:#2f81f7;font-weight:600;margin-left:10px">Subscribe now →</a></div>`;
-        document.getElementById('accStatus').textContent = '🔴 Trial Expired';
-      }
-    }
-    document.getElementById('subStatusBox').innerHTML = statusHtml;
-  }catch(e){}
-}
-
-async function saveDisplayName(){
-  const name = document.getElementById('acc-name').value.trim();
-  if(!name){ showToast('Name cannot be empty','error'); return; }
-  try{
-    await firebase.auth().currentUser.updateProfile({displayName:name});
-    document.getElementById('accName').textContent = name;
-    document.getElementById('accAvatar').textContent = name.charAt(0).toUpperCase();
-    showToast('Name updated! ✅');
-  }catch(e){ showToast('Error: '+e.message,'error'); }
-}
-
-function togglePwd(id, icon){
-  const input = document.getElementById(id);
-  if(input.type==='password'){ input.type='text'; icon.textContent='visibility_off'; }
-  else { input.type='password'; icon.textContent='visibility'; }
-}
-
-// Password strength checker
-document.addEventListener('DOMContentLoaded',()=>{
-  const newPwd = document.getElementById('pwd-new');
-  if(newPwd){
-    newPwd.addEventListener('input', function(){
-      const val = this.value;
-      const bar = document.getElementById('strengthBar');
-      const fill = document.getElementById('strengthFill');
-      const text = document.getElementById('strengthText');
-      if(!val){ bar.style.display='none'; return; }
-      bar.style.display='';
-      let score = 0;
-      if(val.length>=6) score++;
-      if(val.length>=10) score++;
-      if(/[A-Z]/.test(val)) score++;
-      if(/[0-9]/.test(val)) score++;
-      if(/[^A-Za-z0-9]/.test(val)) score++;
-      const levels = [{w:'20%',c:'#ef4444',t:'Weak'},{w:'40%',c:'#f97316',t:'Fair'},{w:'60%',c:'#eab308',t:'Good'},{w:'80%',c:'#22c55e',t:'Strong'},{w:'100%',c:'#16a34a',t:'Very Strong'}];
-      const lvl = levels[Math.min(score,4)];
-      fill.style.width=lvl.w; fill.style.background=lvl.c;
-      text.textContent='Password strength: '+lvl.t; text.style.color=lvl.c;
-    });
-  }
-});
-
-async function changePassword(){
-  const current = document.getElementById('pwd-current').value;
-  const newPwd  = document.getElementById('pwd-new').value;
-  const confirm = document.getElementById('pwd-confirm').value;
-
-  if(!current){ showToast('Enter current password','error'); return; }
-  if(!newPwd||newPwd.length<6){ showToast('New password must be at least 6 characters','error'); return; }
-  if(newPwd!==confirm){ showToast('Passwords do not match!','error'); return; }
-
-  const btn = document.getElementById('changePwdBtn');
-  btn.disabled=true; btn.innerHTML='<span class="material-icons-round">hourglass_top</span>Changing...';
-
-  try{
-    const user = firebase.auth().currentUser;
-    // Re-authenticate first
-    const cred = firebase.auth.EmailAuthProvider.credential(user.email, current);
-    await user.reauthenticateWithCredential(cred);
-    // Change password
-    await user.updatePassword(newPwd);
-    // Clear fields
-    document.getElementById('pwd-current').value='';
-    document.getElementById('pwd-new').value='';
-    document.getElementById('pwd-confirm').value='';
-    document.getElementById('strengthBar').style.display='none';
-    showToast('✅ Password changed successfully!');
-  }catch(e){
-    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'){
-      showToast('Current password is incorrect!','error');
-    } else {
-      showToast('Error: '+e.message,'error');
-    }
-  }finally{
-    btn.disabled=false;
-    btn.innerHTML='<span class="material-icons-round">lock_reset</span>Change Password';
-  }
-}
-
-async function sendResetEmail(){
-  const user = firebase.auth().currentUser;
-  if(!user){ return; }
-  try{
-    await firebase.auth().sendPasswordResetEmail(user.email);
-    showToast('✅ Reset email sent to '+user.email);
-  }catch(e){ showToast('Error: '+e.message,'error'); }
-}
-
-// Load account info when panel opened
-// showPanel handles account loading directly
-</script>
-  <script src="kidv-common.js"></script>
-</body>
-</html>
+</urlset>

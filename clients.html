@@ -1,302 +1,655 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – User Data Viewer</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KIDV Invoice – Clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
 <link rel="icon" type="image/png" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
+:root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-clients:#3fb950;--c-invoice:#39d0d8;--c-quote:#bc8cff;--c-payment:#58a6ff;--c-products:#f0883e;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
-.topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.topbar-left{display:flex;align-items:center;gap:14px;}
-.logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
-.topbar-title{font-size:15px;font-weight:700;color:#fff;}
-.user-chip{background:rgba(47,129,247,0.2);border:1px solid rgba(47,129,247,0.3);color:#60a5fa;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;}
-.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
-.btn-ghost:hover{background:rgba(255,255,255,0.2);}
-.btn .material-icons-round{font-size:16px;}
-
-.main{padding:24px 28px;}
-
-/* User info card */
-.user-card{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
-.user-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#39d0d8);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;}
-.user-info{flex:1;}
-.user-name{font-size:18px;font-weight:700;color:#1a2332;}
-.user-email{font-size:13px;color:#6b7a90;margin-top:3px;}
-.user-meta{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.meta-badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;}
-
-/* Tabs */
-.tabs{display:flex;gap:4px;background:#fff;border-radius:12px;padding:4px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;width:fit-content;}
-.tab{padding:8px 20px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .18s;display:flex;align-items:center;gap:6px;}
-.tab .material-icons-round{font-size:16px;}
-.tab.active{background:#2f81f7;color:#fff;box-shadow:0 2px 8px rgba(47,129,247,0.3);}
-.tab-content{display:none;}
-.tab-content.active{display:block;}
-
-/* Stats row */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.stat{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1.5px solid #e2e8f0;}
-.stat-val{font-size:26px;font-weight:800;color:#1a2332;}
-.stat-lbl{font-size:12px;color:#6b7a90;margin-top:4px;}
-
-/* Table */
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1.5px solid #e2e8f0;}
-.card-header{padding:16px 20px;border-bottom:1.5px solid #f0f4f8;display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-size:14px;font-weight:700;color:#1a2332;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
+.rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
+.rail-item{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;color:rgba(255,255,255,0.5);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:22px;}
+.rail-item:hover{background:#f0f4f8;color:#fff;}
+.rail-item.active{background:rgba(63,185,80,0.15);color:var(--c-clients);border-color:rgba(63,185,80,0.3);}
+.rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
+.flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;}
+.flyout.open{transform:translateX(0);}
+.flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--c-clients);}
+.flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;color:var(--muted);text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
+.flyout-link .material-icons-round{font-size:18px;}
+.flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
+.flyout-link.active{color:var(--text);background:rgba(63,185,80,0.1);border-left-color:var(--c-clients);}
+.overlay{display:none;position:fixed;inset:0;z-index:180;}
+.overlay.show{display:block;}
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;}
+.main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(47,129,247,0.45);transform:translateY(-1px);}
+.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
+.btn-ghost:hover{background:#f0f4f8;}
+.btn-sm{padding:7px 14px;font-size:12.5px;}
+.btn .material-icons-round,.btn-sm .material-icons-round{font-size:17px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;width:280px;}
+.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;}
+.search-bar input::placeholder{color:var(--muted);}
+.stats-row{display:flex;gap:16px;margin-bottom:24px;}
+.mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:14px 20px;display:flex;align-items:center;gap:12px;flex:1;}
+.ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ms-val{font-size:20px;font-weight:700;}.ms-label{font-size:12px;color:var(--muted);}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
 table{width:100%;border-collapse:collapse;}
-th{padding:10px 16px;font-size:10.5px;font-weight:700;color:#6b7a90;text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #f0f4f8;}
-td{padding:13px 16px;font-size:13px;border-bottom:1px solid #f0f4f8;color:#374151;vertical-align:middle;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
+td{padding:14px 20px;font-size:13.5px;border-bottom:1px solid #f0f4f8;color:#374151;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#f8faff;}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.badge-paid{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;}
-.badge-pending{background:#fff7ed;color:#d97706;border:1px solid #fed7aa;}
-.badge-draft{background:#f8faff;color:#6b7a90;border:1px solid #e2e8f0;}
-.badge-overdue{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
-.empty{text-align:center;padding:40px;color:#9ca3af;font-size:13px;}
-.inv-no{font-weight:700;color:#2f81f7;font-size:12.5px;}
+.client-name{font-weight:600;}.client-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
+.badge-active{background:rgba(34,197,94,0.1);color:#16a34a;border:1px solid rgba(34,197,94,0.2);}
+.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
+.action-btn:hover{color:var(--text);background:#f5f7fa;}
+.action-btn .material-icons-round{font-size:18px;}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.5);backdrop-filter:blur(8px);z-index:500;align-items:flex-start;justify-content:center;padding:24px 20px;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border:none;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:600px;max-width:98vw;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;}
+.modal-close .material-icons-round{font-size:20px;}
+.modal-body{padding:22px 24px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border);}
+
+/* ── GSTIN FETCH BOX ── */
+.gstin-box{
+  background:linear-gradient(135deg,rgba(47,129,247,0.07),rgba(57,208,216,0.04));
+  border:1.5px solid rgba(47,129,247,0.2);
+  border-radius:14px;padding:18px;margin-bottom:22px;
+}
+.gstin-box-label{
+  font-size:11px;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:10px;display:flex;align-items:center;gap:6px;
+}
+.gstin-box-label .material-icons-round{font-size:15px;}
+.gstin-row{display:flex;gap:8px;}
+.gstin-input{
+  flex:1;background:var(--surface2);
+  border:1.5px solid rgba(47,129,247,0.2);
+  border-radius:10px;padding:11px 14px;
+  color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;outline:none;transition:border-color .18s;
+}
+.gstin-input:focus{border-color:var(--accent);}
+.gstin-input::placeholder{font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted);}
+.gstin-input.valid{border-color:var(--c-clients)!important;}
+.gstin-input.invalid{border-color:#f85149!important;}
+.fetch-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:0 18px;border-radius:10px;
+  background:var(--gradient);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;white-space:nowrap;
+  transition:all .18s;box-shadow:0 4px 12px rgba(47,129,247,0.3);
+}
+.fetch-btn:hover{transform:translateY(-1px);}
+.fetch-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
+.fetch-btn .material-icons-round{font-size:17px;}
+
+/* status */
+.gstin-feedback{margin-top:10px;display:none;align-items:flex-start;gap:8px;}
+.gstin-feedback.show{display:flex;}
+.fb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.fb-dot.loading{background:var(--accent);}
+.fb-dot.success{background:var(--c-clients);}
+.fb-dot.error{background:#f85149;}
+.fb-dot.info{background:#f7c948;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.25}}
+.fb-dot.loading{animation:blink .9s infinite;}
+.fb-text{font-size:12.5px;line-height:1.5;}
+.fb-text.success{color:var(--c-clients);}
+.fb-text.error{color:#f85149;}
+.fb-text.info{color:#f7c948;}
+
+/* chips */
+.gstin-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.gchip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:500;background:rgba(0,0,0,0.03);border:1px solid var(--border);color:var(--text);}
+.gchip .material-icons-round{font-size:13px;color:var(--accent);}
+.gchip.green{background:rgba(63,185,80,0.08);border-color:rgba(63,185,80,0.2);color:#3fb950;}
+.gchip.green .material-icons-round{color:#3fb950;}
+
+/* api notice */
+.api-notice{
+  margin-top:10px;padding:10px 14px;
+  background:rgba(247,201,72,0.06);border:1px solid rgba(247,201,72,0.2);
+  border-radius:9px;font-size:12px;color:rgba(247,201,72,0.9);line-height:1.6;
+  display:none;
+}
+.api-notice a{color:#f7c948;font-weight:600;}
+.api-notice code{background:rgba(247,201,72,0.1);padding:1px 6px;border-radius:4px;font-size:11px;}
+
+/* form */
+.section-label{font-size:11px;font-weight:700;color:var(--c-clients);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-group input,.form-group select,.form-group textarea{
+  background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;
+  padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:13.5px;outline:none;transition:border-color .18s,background .25s;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--c-clients);}
+.form-group input[readonly]{opacity:0.75;}
+.form-group textarea{resize:vertical;min-height:70px;}
+.form-group select option{background:#fff;color:#1a2332;}
+/* autofill flash */
+@keyframes autofillFlash{0%{background:rgba(63,185,80,0.12)}100%{background:var(--surface2)}}
+.form-group input.autofilled{animation:autofillFlash 2.5s ease forwards;border-color:rgba(63,185,80,0.35)!important;}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 </style>
+<script src="firebase-config.js"></script>
+<script src="subscription.js"></script>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-left">
-    <div class="logo">KI</div>
-    <div class="topbar-title">User Data Viewer</div>
-    <div class="user-chip" id="topUserEmail">Loading...</div>
-  </div>
-  <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" onclick="location.href='admin.html'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
-  </div>
+<nav class="rail">
+  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none'"/></div>
+  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item active" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
+  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
+  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
+  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
+</nav>
+<div class="flyout" id="flyout">
+  <div class="flyout-header"><div class="flyout-title">Clients</div></div>
+  <a class="flyout-link active" href="clients.html"><span class="material-icons-round">people_alt</span>All Clients</a>
+  <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Customer</a>
 </div>
 
-<div class="main">
+<main class="main" id="main">
+  <div class="topbar">
+    <div><div class="page-title">Clients</div><div class="page-subtitle">GSTIN auto-fill enabled · Manage customers</div></div>
+    <div class="topbar-right">
+      <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search clients..." id="searchInput" oninput="filterClients()"/></div>
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Customer</button>
+      <div class="avatar">A</div>
+    </div>
+  </div>
 
-  <!-- User Info -->
-  <div class="user-card">
-    <div class="user-avatar" id="uAvatar">A</div>
-    <div class="user-info">
-      <div class="user-name" id="uName">Loading...</div>
-      <div class="user-email" id="uEmail">—</div>
-      <div class="user-meta">
-        <span class="meta-badge" id="uStatus" style="background:#f0fdf4;color:#16a34a">—</span>
-        <span class="meta-badge" id="uPlan" style="background:#eff6ff;color:#2f81f7">—</span>
-        <span class="meta-badge" id="uExpiry" style="background:#f8faff;color:#6b7a90">—</span>
-        <span class="meta-badge" id="uRegistered" style="background:#f8faff;color:#6b7a90">—</span>
+  <div class="stats-row">
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.12);color:var(--c-clients)"><span class="material-icons-round">people_alt</span></div><div><div class="ms-val" id="s-total">0</div><div class="ms-label">Total Customers</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(57,208,216,0.12);color:var(--c-invoice)"><span class="material-icons-round">receipt_long</span></div><div><div class="ms-val" id="s-invoiced">0</div><div class="ms-label">Invoiced</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(88,166,255,0.12);color:var(--c-payment)"><span class="material-icons-round">payments</span></div><div><div class="ms-val" id="s-outstanding">₹0</div><div class="ms-label">Outstanding</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(63,185,80,0.1);color:var(--c-clients)"><span class="material-icons-round">verified</span></div><div><div class="ms-val" id="s-gst">0</div><div class="ms-label">GST Verified</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">All Clients</div><span id="clientCount" style="font-size:13px;color:var(--muted)">0 clients</span></div>
+    <table>
+      <thead><tr><th>Customer</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Actions</th></tr></thead>
+      <tbody id="clientsBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add New Client</div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- GSTIN Fetch -->
+      <div class="gstin-box">
+        <div class="gstin-box-label"><span class="material-icons-round">auto_awesome</span>GSTIN Auto-Fill</div>
+        <div class="gstin-row">
+          <input class="gstin-input" id="gstinLookup" type="text" maxlength="15"
+            placeholder="Enter 15-digit GSTIN..."
+            oninput="onGSTINInput(this)"
+            onkeydown="if(event.key==='Enter')fetchGSTIN()"/>
+          <button class="fetch-btn" id="fetchBtn" onclick="fetchGSTIN()" disabled>
+            <span class="material-icons-round" id="fetchIcon">cloud_download</span>
+            <span id="fetchTxt">Fetch</span>
+          </button>
+        </div>
+        <div class="gstin-feedback" id="gstinFeedback">
+          <div class="fb-dot" id="fbDot"></div>
+          <div class="fb-text" id="fbText"></div>
+        </div>
+        <div class="gstin-chips" id="gstinChips"></div>
+        <div class="api-notice" id="apiNotice">
+          ℹ️ API key set nathi. Abhi sirf <strong>State, PAN, Entity Type</strong> GSTIN thi fill thay che.<br/>
+          Company name + address mate free API key lo:<br/>
+          → <a href="https://gstincheck.co.in" target="_blank">gstincheck.co.in</a> (100 calls/day free) &nbsp;|&nbsp;
+          Key <a href="settings.html">Settings → GSTIN API</a> ma add karo.
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="section-label">Basic Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>Company / Customer Name *</label><input type="text" id="f-name" placeholder="Auto-filled from GSTIN"/></div>
+        <div class="form-group"><label>Contact Person</label><input type="text" id="f-contact" placeholder="Person name"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email</label><input type="email" id="f-email" placeholder="email@company.com"/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="f-phone" placeholder="+91 9999999999"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Customer Type</label>
+          <select id="f-ctype">
+            <option>Company</option><option>Individual</option>
+            <option>Partnership</option><option>LLP</option><option>Trust</option>
+          </select>
+        </div>
+        <div class="form-group"><label>GST Category</label>
+          <select id="f-gstcat">
+            <option>Registered Regular</option><option>Registered Composition</option>
+            <option>Unregistered</option><option>SEZ</option><option>Overseas</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- GST Info -->
+      <div class="section-label" style="margin-top:6px">GST & Tax (Auto-filled)</div>
+      <div class="form-row">
+        <div class="form-group"><label>GSTIN</label><input type="text" id="f-gstin" readonly placeholder="Auto-filled" style="font-family:monospace;letter-spacing:.05em;text-transform:uppercase"/></div>
+        <div class="form-group"><label>PAN</label><input type="text" id="f-pan" readonly placeholder="Auto-filled" style="font-family:monospace;text-transform:uppercase"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>State</label>
+          <select id="f-state">
+            <option value="">Select State</option>
+            <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+            <option>Bihar</option><option>Chhattisgarh</option><option>Delhi</option><option>Goa</option>
+            <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+            <option>Jammu &amp; Kashmir</option><option>Jharkhand</option><option>Karnataka</option>
+            <option>Kerala</option><option>Ladakh</option><option>Lakshadweep</option>
+            <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+            <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+            <option>Odisha</option><option>Puducherry</option><option>Punjab</option>
+            <option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option>
+            <option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option>
+            <option>Uttarakhand</option><option>West Bengal</option>
+          </select>
+        </div>
+        <div class="form-group"><label>State Code</label><input type="text" id="f-statecode" readonly placeholder="Auto"/></div>
+      </div>
+
+      <!-- Address -->
+      <div class="section-label" style="margin-top:6px">Address</div>
+      <div class="form-row full">
+        <div class="form-group"><label>Billing Address</label><textarea id="f-address" placeholder="Auto-filled from GSTIN or enter manually..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>City</label><input type="text" id="f-city" placeholder="Ahmedabad"/></div>
+        <div class="form-group"><label>Pincode</label><input type="text" id="f-pin" placeholder="380001" maxlength="6"/></div>
       </div>
     </div>
-  </div>
-
-  <!-- Stats -->
-  <div class="stats-row">
-    <div class="stat"><div class="stat-val" id="sInvoices">0</div><div class="stat-lbl">Total Invoices</div></div>
-    <div class="stat"><div class="stat-val" id="sClients">0</div><div class="stat-lbl">Customers</div></div>
-    <div class="stat"><div class="stat-val" id="sProducts">0</div><div class="stat-lbl">Products</div></div>
-    <div class="stat"><div class="stat-val" id="sRevenue">₹0</div><div class="stat-lbl">Total Revenue</div></div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('invoices',this)"><span class="material-icons-round">receipt_long</span>Invoices</button>
-    <button class="tab" onclick="showTab('clients',this)"><span class="material-icons-round">people_alt</span>Customers</button>
-    <button class="tab" onclick="showTab('products',this)"><span class="material-icons-round">inventory_2</span>Products</button>
-    <button class="tab" onclick="showTab('payments',this)"><span class="material-icons-round">payments</span>Payments</button>
-  </div>
-
-  <!-- Invoices Tab -->
-  <div class="tab-content active" id="tab-invoices">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Invoices</div><span id="invCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Date</th><th>Due Date</th><th>Amount</th><th>GST</th><th>Status</th></tr></thead>
-        <tbody id="invoicesTable"><tr><td colspan="8" class="empty">Loading...</td></tr></tbody>
-      </table>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="clearForm()"><span class="material-icons-round">restart_alt</span>Clear</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()"><span class="material-icons-round">save</span>Save Client</button>
     </div>
   </div>
-
-  <!-- Clients Tab -->
-  <div class="tab-content" id="tab-clients">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Customers</div><span id="clientCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>GSTIN</th><th>State</th><th>GST Category</th><th>Added On</th></tr></thead>
-        <tbody id="clientsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Products Tab -->
-  <div class="tab-content" id="tab-products">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Products / Services</div><span id="productCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Name</th><th>HSN/SAC</th><th>Price (₹)</th><th>GST%</th><th>Category</th></tr></thead>
-        <tbody id="productsTable"><tr><td colspan="6" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Payments Tab -->
-  <div class="tab-content" id="tab-payments">
-    <div class="card">
-      <div class="card-header"><div class="card-title">All Payments</div><span id="paymentCount" style="font-size:12px;color:#6b7a90"></span></div>
-      <table>
-        <thead><tr><th>#</th><th>Invoice No</th><th>Customer</th><th>Amount</th><th>Method</th><th>Date</th><th>Reference</th></tr></thead>
-        <tbody id="paymentsTable"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <script>
-const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
-const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-const planNames = {quarterly:'3 Months',halfyearly:'6 Months',yearly:'Yearly',monthly:'Monthly',lifetime:'Lifetime'};
+// ── GSTIN State Codes ──
+const STATE_MAP={
+  '01':'Jammu & Kashmir','02':'Himachal Pradesh','03':'Punjab','04':'Chandigarh',
+  '05':'Uttarakhand','06':'Haryana','07':'Delhi','08':'Rajasthan','09':'Uttar Pradesh',
+  '10':'Bihar','11':'Sikkim','12':'Arunachal Pradesh','13':'Nagaland','14':'Manipur',
+  '15':'Mizoram','16':'Tripura','17':'Meghalaya','18':'Assam','19':'West Bengal',
+  '20':'Jharkhand','21':'Odisha','22':'Chhattisgarh','23':'Madhya Pradesh',
+  '24':'Gujarat','26':'Dadra & Nagar Haveli','27':'Maharashtra','28':'Andhra Pradesh',
+  '29':'Karnataka','30':'Goa','31':'Lakshadweep','32':'Kerala','33':'Tamil Nadu',
+  '34':'Puducherry','35':'Andaman & Nicobar','36':'Telangana','37':'Andhra Pradesh',
+  '38':'Ladakh'
+};
+const ENTITY_MAP={
+  '1':'Proprietorship','2':'Partnership','3':'HUF','4':'Private Company',
+  '5':'Public Company','6':'Government','7':'LLP','8':'Trust / Society',
+  '9':'AOP / BOI','A':'Artificial Juridical Person','B':'LLP (Local)','C':'Cooperative',
+  'F':'Foreign Company','H':'HUF (old)','P':'Proprietorship (old)'
+};
 
-let targetUid = '';
+let clients=[];
+let editIdx=-1;
 
-function showTab(id, el){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
+// Load from Firestore
+async function loadClients(){
+  clients = await DB.list('clients');
+  renderClients(clients);
+}
+document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
+document.addEventListener('kidv:db-ready', loadClients);
+
+function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
+function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
+
+// ── GSTIN Validation ──
+function isValidGSTIN(g){
+  return /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(g.toUpperCase());
 }
 
-document.addEventListener('kidv:db-ready', async()=>{
-  if(!KIDV._ready){ location.href='login.html'; return; }
-  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index.html'; return; }
+// ── Input handler — fires on every keystroke ──
+function onGSTINInput(el){
+  const val = el.value.toUpperCase();
+  el.value = val;
+  el.classList.remove('valid','invalid');
+  clearFeedback();
+  document.getElementById('fetchBtn').disabled = true;
 
-  // Get UID from URL
-  const params = new URLSearchParams(location.search);
-  targetUid = params.get('uid');
-  if(!targetUid){ alert('No user selected'); location.href='admin.html'; return; }
+  if(val.length === 0) return;
 
-  await loadUserData();
-});
-
-async function loadUserData(){
-  const db = KIDV._db;
-
-  // Load user info
-  const userDoc = await db.collection('users').doc(targetUid).get();
-  const u = userDoc.exists ? userDoc.data() : {};
-
-  // Update header
-  const name = u.name||u.displayName||u.email||'Unknown';
-  document.getElementById('topUserEmail').textContent = u.email||'—';
-  document.getElementById('uAvatar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('uName').textContent = name;
-  document.getElementById('uEmail').textContent = u.email||'—';
-
-  // Status badge
-  const now = new Date();
-  let statusText='', planText='', expiryText='';
-  if(u.subscriptionStatus==='active'){
-    statusText = '✅ Active';
-    planText = '📦 '+( planNames[u.subscriptionPlan]||u.subscriptionPlan||'—');
-    expiryText = u.subscriptionExpiry ? '⏰ Expires: '+fmtDate(u.subscriptionExpiry) : '♾️ Lifetime';
-  } else if(u.subscriptionStatus==='suspended'){
-    statusText = '🚫 Suspended';
-  } else {
-    const reg = u.createdAt ? new Date(u.createdAt) : now;
-    const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
-    const daysLeft = Math.max(0,Math.ceil((trialEnd-now)/(24*60*60*1000)));
-    statusText = daysLeft>0 ? `⏳ Trial (${daysLeft}d left)` : '🔴 Trial Expired';
-    expiryText = daysLeft>0 ? '⏰ Trial ends: '+fmtDate(trialEnd) : '';
+  if(val.length < 15){
+    showFeedback('info', `${15 - val.length} more characters needed`);
+    return;
   }
-  document.getElementById('uStatus').textContent = statusText;
-  document.getElementById('uPlan').textContent = planText||'No Plan';
-  document.getElementById('uExpiry').textContent = expiryText;
-  document.getElementById('uRegistered').textContent = u.createdAt ? '📅 Joined: '+fmtDate(u.createdAt) : '';
 
-  // Load collections
-  const [invoices, clients, products, payments] = await Promise.all([
-    db.collection('users/'+targetUid+'/invoices').get(),
-    db.collection('users/'+targetUid+'/clients').get(),
-    db.collection('users/'+targetUid+'/products').get(),
-    db.collection('users/'+targetUid+'/payments').get(),
-  ]);
-
-  const invList = invoices.docs.map(d=>({_id:d.id,...d.data()}));
-  const cliList = clients.docs.map(d=>({_id:d.id,...d.data()}));
-  const proList = products.docs.map(d=>({_id:d.id,...d.data()}));
-  const payList = payments.docs.map(d=>({_id:d.id,...d.data()}));
-
-  // Stats
-  const totalRev = invList.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  document.getElementById('sInvoices').textContent = invList.length;
-  document.getElementById('sClients').textContent = cliList.length;
-  document.getElementById('sProducts').textContent = proList.length;
-  document.getElementById('sRevenue').textContent = '₹'+totalRev.toLocaleString('en-IN');
-
-  // Invoices table
-  document.getElementById('invCount').textContent = invList.length+' invoices';
-  document.getElementById('invoicesTable').innerHTML = invList.length
-    ? invList.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).map((inv,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td><span class="inv-no">${inv.invoiceNo||'—'}</span></td>
-        <td style="font-weight:500">${inv.clientName||'—'}</td>
-        <td style="font-size:12px">${fmtDate(inv.date)}</td>
-        <td style="font-size:12px">${fmtDate(inv.due)}</td>
-        <td style="font-weight:700">${fmt(inv.total)}</td>
-        <td style="color:#d97706">${fmt(inv.totalGST)}</td>
-        <td><span class="badge badge-${inv.status||'draft'}">${inv.status||'Draft'}</span></td>
-      </tr>`).join('')
-    : '<tr><td colspan="8" class="empty">No invoices found</td></tr>';
-
-  // Clients table
-  document.getElementById('clientCount').textContent = cliList.length+' customers';
-  document.getElementById('clientsTable').innerHTML = cliList.length
-    ? cliList.map((cl,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td style="font-weight:600">${cl.name||'—'}</td>
-        <td style="font-size:12px">${cl.phone||'—'}</td>
-        <td><span style="font-family:monospace;font-size:11px;background:#eff6ff;color:#2f81f7;padding:2px 8px;border-radius:5px">${cl.gstin||'—'}</span></td>
-        <td style="font-size:12px">${cl.state||'—'}</td>
-        <td><span class="badge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0">${cl.gstcat||'—'}</span></td>
-        <td style="font-size:12px">${fmtDate(cl.createdAt)}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="7" class="empty">No customers found</td></tr>';
-
-  // Products table
-  document.getElementById('productCount').textContent = proList.length+' products';
-  document.getElementById('productsTable').innerHTML = proList.length
-    ? proList.map((p,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td style="font-weight:600">${p.name||'—'}</td>
-        <td style="font-family:monospace;font-size:11px">${p.hsn||'—'}</td>
-        <td style="font-weight:700">${fmt(p.price)}</td>
-        <td><span class="badge" style="background:#fff7ed;color:#d97706;border:1px solid #fed7aa">${p.gst||0}%</span></td>
-        <td style="font-size:12px;color:#6b7a90">${p.category||'—'}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="6" class="empty">No products found</td></tr>';
-
-  // Payments table
-  document.getElementById('paymentCount').textContent = payList.length+' payments';
-  document.getElementById('paymentsTable').innerHTML = payList.length
-    ? payList.map((p,i)=>`<tr>
-        <td style="color:#9ca3af;font-size:12px">${i+1}</td>
-        <td><span class="inv-no">${p.invoiceNo||'—'}</span></td>
-        <td style="font-weight:500">${p.clientName||'—'}</td>
-        <td style="font-weight:700;color:#16a34a">${fmt(p.amount)}</td>
-        <td><span class="badge badge-paid">${p.method||'—'}</span></td>
-        <td style="font-size:12px">${fmtDate(p.date||p.createdAt)}</td>
-        <td style="font-size:11px;font-family:monospace;color:#6b7a90">${p.ref||p.utr||'—'}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="7" class="empty">No payments found</td></tr>';
+  // 15 chars entered
+  if(isValidGSTIN(val)){
+    el.classList.add('valid');
+    document.getElementById('fetchBtn').disabled = false;
+    // Instantly do local parse
+    localParse(val);
+    showFeedback('success','Valid GSTIN · Press Fetch for full details');
+  } else {
+    el.classList.add('invalid');
+    showFeedback('error','Invalid GSTIN format — please recheck');
+  }
 }
+
+// ── Local parse (no API, instant) ──
+function localParse(g){
+  const stateCode  = g.substring(0,2);
+  const pan        = g.substring(2,12);
+  const entityChar = g.charAt(5).toUpperCase();
+  const stateName  = STATE_MAP[stateCode] || '';
+  const entityType = ENTITY_MAP[entityChar] || 'Unknown';
+
+  // Fill state code
+  setVal('f-statecode', stateCode);
+  setVal('f-gstin',     g);
+  setVal('f-pan',       pan);
+
+  // State dropdown
+  if(stateName){
+    const sel = document.getElementById('f-state');
+    for(let i=0;i<sel.options.length;i++){
+      if(sel.options[i].text.includes(stateName.split(' ')[0])){ sel.selectedIndex=i; break; }
+    }
+  }
+
+  // Customer type guess
+  const ctype = document.getElementById('f-ctype');
+  if(['4','5'].includes(entityChar)) ctype.value='Company';
+  else if(entityChar==='7') ctype.value='LLP';
+  else if(entityChar==='2') ctype.value='Partnership';
+  else if(['1','P'].includes(entityChar)) ctype.value='Individual';
+
+  document.getElementById('f-gstcat').value='Registered Regular';
+
+  // Chips
+  document.getElementById('gstinChips').innerHTML = `
+    <div class="gchip"><span class="material-icons-round">location_on</span>${stateCode} · ${stateName||'Unknown State'}</div>
+    <div class="gchip"><span class="material-icons-round">badge</span>PAN: ${pan}</div>
+    <div class="gchip"><span class="material-icons-round">business</span>${entityType}</div>
+    <div class="gchip green"><span class="material-icons-round">check_circle</span>Valid GSTIN</div>
+  `;
+}
+
+// ── API Fetch ──
+async function fetchGSTIN(){
+  const gstin = document.getElementById('gstinLookup').value.toUpperCase().trim();
+  if(!isValidGSTIN(gstin)) return;
+
+  const settings = JSON.parse(localStorage.getItem('kidv-gstin-api') || '{}');
+  const apiKey   = settings.key;
+  const apiType  = settings.type || 'gstincheck';
+
+  // No API key → local only
+  if(!apiKey){
+    localParse(gstin);
+    showFeedback('info','Local parse done · State, PAN & Entity filled');
+    document.getElementById('apiNotice').style.display = 'block';
+    return;
+  }
+
+  // Loading state
+  setFetchLoading(true);
+  showFeedback('loading','Fetching from GST portal...');
+
+  try {
+    let name='', address='', city='', pin='', state='';
+
+    if(apiType === 'gstincheck'){
+      // GSTINCheck.co.in API
+      const res = await fetch(`https://api.gstincheck.co.in/check/${apiKey}/${gstin}`,{
+        headers:{'Content-Type':'application/json'}
+      });
+      const json = await res.json();
+
+      if(json.flag && json.data){
+        const d = json.data;
+        name    = d.tradeNam || d.lgnm || '';
+        const a = d.pradr?.addr || {};
+        address = [a.bnm, a.bno, a.st, a.loc].filter(Boolean).join(', ');
+        city    = a.dst || a.loc || '';
+        pin     = a.pncd || '';
+        state   = a.stcd || '';
+      } else {
+        throw new Error(json.message || 'GSTIN not found in GST portal');
+      }
+    }
+
+    // Fill fields
+    if(name)    { setVal('f-name',    name);    flash('f-name'); }
+    if(address) { setVal('f-address', address); flash('f-address'); }
+    if(city)    { setVal('f-city',    city);    flash('f-city'); }
+    if(pin)     { setVal('f-pin',     pin);     flash('f-pin'); }
+
+    // State from API
+    if(state){
+      const sel = document.getElementById('f-state');
+      for(let i=0;i<sel.options.length;i++){
+        if(sel.options[i].text.toLowerCase().includes(state.toLowerCase().split(' ')[0])){ sel.selectedIndex=i; break; }
+      }
+    }
+
+    showFeedback('success', `✓ Auto-filled: ${name || gstin}`);
+    document.getElementById('apiNotice').style.display = 'none';
+
+  } catch(e){
+    // Still keep local parse data
+    showFeedback('error', 'API Error: ' + (e.message||'Try again') + ' · Local data kept');
+  } finally {
+    setFetchLoading(false);
+  }
+}
+
+// ── Helpers ──
+function setVal(id, val){ const el=document.getElementById(id); if(el) el.value=val; }
+function flash(id){ const el=document.getElementById(id); if(el){ el.classList.add('autofilled'); setTimeout(()=>el.classList.remove('autofilled'),2600); } }
+
+function clearFeedback(){
+  document.getElementById('gstinFeedback').classList.remove('show');
+  document.getElementById('gstinChips').innerHTML='';
+  document.getElementById('apiNotice').style.display='none';
+}
+
+function showFeedback(type, msg){
+  const wrap=document.getElementById('gstinFeedback');
+  const dot=document.getElementById('fbDot');
+  const text=document.getElementById('fbText');
+  wrap.classList.add('show');
+  dot.className='fb-dot '+type;
+  text.className='fb-text '+type;
+  text.textContent=msg;
+}
+
+function setFetchLoading(on){
+  document.getElementById('fetchBtn').disabled = on;
+  document.getElementById('fetchIcon').textContent = on?'hourglass_top':'cloud_download';
+  document.getElementById('fetchTxt').textContent  = on?'Loading...':'Fetch';
+}
+
+// ── Modal ──
+function openModal(idx=-1){
+  editIdx=idx; clearForm();
+  if(idx>=0){
+    const c=clients[idx];
+    document.getElementById('modalTitle').textContent='Edit Customer';
+    setVal('f-name',c.name||'');setVal('f-contact',c.contact||'');
+    setVal('f-email',c.email||'');setVal('f-phone',c.phone||'');
+    document.getElementById('f-ctype').value=c.ctype||'Company';
+    document.getElementById('f-gstcat').value=c.gstcat||'Unregistered';
+    setVal('f-gstin',c.gstin||'');setVal('f-pan',c.pan||'');
+    document.getElementById('f-state').value=c.state||'';
+    setVal('f-statecode',c.stateCode||'');
+    setVal('f-address',c.address||'');setVal('f-city',c.city||'');setVal('f-pin',c.pin||'');
+    if(c.gstin){ setVal('gstinLookup',c.gstin); localParse(c.gstin); document.getElementById('fetchBtn').disabled=false; document.getElementById('gstinLookup').classList.add('valid'); }
+  } else {
+    document.getElementById('modalTitle').textContent='Add New Customer';
+  }
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+
+function clearForm(){
+  ['f-name','f-contact','f-email','f-phone','f-gstin','f-pan','f-statecode','f-address','f-city','f-pin','gstinLookup'].forEach(id=>setVal(id,''));
+  document.getElementById('gstinLookup').className='gstin-input';
+  document.getElementById('f-state').value='';
+  document.getElementById('fetchBtn').disabled=true;
+  clearFeedback();
+}
+
+// ── Save ──
+async function saveClient(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Client name is required');return;}
+  const c={
+    name, contact:document.getElementById('f-contact').value,
+    email:document.getElementById('f-email').value, phone:document.getElementById('f-phone').value,
+    ctype:document.getElementById('f-ctype').value, gstcat:document.getElementById('f-gstcat').value,
+    gstin:document.getElementById('f-gstin').value.toUpperCase(),
+    pan:document.getElementById('f-pan').value.toUpperCase(),
+    state:document.getElementById('f-state').value,
+    stateCode:document.getElementById('f-statecode').value,
+    address:document.getElementById('f-address').value,
+    city:document.getElementById('f-city').value, pin:document.getElementById('f-pin').value,
+    createdAt:new Date().toISOString()
+  };
+  if(editIdx>=0){
+    const id=clients[editIdx]._id||editIdx;
+    await DB.set('clients',id,c);
+    clients[editIdx]={...c,_id:id};
+  } else {
+    const id=await DB.add('clients',c);
+    clients.push({...c,_id:id});
+  }
+  closeModal(); renderClients(clients);
+  showToast(editIdx>=0?'Customer updated! ✅':'Customer saved! ✅');
+}
+async function deleteClient(i){
+  const client = clients[i];
+  if(!client) return;
+  
+  // Check if client is used in invoices
+  const allInvoices = await KIDV.list('invoices');
+  const usedIn = allInvoices.filter(inv => 
+    inv.clientName === client.name || 
+    inv.clientId === client._id
+  );
+  
+  if(usedIn.length > 0){
+    alert('⚠️ Cannot delete!\n\n"'+client.name+'" is used in '+usedIn.length+' invoice(s).\n\nInvoices: '+usedIn.map(i=>i.invoiceNo||'—').join(', ')+'\n\nPlease delete or update those invoices first.');
+    return;
+  }
+  
+  if(confirm('Delete customer "'+client.name+'"?\n\nThis action cannot be undone.')){
+    const id=client._id||i;
+    await DB.delete('clients',id);
+    clients.splice(i,1);
+    renderClients(clients);
+    showToast('Customer deleted.');
+  }
+}
+function editClient(i){openModal(i);}
+
+// ── Render table ──
+function renderClients(list){
+  const tbody=document.getElementById('clientsBody');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No clients yet. <a href="#" onclick="openModal()" style="color:var(--c-clients)">Add first client →</a></td></tr>`;return;}
+  tbody.innerHTML=list.map((c,i)=>`
+    <tr>
+      <td><div class="client-name">${c.name}</div><div class="client-sub">${c.ctype||''}${c.city?' · '+c.city:''}</div></td>
+      <td>${c.phone||'—'}</td>
+      <td>${c.gstin?`<span style="font-family:monospace;font-size:11.5px;background:rgba(47,129,247,0.08);padding:3px 9px;border-radius:6px;border:1px solid rgba(47,129,247,0.15);color:#58a6ff;letter-spacing:.04em">${c.gstin}</span>`:'<span style="color:var(--muted)">—</span>'}</td>
+      <td>${c.state||'—'}${c.stateCode?` <span style="font-size:11px;color:var(--muted)">(${c.stateCode})</span>`:''}</td>
+      <td><span class="badge badge-active" style="font-size:11px">${c.gstcat||'—'}</span></td>
+      <td>
+        <button class="action-btn" onclick="editClient(${i})" title="Edit"><span class="material-icons-round">edit</span></button>
+        <button class="action-btn" onclick="deleteClient(${i})" title="Delete"><span class="material-icons-round">delete</span></button>
+        <button class="action-btn" onclick="location.href='invoices.html'" title="New Invoice"><span class="material-icons-round">receipt_long</span></button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('clientCount').textContent=list.length+' clients';
+  document.getElementById('s-total').textContent=clients.length;
+  document.getElementById('s-gst').textContent=clients.filter(c=>c.gstin).length;
+  const inv=JSON.parse(localStorage.getItem('kidv-invoices')||'[]');
+  document.getElementById('s-invoiced').textContent=inv.filter(i=>i.status!=='draft').length;
+  const os=inv.filter(i=>i.status==='pending').reduce((s,i)=>s+parseFloat(i.total||0),0);
+  document.getElementById('s-outstanding').textContent='₹'+os.toLocaleString('en-IN');
+}
+
+function filterClients(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  renderClients(clients.filter(c=>(c.name+c.email+c.gstin+c.phone+c.state).toLowerCase().includes(q)));
+}
+
+function showToast(msg){
+  let t=document.getElementById('__toast');
+  if(!t){t=document.createElement('div');t.id='__toast';t.style.cssText='position:fixed;bottom:28px;right:28px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3);transition:opacity .3s';document.body.appendChild(t);}
+  t.innerHTML=`<span class="material-icons-round" style="color:#3fb950;font-size:18px">check_circle</span>${msg}`;
+  t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2500);
+}
+
+// Data loads via kidv:db-ready event → loadClients()
 </script>
   <script src="kidv-common.js"></script>
 </body>

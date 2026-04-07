@@ -2,34 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Account Suspended – KIDV Invoice</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<title>KIDV Invoice – Terms & Conditions</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="logo.jpg">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.card{background:#fff;border-radius:24px;padding:48px 40px;max-width:480px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);}
-.icon{width:72px;height:72px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
-.icon .material-icons-round{font-size:36px;color:#ef4444;}
-h1{font-size:24px;font-weight:800;color:#1a2332;margin-bottom:10px;}
-p{font-size:14px;color:#6b7a90;line-height:1.7;margin-bottom:28px;}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;margin-bottom:12px;width:100%;}
-.btn-wa{background:#25d366;color:#fff;}
-.btn-ghost{background:#f0f4f8;color:#1a2332;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
+.page{max-width:760px;margin:0 auto;padding:48px 24px;}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:16px;padding:32px;margin-bottom:28px;color:#fff;}
+.header h1{font-size:26px;font-weight:700;margin-bottom:6px;}
+.header p{font-size:13px;color:rgba(255,255,255,0.5);}
+.card{background:#fff;border-radius:14px;padding:28px;margin-bottom:16px;border:1px solid #e2e8f0;}
+.card h2{font-size:16px;font-weight:700;color:#1a2332;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f0f4f8;}
+.card p,.card li{font-size:13.5px;color:#6b7a90;line-height:1.8;margin-bottom:8px;}
+.card ul{padding-left:18px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:#2f81f7;text-decoration:none;font-size:14px;font-weight:600;margin-bottom:24px;}
 </style>
-<script src="firebase-config.js"></script>
 </head>
 <body>
-<div class="card">
-  <div class="icon"><span class="material-icons-round">block</span></div>
-  <h1>Account Suspended</h1>
-  <p>Your account has been suspended. Please contact us on WhatsApp to resolve this issue and restore access.</p>
-  <a href="https://wa.me/917984486885?text=Hi, my KIDV Invoice account (${email}) has been suspended. Please help." class="btn btn-wa">
-    <span class="material-icons-round">whatsapp</span>Contact Support: +91 79844 86885
-  </a>
-  <button onclick="firebase.auth().signOut().then(()=>location.href='login.html')" class="btn btn-ghost">
-    <span class="material-icons-round">logout</span>Sign Out
-  </button>
+<div class="page">
+  <a class="back-btn" href="index.html">← Back to App</a>
+  <div class="header">
+    <h1>Terms & Conditions</h1>
+    <p>Last updated: April 2026 | KIDV Tech, Ahmedabad, Gujarat</p>
+  </div>
+
+  <div class="card">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By accessing or using KIDV Invoice, you agree to be bound by these Terms and Conditions. If you do not agree, please do not use our service.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Service Description</h2>
+    <p>KIDV Invoice is a cloud-based GST invoicing software provided by KIDV Tech, Ahmedabad. The service allows Indian businesses to create GST-compliant invoices, manage customers/suppliers, track payments, and generate GST reports.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Subscription & Payment</h2>
+    <ul>
+      <li>KIDV Invoice offers plans of 3 months, 6 months, and 12 months</li>
+      <li>A 14-day free trial is available for new users</li>
+      <li>Payments are non-refundable once the subscription is activated</li>
+      <li>License keys are non-transferable</li>
+      <li>KIDV Tech reserves the right to modify pricing with 30 days notice</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>4. User Responsibilities</h2>
+    <ul>
+      <li>You are responsible for maintaining the accuracy of your invoice and business data</li>
+      <li>You must ensure your GSTIN and business information is correct</li>
+      <li>You are responsible for GST compliance and filing with the government</li>
+      <li>Do not share your account credentials with unauthorized persons</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>5. Limitation of Liability</h2>
+    <p>KIDV Tech provides KIDV Invoice "as is". We are not responsible for any errors in GST calculations, filing, or compliance issues arising from incorrect data entered by users. Always verify your GST returns with a qualified CA.</p>
+  </div>
+
+  <div class="card">
+    <h2>6. Termination</h2>
+    <p>KIDV Tech may suspend or terminate accounts that violate these terms. Upon termination, access to the service will be revoked. You may export your data before account deletion.</p>
+  </div>
+
+  <div class="card">
+    <h2>7. Governing Law</h2>
+    <p>These terms are governed by the laws of India. All disputes are subject to the jurisdiction of courts in Ahmedabad, Gujarat, India.</p>
+  </div>
+
+  <div class="card">
+    <h2>8. Contact</h2>
+    <p>For questions about these terms: <strong>support@kidvtech.com</strong> | WhatsApp: <strong>+91 79844 86885</strong></p>
+    <p>KIDV Tech, Ahmedabad, Gujarat 380001, India</p>
+  </div>
 </div>
 </body>
 </html>
