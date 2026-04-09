@@ -56,6 +56,10 @@ body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display
 .notif-email:hover{background:#e2e8f0;}
 .btn-done{width:100%;padding:13px;background:linear-gradient(135deg,#2f81f7,#39d0d8);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
 .sent-badge{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;margin-left:6px;}
+
+  /* Page transition */
+  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  body{animation:_pgIn 0.2s ease-out;}
 </style>
 </head>
 <body>

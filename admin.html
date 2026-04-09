@@ -44,6 +44,10 @@ tr:last-child td{border-bottom:none;}
 .search{background:#f0f4f8;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:13px;width:260px;outline:none;}
 .search:focus{border-color:#2f81f7;}
 .empty{text-align:center;padding:40px;color:#9ca3af;}
+
+  /* Page transition */
+  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  body{animation:_pgIn 0.2s ease-out;}
 </style>
 </head>
 <body>

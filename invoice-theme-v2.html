@@ -183,6 +183,10 @@ table.items-table tbody tr:last-child td{border-bottom:none;}
   .invoice-paper{box-shadow:none;border-radius:0;width:100%;}
   body{background:#fff;}
 }
+
+  /* Page transition */
+  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  body{animation:_pgIn 0.2s ease-out;}
 </style>
 </head>
 <body>

@@ -62,6 +62,10 @@ tr:hover td{background:#f8faff;}
 .badge-overdue{background:#fef2f2;color:#ef4444;border:1px solid #fecaca;}
 .empty{text-align:center;padding:40px;color:#9ca3af;font-size:13px;}
 .inv-no{font-weight:700;color:#2f81f7;font-size:12.5px;}
+
+  /* Page transition */
+  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  body{animation:_pgIn 0.2s ease-out;}
 </style>
 </head>
 <body>
