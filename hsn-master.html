@@ -101,6 +101,16 @@ tr:hover td{background:#f8faff;}
 .form-group input:focus,.form-group select:focus{border-color:var(--c-hsn);}
 .form-group select option{background:#fff;color:#1a2332;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
+
+  /* ── Footer bar ── */
+  .footer-bar{position:fixed;bottom:0;left:var(--rail-w,68px);right:0;height:36px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;gap:20px;z-index:150;box-shadow:0 -1px 6px rgba(0,0,0,0.04);}
+  .footer-bar a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;transition:color .15s;}
+  .footer-bar a:hover{color:#2f81f7;}
+  .footer-bar a .material-icons-round{font-size:13px;}
+  .footer-bar .fb-sep{color:#d1d5db;font-size:11px;}
+  .footer-bar .fb-copy{font-size:11px;color:#9ca3af;font-family:'Outfit',sans-serif;}
+  /* extra bottom padding so content doesn't hide behind footer */
+  .main{padding-bottom:52px!important;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -110,7 +120,7 @@ tr:hover td{background:#f8faff;}
 </head>
 <body>
 <nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"font-size:16px;font-weight:800;color:#fff\">KI</span>'"/></div>
+  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.png" style="width:36px;height:36px;border-radius:8px;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"font-size:15px;font-weight:800;color:#fff\">KI</span>'"/></div>
   <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
   <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
   <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
@@ -122,17 +132,8 @@ tr:hover td{background:#f8faff;}
   <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
   <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="if(window.KIDV&&KIDV.isAdmin)location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item" onclick="location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
   <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item" id="infoBtn" title="About / Links" onclick="(function(m){m.style.display=m.style.display==='flex'?'none':'flex'})(document.getElementById('railInfoMenu'))" style="position:relative;">
-    <span class="material-icons-round" style="font-size:18px;">info</span>
-    <div class="rail-tooltip">About &amp; Links</div>
-    <div id="railInfoMenu" class="rail-info-menu" style="display:none;flex-direction:column;position:absolute;left:calc(100% + 10px);bottom:0;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:8px;min-width:160px;z-index:500;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-      <a href="about.html" style="display:flex;align-items:center;gap:8px;padding:8px 10px;color:#e2e8f0;text-decoration:none;font-size:13px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background=''"><span class="material-icons-round" style="font-size:16px;color:#2f81f7">info</span>About</a>
-      <a href="privacy.html" style="display:flex;align-items:center;gap:8px;padding:8px 10px;color:#e2e8f0;text-decoration:none;font-size:13px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background=''"><span class="material-icons-round" style="font-size:16px;color:#39d0d8">privacy_tip</span>Privacy</a>
-      <a href="terms.html" style="display:flex;align-items:center;gap:8px;padding:8px 10px;color:#e2e8f0;text-decoration:none;font-size:13px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background=''"><span class="material-icons-round" style="font-size:16px;color:#3fb950">gavel</span>Terms</a>
-    </div>
-  </div>
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
 <div class="flyout" id="flyout">
@@ -336,13 +337,15 @@ filterCodes();
 renderUsed();
 </script>
   <script src="kidv-common.js"></script>
-<script>
-document.addEventListener('click', function(e){
-  if(!e.target.closest('#infoBtn')){
-    const m=document.getElementById('railInfoMenu');
-    if(m) m.style.display='none';
-  }
-});
-</script>
 
+<div class="footer-bar">
+  <a href="about.html"><span class="material-icons-round">info</span>About</a>
+  <span class="fb-sep">·</span>
+  <a href="privacy.html"><span class="material-icons-round">privacy_tip</span>Privacy</a>
+  <span class="fb-sep">·</span>
+  <a href="terms.html"><span class="material-icons-round">gavel</span>Terms</a>
+  <span class="fb-sep">·</span>
+  <span class="fb-copy">© 2025 KIDV Tech</span>
+</div>
+</body>
 </html>
