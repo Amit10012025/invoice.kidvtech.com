@@ -15,7 +15,7 @@
 body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;color:#1a2332;}
 .topbar{background:#1e293b;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
 .topbar-left{display:flex;align-items:center;gap:12px;}
-.logo{width:36px;height:36px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;}
+.logo{width:40px;height:40px;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0;}
 .topbar-title{font-size:16px;font-weight:700;color:#fff;}
 .admin-badge{background:#7c3aed;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
@@ -50,13 +50,24 @@ tr:last-child td{border-bottom:none;}
   /* Page transition */
   @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
   body{animation:_pgIn 0.2s ease-out;}
+
+  /* ── Footer ── */
+  .admin-footer{background:#fff;border-top:1px solid #e2e8f0;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:fixed;bottom:0;left:0;right:0;z-index:100;}
+  .admin-footer .footer-links{display:flex;align-items:center;gap:16px;}
+  .admin-footer a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color .15s;}
+  .admin-footer a:hover{color:#2f81f7;}
+  .admin-footer a .material-icons-round{font-size:13px;}
+  .admin-footer .footer-right{font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:12px;}
+  .admin-footer .footer-right a{color:#6b7a90;text-decoration:none;font-weight:500;}
+  .admin-footer .footer-right a:hover{color:#2f81f7;}
+  .main{padding-bottom:60px;}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="logo">KI</div>
+    <div class="logo"><img src="/logo.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\"font-size:13px;font-weight:800;color:#fff\">KI</span>'"/></div>
     <div class="topbar-title">KIDV Invoice — Admin Panel</div>
     <div class="admin-badge">ADMIN ONLY</div>
   </div>
@@ -754,6 +765,19 @@ async function confirmAddUser(){
         <span class="material-icons-round" style="font-size:16px">whatsapp</span>WhatsApp User
       </button>
     </div>
+  </div>
+</div>
+
+<div class="admin-footer">
+  <div class="footer-links">
+    <a href="/about/"><span class="material-icons-round">info</span>About</a>
+    <a href="/privacy/"><span class="material-icons-round">privacy_tip</span>Privacy</a>
+    <a href="/terms/"><span class="material-icons-round">gavel</span>Terms</a>
+  </div>
+  <div class="footer-right">
+    <span>© 2025 KIDV Tech</span>
+    <span>·</span>
+    <a href="https://www.kidvtech.com" target="_blank">Developed by KIDVTech</a>
   </div>
 </div>
   <script src="/kidv-common.js"></script>

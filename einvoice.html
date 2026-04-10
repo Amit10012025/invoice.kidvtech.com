@@ -121,12 +121,15 @@ tr:hover td{background:#f8faff;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
 
   /* ── Footer bar ── */
-  .footer-bar{position:fixed;bottom:0;left:var(--rail-w,68px);right:0;height:36px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;gap:20px;z-index:150;box-shadow:0 -1px 6px rgba(0,0,0,0.04);}
+  .footer-bar{position:fixed;bottom:0;left:var(--rail-w,68px);right:0;height:38px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:150;box-shadow:0 -1px 8px rgba(0,0,0,0.05);}
+  .footer-bar .fb-left{display:flex;align-items:center;gap:14px;}
   .footer-bar a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;transition:color .15s;}
   .footer-bar a:hover{color:#2f81f7;}
   .footer-bar a .material-icons-round{font-size:13px;}
-  .footer-bar .fb-sep{color:#d1d5db;font-size:11px;}
-  .footer-bar .fb-copy{font-size:11px;color:#9ca3af;font-family:'Outfit',sans-serif;}
+  .footer-bar .fb-sep{color:#e2e8f0;font-size:11px;}
+  .footer-bar .fb-right{display:flex;align-items:center;gap:6px;font-size:11px;color:#9ca3af;font-family:'Outfit',sans-serif;}
+  .footer-bar .fb-right a{color:#6b7a90;font-weight:500;font-size:11px;text-decoration:none;}
+  .footer-bar .fb-right a:hover{color:#2f81f7;}
   /* extra bottom padding so content doesn't hide behind footer */
   .main{padding-bottom:52px!important;}
 
@@ -417,13 +420,18 @@ renderTable();
   <script src="/kidv-common.js"></script>
 
 <div class="footer-bar">
-  <a href="/about/"><span class="material-icons-round">info</span>About</a>
-  <span class="fb-sep">·</span>
-  <a href="/privacy/"><span class="material-icons-round">privacy_tip</span>Privacy</a>
-  <span class="fb-sep">·</span>
-  <a href="/terms/"><span class="material-icons-round">gavel</span>Terms</a>
-  <span class="fb-sep">·</span>
-  <span class="fb-copy">© 2025 KIDV Tech</span>
+  <div class="fb-left">
+    <a href="/about/"><span class="material-icons-round">info</span>About</a>
+    <span class="fb-sep">|</span>
+    <a href="/privacy/"><span class="material-icons-round">privacy_tip</span>Privacy</a>
+    <span class="fb-sep">|</span>
+    <a href="/terms/"><span class="material-icons-round">gavel</span>Terms</a>
+  </div>
+  <div class="fb-right">
+    <span>© 2025 KIDV Tech</span>
+    <span class="fb-sep">·</span>
+    <a href="https://www.kidvtech.com" target="_blank">Developed by KIDVTech</a>
+  </div>
 </div>
 </body>
 </html>
