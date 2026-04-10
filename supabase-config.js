@@ -38,7 +38,7 @@ window.KIDV = {
   async logout() {
     await this._supabase.auth.signOut();
     localStorage.clear();
-    location.href = 'login.html';
+    location.href = '/login/';
   },
 
   async getToken() {
@@ -137,7 +137,7 @@ function initKIDV() {
       const isPublic = ['login.html', 'subscribe.html', 'expired.html'].some(p => page.includes(p));
 
       if (!session && !isPublic) {
-        location.href = 'login.html';
+        location.href = '/login/';
         return;
       }
 

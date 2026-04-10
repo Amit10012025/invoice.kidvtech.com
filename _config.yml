@@ -1,9 +1,19 @@
-# GitHub Pages — Disable Jekyll
-plugins: []
+# KIDV Invoice — GitHub Pages Config
+title: KIDV Invoice
+description: GST Invoice Management
+
+permalink: pretty
+
+# Exclude non-web files
 exclude:
   - "*.py"
   - "*.sql"
-  - "*.zip"
-  - "env.example"
+  - "requirements.txt"
+  - "schema.sql"
+  - "main.py"
+  - "supabase-config.js"
+  - "firestore.rules"
+  - "FIRESTORE_RULES.md"
   - "SETUP.md"
-  - "backend/"
+  - "env.example"
+  - "download"

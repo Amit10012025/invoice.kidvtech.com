@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -392,7 +394,7 @@ auth.onAuthStateChanged(async user=>{
   if(user){
     _redirecting=true;
     try{await db.collection('users').doc(user.uid).set({email:user.email,name:user.displayName||'',isAdmin:ADMIN_EMAILS.includes((user.email||'').toLowerCase()),lastLogin:new Date().toISOString(),createdAt:new Date().toISOString()},{merge:true});}catch(e){}
-    location.replace('index.html');
+    location.replace('/index/');
   }
 });
 
@@ -457,7 +459,7 @@ async function doRegister(){
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
     _regUser=cred.user;_regData={name,email,mobile};
-    try{await _regUser.sendEmailVerification({url:window.location.origin+'/login.html'});}catch(ve){}
+    try{await _regUser.sendEmailVerification({url:window.location.origin+'/login/'});}catch(ve){}
     setLoad('reg',false);showEmailVerifyPanel(email);
   }catch(e){_inRegFlow=false;showErr(ERR_MAP[e.code]||e.message);setLoad('reg',false);}
 }
@@ -482,7 +484,7 @@ async function checkEmailVerified(){
     else{const el=document.getElementById('emailVerifyStatus');el.style.color='#e11d48';el.textContent='⚠️ Not verified yet. Click the link in your email first.';}
   }catch(e){showErr('Error: '+e.message);}
 }
-async function resendVerification(){if(!_regUser){showErr('Session expired.');return;}try{await _regUser.sendEmailVerification({url:window.location.origin+'/login.html'});showSucc('Verification email resent!');}catch(e){showErr(ERR_MAP[e.code]||e.message);}}
+async function resendVerification(){if(!_regUser){showErr('Session expired.');return;}try{await _regUser.sendEmailVerification({url:window.location.origin+'/login/'});showSucc('Verification email resent!');}catch(e){showErr(ERR_MAP[e.code]||e.message);}}
 function cancelVerify(){if(_regUser){_regUser.delete().catch(()=>{});_regUser=null;_regData=null;}_inRegFlow=false;document.getElementById('emailVerifyPanel').style.display='none';document.getElementById('tabsRow').style.display='';switchTab('register');}
 
 function showPhoneOTPStep(){

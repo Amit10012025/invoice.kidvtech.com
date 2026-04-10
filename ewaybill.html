@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,28 +125,28 @@ tr:hover td{background:#f8faff;}
 </head>
 <body>
 <nav class="rail">
-  <div class="rail-logo" onclick="location.href='index.html'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block'" onerror="this.src='logo.png';this.onerror=function(){this.style.display='none';this.parentElement.querySelector('.logo-init').style.display='flex'}"/><span class="logo-init" style="display:none;font-size:15px;font-weight:800;color:#fff;width:100%;height:100%;align-items:center;justify-content:center;">KI</span></div>
-  <div class="rail-item" onclick="location.href='index.html'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
-  <div class="rail-item" onclick="location.href='clients.html'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
-  <div class="rail-item" onclick="location.href='suppliers.html'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
-  <div class="rail-item" onclick="location.href='products.html'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
-  <div class="rail-item active" onclick="location.href='invoices.html'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
-  <div class="rail-item" onclick="location.href='quotations.html'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
-  <div class="rail-item" onclick="location.href='payments.html'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
-  <div class="rail-item" onclick="location.href='gst-returns.html'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
-  <div class="rail-item" onclick="location.href='reports.html'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
-  <div class="rail-item" onclick="location.href='ledger.html'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
+  <div class="rail-logo" onclick="location.href='index'"><img src="logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block'" onerror="this.src='logo.png';this.onerror=function(){this.style.display='none';this.parentElement.querySelector('.logo-init').style.display='flex'}"/><span class="logo-init" style="display:none;font-size:15px;font-weight:800;color:#fff;width:100%;height:100%;align-items:center;justify-content:center;">KI</span></div>
+  <div class="rail-item" onclick="location.href='index'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-item" onclick="location.href='clients'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
+  <div class="rail-item" onclick="location.href='suppliers'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
+  <div class="rail-item" onclick="location.href='products'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
+  <div class="rail-item active" onclick="location.href='invoices'" title="Invoices"><span class="material-icons-round">receipt_long</span><div class="rail-tooltip">Invoices</div></div>
+  <div class="rail-item" onclick="location.href='quotations'" title="Quotations"><span class="material-icons-round">request_quote</span><div class="rail-tooltip">Quotations</div></div>
+  <div class="rail-item" onclick="location.href='payments'" title="Payments"><span class="material-icons-round">payments</span><div class="rail-tooltip">Payments</div></div>
+  <div class="rail-item" onclick="location.href='gst-returns'" title="GST Returns"><span class="material-icons-round">receipt</span><div class="rail-tooltip">GST Returns</div></div>
+  <div class="rail-item" onclick="location.href='reports'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
+  <div class="rail-item" onclick="location.href='ledger'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
   <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="location.href='admin.html'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
-  <div class="rail-item" onclick="location.href='settings.html'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
+  <div class="rail-item" onclick="location.href='admin'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item" onclick="location.href='settings'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
   <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
 </nav>
 <div class="flyout" id="flyout">
   <div class="flyout-header"><div class="flyout-title">Compliance</div></div>
-  <a class="flyout-link" href="einvoice.html"><span class="material-icons-round">qr_code_2</span>E-Invoice (IRN)</a>
-  <a class="flyout-link active" href="ewaybill.html"><span class="material-icons-round">local_shipping</span>E-Way Bill</a>
-  <a class="flyout-link" href="gst-returns.html"><span class="material-icons-round">receipt</span>GST Returns</a>
-  <a class="flyout-link" href="hsn-master.html"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
+  <a class="flyout-link" href="einvoice"><span class="material-icons-round">qr_code_2</span>E-Invoice (IRN)</a>
+  <a class="flyout-link active" href="ewaybill"><span class="material-icons-round">local_shipping</span>E-Way Bill</a>
+  <a class="flyout-link" href="gst-returns"><span class="material-icons-round">receipt</span>GST Returns</a>
+  <a class="flyout-link" href="hsn-master"><span class="material-icons-round">tag</span>HSN/SAC Master</a>
 </div>
 
 <main class="main" id="main">
@@ -166,7 +168,7 @@ tr:hover td{background:#f8faff;}
       <div class="info-banner-text">
         Mandatory for inter-state movement. Also required for intra-state in most states. 
         Valid for 1 day per 200 km (regular) / 1 day per 20 km (ODC). 
-        API connect karva <a href="settings.html">Settings → GST</a> ma credentials add karo.
+        API connect karva <a href="settings">Settings → GST</a> ma credentials add karo.
       </div>
     </div>
   </div>
@@ -370,11 +372,11 @@ renderTable();
   <script src="kidv-common.js"></script>
 
 <div class="footer-bar">
-  <a href="about.html"><span class="material-icons-round">info</span>About</a>
+  <a href="about"><span class="material-icons-round">info</span>About</a>
   <span class="fb-sep">·</span>
-  <a href="privacy.html"><span class="material-icons-round">privacy_tip</span>Privacy</a>
+  <a href="privacy"><span class="material-icons-round">privacy_tip</span>Privacy</a>
   <span class="fb-sep">·</span>
-  <a href="terms.html"><span class="material-icons-round">gavel</span>Terms</a>
+  <a href="terms"><span class="material-icons-round">gavel</span>Terms</a>
   <span class="fb-sep">·</span>
   <span class="fb-copy">© 2025 KIDV Tech</span>
 </div>

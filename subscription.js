@@ -84,7 +84,7 @@ window.SUB = {
     } else if (type === 'trial') {
       badge.innerHTML = `<span class="material-icons-round" style="font-size:14px">hourglass_top</span> Trial: ${this.daysLeft} days left`;
       badge.style.cssText = `position:fixed;bottom:16px;left:80px;background:#d97706;color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:5px;z-index:9999;font-family:Outfit,sans-serif;box-shadow:0 4px 12px rgba(217,119,6,0.35);cursor:pointer`;
-      badge.onclick = () => location.href = 'subscribe.html';
+      badge.onclick = () => location.href = '/subscribe/';
     }
 
     document.body.appendChild(badge);
@@ -99,7 +99,7 @@ window.SUB = {
     banner.innerHTML = `
       <span><span style="font-weight:700">⚠️ Trial expires in ${this.daysLeft} day${this.daysLeft===1?'':'s'}!</span> Upgrade now to keep your data.</span>
       <div style="display:flex;gap:10px;align-items:center">
-        <button onclick="location.href='subscribe.html'" style="background:#fff;color:#d97706;border:none;border-radius:6px;padding:5px 14px;font-weight:700;cursor:pointer;font-size:12px">Upgrade Now</button>
+        <button onclick="location.href='/subscribe/'" style="background:#fff;color:#d97706;border:none;border-radius:6px;padding:5px 14px;font-weight:700;cursor:pointer;font-size:12px">Upgrade Now</button>
         <button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px;line-height:1">×</button>
       </div>`;
     document.body.prepend(banner);
@@ -109,7 +109,7 @@ window.SUB = {
     const page = location.pathname.split('/').pop() || '';
     const safe = ['expired.html','subscribe.html','login.html','suspended.html'];
     if (!safe.some(p => page.includes(p))) {
-      location.href = 'expired.html';
+      location.href = '/expired/';
     }
   },
 
@@ -117,7 +117,7 @@ window.SUB = {
     const page = location.pathname.split('/').pop() || '';
     const safe = ['suspended.html','login.html'];
     if (!safe.some(p => page.includes(p))) {
-      location.href = 'suspended.html';
+      location.href = '/suspended/';
     }
   }
 };

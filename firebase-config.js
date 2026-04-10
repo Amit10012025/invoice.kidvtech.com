@@ -60,7 +60,7 @@ window.KIDV = {
     Object.keys(localStorage).forEach(k => {
       if (k.startsWith('kidv')) localStorage.removeItem(k);
     });
-    location.href = 'login.html';
+    location.href = '/login/';
   },
 
   async getToken() {
@@ -243,7 +243,7 @@ _fbAuth.onAuthStateChanged(async (user) => {
     window.KIDV._uid   = null;
     window.KIDV._user  = null;
     _updateStatusBadge(false);
-    if (!isPublic) { location.href = 'login.html'; return; }
+    if (!isPublic) { location.href = '/login/'; return; }
     document.dispatchEvent(new Event('kidv:db-ready'));
     return;
   }

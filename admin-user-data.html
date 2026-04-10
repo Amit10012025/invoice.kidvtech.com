@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,7 +79,7 @@ tr:hover td{background:#f8faff;}
     <div class="user-chip" id="topUserEmail">Loading...</div>
   </div>
   <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" onclick="location.href='admin.html'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
+    <button class="btn btn-ghost" onclick="location.href='admin'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
   </div>
 </div>
 
@@ -179,13 +181,13 @@ function showTab(id, el){
 }
 
 document.addEventListener('kidv:db-ready', async()=>{
-  if(!KIDV._ready){ location.href='login.html'; return; }
-  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index.html'; return; }
+  if(!KIDV._ready){ location.href='login'; return; }
+  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index'; return; }
 
   // Get UID from URL
   const params = new URLSearchParams(location.search);
   targetUid = params.get('uid');
-  if(!targetUid){ alert('No user selected'); location.href='admin.html'; return; }
+  if(!targetUid){ alert('No user selected'); location.href='admin'; return; }
 
   await loadUserData();
 });

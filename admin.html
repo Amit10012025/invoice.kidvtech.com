@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +61,7 @@ tr:last-child td{border-bottom:none;}
     <div class="admin-badge">ADMIN ONLY</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index.html'"><span class="material-icons-round">arrow_back</span>Back to App</button>
+    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index'"><span class="material-icons-round">arrow_back</span>Back to App</button>
     <button class="btn btn-danger btn-sm" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Logout</button>
   </div>
 </div>
@@ -101,8 +103,8 @@ let allUsers = [];
 
 document.addEventListener('kidv:db-ready', async()=>{
   console.log('[Admin] db-ready fired. KIDV._ready:', KIDV._ready, 'isAdmin:', KIDV.isAdmin);
-  if(!KIDV._ready){ location.href='login.html'; return; }
-  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index.html'; return; }
+  if(!KIDV._ready){ location.href='login'; return; }
+  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index'; return; }
   loadUsers();
 });
 
