@@ -26,7 +26,7 @@ p{font-size:14px;color:#6b7a90;line-height:1.7;margin-bottom:28px;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script src="/firebase-config.js"></script>
 </head>
 <body>
 <div class="card">
@@ -36,7 +36,7 @@ p{font-size:14px;color:#6b7a90;line-height:1.7;margin-bottom:28px;}
   <a href="https://wa.me/917984486885?text=Hi, my KIDV Invoice account (${email}) has been suspended. Please help." class="btn btn-wa">
     <span class="material-icons-round">whatsapp</span>Contact Support: +91 79844 86885
   </a>
-  <button onclick="firebase.auth().signOut().then(()=>location.href='login')" class="btn btn-ghost">
+  <button onclick="firebase.auth().signOut().then(()=>location.href='/login/')" class="btn btn-ghost">
     <span class="material-icons-round">logout</span>Sign Out
   </button>
 </div>

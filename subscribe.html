@@ -7,8 +7,8 @@
 <title>KIDV Invoice – Subscribe</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="icon" type="image/png" href="/logo.jpg">
+<link rel="apple-touch-icon" href="/logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -137,7 +137,7 @@ body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display
 <div style="margin-bottom:14px;font-size:13px;color:#6b7a90;text-align:center">
   Need help? <a href="https://wa.me/917984486885" target="_blank" style="color:#25d366;font-weight:600">📱 WhatsApp: +91 79844 86885</a>
 </div>
-<span style="font-size:13px;color:#6b7a90;cursor:pointer;text-decoration:underline" onclick="location.href='index'">← Back to App</span>
+<span style="font-size:13px;color:#6b7a90;cursor:pointer;text-decoration:underline" onclick="location.href='/'">← Back to App</span>
 
 <!-- ── SUCCESS MODAL ── -->
 <div class="success-modal" id="successModal">
@@ -178,7 +178,7 @@ body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display
       </div>
     </div>
 
-    <button class="btn-done" onclick="location.href='index'">
+    <button class="btn-done" onclick="location.href='/'">
       <span class="material-icons-round">arrow_forward</span>
       Go to Dashboard
     </button>
@@ -188,7 +188,7 @@ body{font-family:'Outfit',sans-serif;background:#f0f4f8;min-height:100vh;display
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script src="/firebase-config.js"></script>
 <!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
@@ -217,7 +217,7 @@ document.addEventListener('kidv:db-ready', async()=>{
   info.style.display = 'flex';
   if(data.subscriptionStatus==='active'){
     msg.textContent = '✅ Your subscription is active!';
-    setTimeout(()=>location.href='index', 2000);
+    setTimeout(()=>location.href='/', 2000);
   } else {
     const reg = data.createdAt ? new Date(data.createdAt) : new Date();
     const trialEnd = new Date(reg.getTime()+14*24*60*60*1000);
@@ -421,6 +421,6 @@ function markSent(btnId, text){
 }
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
-  <script src="kidv-common.js"></script>
+  <script src="/kidv-common.js"></script>
 </body>
 </html>

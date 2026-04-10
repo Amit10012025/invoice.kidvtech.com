@@ -7,8 +7,8 @@
 <title>KIDV Invoice – User Data Viewer</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="icon" type="image/png" href="/logo.jpg">
+<link rel="apple-touch-icon" href="/logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -79,7 +79,7 @@ tr:hover td{background:#f8faff;}
     <div class="user-chip" id="topUserEmail">Loading...</div>
   </div>
   <div style="display:flex;gap:10px;">
-    <button class="btn btn-ghost" onclick="location.href='admin'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
+    <button class="btn btn-ghost" onclick="location.href='/admin/'"><span class="material-icons-round">arrow_back</span>Back to Admin</button>
   </div>
 </div>
 
@@ -165,7 +165,7 @@ tr:hover td{background:#f8faff;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script src="/firebase-config.js"></script>
 <script>
 const fmt = n => '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});
 const fmtDate = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
@@ -181,13 +181,13 @@ function showTab(id, el){
 }
 
 document.addEventListener('kidv:db-ready', async()=>{
-  if(!KIDV._ready){ location.href='login'; return; }
-  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='index'; return; }
+  if(!KIDV._ready){ location.href='/login/'; return; }
+  if(!KIDV.isAdmin){ alert('Admin only!'); location.href='/'; return; }
 
   // Get UID from URL
   const params = new URLSearchParams(location.search);
   targetUid = params.get('uid');
-  if(!targetUid){ alert('No user selected'); location.href='admin'; return; }
+  if(!targetUid){ alert('No user selected'); location.href='/admin/'; return; }
 
   await loadUserData();
 });
@@ -304,6 +304,6 @@ async function loadUserData(){
     : '<tr><td colspan="7" class="empty">No payments found</td></tr>';
 }
 </script>
-  <script src="kidv-common.js"></script>
+  <script src="/kidv-common.js"></script>
 </body>
 </html>

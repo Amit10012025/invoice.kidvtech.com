@@ -7,8 +7,8 @@
 <title>KIDV Invoice – Admin Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
-<link rel="icon" type="image/png" href="logo.jpg">
-<link rel="apple-touch-icon" href="logo.jpg">
+<link rel="icon" type="image/png" href="/logo.jpg">
+<link rel="apple-touch-icon" href="/logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -61,7 +61,7 @@ tr:last-child td{border-bottom:none;}
     <div class="admin-badge">ADMIN ONLY</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='index'"><span class="material-icons-round">arrow_back</span>Back to App</button>
+    <button class="btn" style="background:rgba(255,255,255,0.1);color:#fff;" onclick="location.href='/'"><span class="material-icons-round">arrow_back</span>Back to App</button>
     <button class="btn btn-danger btn-sm" onclick="if(window.KIDV)KIDV.logout()"><span class="material-icons-round">logout</span>Logout</button>
   </div>
 </div>
@@ -97,14 +97,14 @@ tr:last-child td{border-bottom:none;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<script src="/firebase-config.js"></script>
 <script>
 let allUsers = [];
 
 document.addEventListener('kidv:db-ready', async()=>{
   console.log('[Admin] db-ready fired. KIDV._ready:', KIDV._ready, 'isAdmin:', KIDV.isAdmin);
-  if(!KIDV._ready){ location.href='login'; return; }
-  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='index'; return; }
+  if(!KIDV._ready){ location.href='/login/'; return; }
+  if(!KIDV.isAdmin){ alert('Admin access only!'); location.href='/'; return; }
   loadUsers();
 });
 
@@ -756,6 +756,6 @@ async function confirmAddUser(){
     </div>
   </div>
 </div>
-  <script src="kidv-common.js"></script>
+  <script src="/kidv-common.js"></script>
 </body>
 </html>
