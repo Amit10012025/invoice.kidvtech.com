@@ -45,6 +45,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .btn-ghost:hover{background:#f0f4f8;}
 .btn .material-icons-round{font-size:18px;}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;width:240px;}
+.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;}
+.search-bar input::placeholder{color:var(--muted);}
 .stats-row{display:flex;gap:16px;margin-bottom:24px;}
 .mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:14px 20px;display:flex;align-items:center;gap:12px;flex:1;}
 .ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
@@ -145,13 +149,15 @@ tr:hover td{background:#f8faff;}
   <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_card</span>Record Payment</a>
   <a class="flyout-link" href="/invoices/"><span class="material-icons-round">warning_amber</span>Overdue Invoices</a>
 </div>
+<div class="overlay" id="overlay" onclick="closeFlyout()"></div>
 
 <main class="main" id="main">
   <div class="topbar">
     <div><div class="page-title">Payments</div><div class="page-subtitle">Track received payments & outstanding dues</div></div>
     <div class="topbar-right">
+      <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search payments..." id="searchInput" oninput="filterPayments()"/></div>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add_card</span>Record Payment</button>
-      <div class="avatar">A</div>
+      <div class="avatar" id="avatarBtnMain">A</div>
     </div>
   </div>
 
@@ -212,7 +218,7 @@ tr:hover td{background:#f8faff;}
 <script>
 let payments=[], invoices=[];
 async function loadPayments(){
-  [payments,invoices]=await Promise.all([DB.list('payments'),DB.list('invoices')]);
+  [payments,invoices]=await Promise.all([KIDV.list('payments'),KIDV.list('invoices')]);
   renderPayments();
 }
 document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
@@ -222,11 +228,19 @@ function toggleFlyout(){const f=document.getElementById('flyout'),o=document.get
 function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
 function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
 
-function renderPayments(){
+function filterPayments(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  if(!q){renderPayments();return;}
+  renderPayments(payments.filter(p=>(p.invoiceNo+p.clientName+p.ref+p.method).toLowerCase().includes(q)));
+}
+
+function renderPayments(list){
+  if(!list) list=payments;
   const tbody=document.getElementById('paymentsBody');
-  if(!payments.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No payments recorded yet. <a href="#" onclick="openModal()" style="color:var(--c-payment)">Record first payment →</a></td></tr>`;return;}
-  tbody.innerHTML=payments.map((p,i)=>`
-    <tr>
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No payments recorded yet. <a href="#" onclick="openModal()" style="color:var(--c-payment)">Record first payment →</a></td></tr>`;return;}
+  tbody.innerHTML=list.map((p,i)=>{
+    const realIdx=payments.indexOf(p);
+    return`<tr>
       <td style="font-weight:600;color:${p.payType==='advance'?'#7c3aed':'var(--c-payment)'}">${p.payType==='advance'?'<span style="background:#f5f3ff;color:#7c3aed;border:1px solid #e9d5ff;border-radius:10px;padding:2px 8px;font-size:11px">Advance</span> '+(p.advanceRef||'—'):(p.invoiceNo||'—')}</td>
       <td>${p.clientName||'—'}</td>
       <td>${p.date||'—'}</td>
@@ -234,8 +248,8 @@ function renderPayments(){
       <td><span class="pay-method"><span class="material-icons-round" style="font-size:14px">account_balance</span>${p.method||'—'}</span></td>
       <td style="font-family:monospace;font-size:12px">${p.ref||'—'}</td>
       <td><span class="badge badge-${p.status||'received'}">${p.status||'Received'}</span></td>
-      <td><button class="action-btn" onclick="deletePayment(${i})"><span class="material-icons-round">delete</span></button></td>
-    </tr>`).join('');
+      <td><button class="action-btn" onclick="deletePayment(${realIdx})" style="color:#f85149"><span class="material-icons-round">delete</span></button></td>
+    </tr>`}).join('');
   // Stats
   const total=payments.reduce((s,p)=>s+parseFloat(p.amount||0),0);
   const invPending=invoices.filter(i=>i.status==='pending').reduce((s,i)=>s+parseFloat(i.total||0),0);
