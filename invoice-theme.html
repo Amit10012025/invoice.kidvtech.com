@@ -658,7 +658,7 @@ function previewInvoice(i){
     try{ localStorage.setItem('kidv-inv-'+inv._id, invStr); }catch(e){}
   }
   const id=inv._id||'';
-  window.open('/invoice-theme-v2.html?id='+encodeURIComponent(id)+'&idx='+i, '_blank');
+  window.open('/invoice-theme-v2/?id='+encodeURIComponent(id)+'&idx='+i, '_blank');
 }
 function closePrint(){document.getElementById('printBg').classList.remove('open');}
 
