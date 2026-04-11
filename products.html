@@ -49,24 +49,28 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .search-bar .material-icons-round{color:var(--muted);font-size:20px;}
 .search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;}
 .search-bar input::placeholder{color:var(--muted);}
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;}
-.tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;}
-.tab.active{background:var(--surface2);color:var(--text);}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.product-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;transition:transform .18s,box-shadow .18s;position:relative;}
-.product-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-.pc-type{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px;margin-bottom:12px;}
-.pc-type.goods{background:rgba(240,136,62,0.12);color:var(--c-products);}
-.pc-type.service{background:rgba(57,208,216,0.12);color:var(--c-invoice);}
-.pc-name{font-size:15px;font-weight:600;margin-bottom:4px;}
-.pc-hsn{font-size:12px;color:var(--muted);margin-bottom:12px;font-family:monospace;}
-.pc-price{font-size:22px;font-weight:700;color:var(--text);}
-.pc-price span{font-size:13px;color:var(--muted);font-weight:400;}
-.pc-gst{font-size:12px;color:var(--muted);margin-top:2px;}
-.pc-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
-.pc-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border-radius:8px;font-size:12.5px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all .15s;}
-.pc-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.15);}
-.pc-btn .material-icons-round{font-size:15px;}
+.stats-row{display:flex;gap:16px;margin-bottom:24px;}
+.mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);padding:14px 20px;display:flex;align-items:center;gap:12px;flex:1;}
+.ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.ms-val{font-size:20px;font-weight:700;}.ms-label{font-size:12px;color:var(--muted);}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
+.card-tabs{display:flex;gap:2px;}
+.card-tab{padding:5px 14px;border-radius:7px;font-size:12.5px;font-weight:500;cursor:pointer;color:var(--muted);transition:all .18s;border:none;background:none;}
+.card-tab.active{background:rgba(240,136,62,0.12);color:var(--c-products);}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
+td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);color:#374151;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
+.badge-goods{background:rgba(240,136,62,0.12);color:var(--c-products);}
+.badge-service{background:rgba(57,208,216,0.12);color:var(--c-invoice);}
+.item-name{font-weight:600;}.item-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
+.action-btn:hover{color:var(--text);background:#f5f7fa;}
+.action-btn .material-icons-round{font-size:18px;}
 /* Modal */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center;}
 .modal-bg.open{display:flex;}
@@ -272,13 +276,26 @@ document.addEventListener('click', e=>{
     </div>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="setTab('all',this)">All Items</div>
-    <div class="tab" onclick="setTab('goods',this)">Goods</div>
-    <div class="tab" onclick="setTab('service',this)">Services</div>
+  <div class="stats-row">
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(240,136,62,0.12);color:var(--c-products)"><span class="material-icons-round">inventory_2</span></div><div><div class="ms-val" id="s-total">0</div><div class="ms-label">Total Items</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(240,136,62,0.12);color:var(--c-products)"><span class="material-icons-round">package_2</span></div><div><div class="ms-val" id="s-goods">0</div><div class="ms-label">Goods</div></div></div>
+    <div class="mini-stat"><div class="ms-icon" style="background:rgba(57,208,216,0.12);color:var(--c-invoice)"><span class="material-icons-round">design_services</span></div><div><div class="ms-val" id="s-services">0</div><div class="ms-label">Services</div></div></div>
   </div>
 
-  <div class="products-grid" id="productsGrid"></div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Items</div>
+      <div class="card-tabs">
+        <button class="card-tab active" onclick="setTab('all',this)">All</button>
+        <button class="card-tab" onclick="setTab('goods',this)">Goods</button>
+        <button class="card-tab" onclick="setTab('service',this)">Services</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Item Name</th><th>Type</th><th>HSN/SAC</th><th>GST %</th><th>Unit Price</th><th>Unit</th><th>Actions</th></tr></thead>
+      <tbody id="productsBody"></tbody>
+    </table>
+  </div>
 </main>
 
 <!-- Modal -->
@@ -320,24 +337,31 @@ document.addEventListener('kidv:db-ready',loadProducts);
 function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
 function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
 
-function setTab(t,el){currentTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderProducts();}
+function setTab(t,el){currentTab=t;document.querySelectorAll('.card-tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderProducts();}
 
 function renderProducts(list){
   if(!list) list=currentTab==='all'?products:products.filter(p=>p.type===currentTab);
-  const grid=document.getElementById('productsGrid');
-  if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:60px">No items yet. <a href="#" onclick="openModal()" style="color:var(--c-products)">Add first item →</a></div>`;return;}
-  grid.innerHTML=list.map((p,i)=>`
-    <div class="product-card">
-      <div class="pc-type ${p.type}">${p.type==='goods'?'📦 Goods':'🛠 Service'}</div>
-      <div class="pc-name">${p.name}</div>
-      <div class="pc-hsn">HSN/SAC: ${p.hsn||'—'}</div>
-      <div class="pc-price">₹${parseFloat(p.price||0).toLocaleString('en-IN')} <span>/ ${p.unit||'Nos'}</span></div>
-      <div class="pc-gst">GST: ${p.gst}% ${p.gst>0?'(CGST '+p.gst/2+'% + SGST '+p.gst/2+'%)':''}</div>
-      <div class="pc-actions">
-        <button class="pc-btn" onclick="editProduct(${i})"><span class="material-icons-round">edit</span>Edit</button>
-        <button class="pc-btn" onclick="deleteProduct(${i})"><span class="material-icons-round">delete</span>Delete</button>
-      </div>
-    </div>`).join('');
+  // Update stats
+  document.getElementById('s-total').textContent=products.length;
+  document.getElementById('s-goods').textContent=products.filter(p=>p.type==='goods').length;
+  document.getElementById('s-services').textContent=products.filter(p=>p.type==='service').length;
+  const tbody=document.getElementById('productsBody');
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px">No items yet. <a href="#" onclick="openModal()" style="color:var(--c-products)">Add first item →</a></td></tr>`;return;}
+  tbody.innerHTML=list.map((p,i)=>{
+    const realIdx=products.indexOf(p);
+    return`<tr>
+      <td style="color:var(--muted);font-size:12px">${realIdx+1}</td>
+      <td><div class="item-name">${p.name}</div>${p.desc?`<div class="item-desc">${p.desc}</div>`:''}</td>
+      <td><span class="badge badge-${p.type}">${p.type==='goods'?'Goods':'Service'}</span></td>
+      <td style="font-family:monospace;font-size:12.5px;color:var(--muted)">${p.hsn||'—'}</td>
+      <td>${p.gst||0}%</td>
+      <td style="font-weight:600">₹${parseFloat(p.price||0).toLocaleString('en-IN')} <span style="font-size:12px;color:var(--muted);font-weight:400">/ ${p.unit||'Nos'}</span></td>
+      <td style="color:var(--muted);font-size:13px">${p.unit||'Nos'}</td>
+      <td>
+        <button class="action-btn" onclick="editProduct(${realIdx})" title="Edit"><span class="material-icons-round">edit</span></button>
+        <button class="action-btn" onclick="deleteProduct(${realIdx})" title="Delete" style="color:#f85149"><span class="material-icons-round">delete</span></button>
+      </td>
+    </tr>`}).join('');
 }
 
 function filterProducts(){const q=document.getElementById('searchInput').value.toLowerCase();renderProducts(products.filter(p=>(p.name+p.hsn+p.desc).toLowerCase().includes(q)));}
@@ -382,7 +406,8 @@ function editProduct(i){openModal(i);}
 <script>
 document.addEventListener('kidv:data-refreshed', function(e) {
   if (e.detail.col === 'products') {
-    renderProducts(e.detail.data);
+    products = e.detail.data;
+    renderProducts();
   }
 });
 </script>

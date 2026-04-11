@@ -46,6 +46,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 .btn-sm{padding:6px 12px;font-size:12.5px;}
 .btn .material-icons-round,.btn-sm .material-icons-round{font-size:16px;}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;width:240px;}
+.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;}
+.search-bar input::placeholder{color:var(--muted);}
 .card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
 .card-title{font-size:14px;font-weight:600;}
@@ -157,13 +161,15 @@ tr:hover td{background:#f8faff;}
   <a class="flyout-link" href="#" onclick="openModal()"><span class="material-icons-round">add_circle</span>New Quotation</a>
   <a class="flyout-link" href="/invoices/"><span class="material-icons-round">receipt_long</span>Invoices</a>
 </div>
+<div class="overlay" id="overlay" onclick="closeFlyout()"></div>
 
 <main class="main" id="main">
   <div class="topbar">
     <div><div class="page-title">Quotations</div><div class="page-subtitle">Create estimates & convert to invoices</div></div>
     <div class="topbar-right">
+      <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search quotations..." id="searchInput" oninput="filterQuotes()"/></div>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add</span>New Quotation</button>
-      <div class="avatar">A</div>
+      <div class="avatar" id="avatarBtnMain">A</div>
     </div>
   </div>
   <div class="card">
@@ -179,7 +185,7 @@ tr:hover td{background:#f8faff;}
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">New Quotation</div>
+      <div class="modal-title" id="modalTitle">New Quotation</div>
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body">
@@ -217,57 +223,99 @@ tr:hover td{background:#f8faff;}
 </div>
 
 <script>
-let quotes=JSON.parse(localStorage.getItem('kidv-quotes')||'[]');
-let clients=JSON.parse(localStorage.getItem('kidv-clients')||'[]');
-let products=JSON.parse(localStorage.getItem('kidv-products')||'[]');
+let quotes=[], clients=[], products=[], editIdx=-1;
+
+async function loadData(){
+  [quotes, clients, products] = await Promise.all([
+    KIDV.list('quotations'),
+    KIDV.list('clients'),
+    KIDV.list('products')
+  ]);
+  renderQuotes();
+}
+
+document.addEventListener('kidv:db-ready', ()=>{
+  if(window.KIDV && KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b) b.style.display=''; }
+  loadData();
+});
 
 function toggleFlyout(){const f=document.getElementById('flyout'),o=document.getElementById('overlay'),m=document.getElementById('main');f.classList.toggle('open');o.classList.toggle('show');m.classList.toggle('shifted');}
 function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');}
 function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
 
-function renderQuotes(){
+function renderQuotes(list){
+  if(!list) list=quotes;
   const tbody=document.getElementById('quotBody');
-  if(!quotes.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No quotations yet. <a href="#" onclick="openModal()" style="color:var(--c-quote)">Create first quotation →</a></td></tr>`;return;}
-  tbody.innerHTML=quotes.map((q,i)=>`
-    <tr>
+  if(!list.length){tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No quotations yet. <a href="#" onclick="openModal()" style="color:var(--c-quote)">Create first quotation →</a></td></tr>`;return;}
+  tbody.innerHTML=list.map((q,i)=>{
+    const realIdx=quotes.indexOf(q);
+    return`<tr>
       <td><span class="q-no">${q.qno||'—'}</span></td>
       <td>${q.clientName||'—'}<br/><span style="font-size:12px;color:var(--muted)">${q.subject||''}</span></td>
       <td>${q.date||'—'}</td>
       <td>${q.valid||'—'}</td>
       <td style="font-weight:600">${fmt(q.total)}</td>
-      <td><span class="badge badge-${q.status||'draft'}">${q.status||'Draft'}</span></td>
+      <td><span class="badge badge-${q.status||'draft'}">${(q.status||'Draft').charAt(0).toUpperCase()+(q.status||'Draft').slice(1)}</span></td>
       <td>
-        <button class="action-btn" onclick="convertToInvoice(${i})" title="Convert to Invoice"><span class="material-icons-round">receipt_long</span></button>
-        <button class="action-btn" onclick="deleteQuote(${i})" title="Delete"><span class="material-icons-round">delete</span></button>
+        <button class="action-btn" onclick="editQuote(${realIdx})" title="Edit"><span class="material-icons-round">edit</span></button>
+        <button class="action-btn" onclick="convertToInvoice(${realIdx})" title="Convert to Invoice"><span class="material-icons-round">receipt_long</span></button>
+        <button class="action-btn" onclick="deleteQuote(${realIdx})" title="Delete" style="color:#f85149"><span class="material-icons-round">delete</span></button>
       </td>
-    </tr>`).join('');
-  document.getElementById('qCount').textContent=quotes.length+' quotations';
+    </tr>`}).join('');
+  document.getElementById('qCount').textContent=list.length+' quotations';
 }
 
-function openModal(){
+function filterQuotes(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  if(!q){renderQuotes();return;}
+  renderQuotes(quotes.filter(qt=>(qt.qno+qt.clientName+qt.subject).toLowerCase().includes(q)));
+}
+
+function openModal(idx=-1){
+  editIdx=idx;
   const sel=document.getElementById('f-client');
-  sel.innerHTML='<option value="">Select Client</option>'+clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
-  const next='QT-'+String(quotes.length+1).padStart(3,'0');
-  document.getElementById('f-qno').value=next;
-  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
-  const v=new Date();v.setDate(v.getDate()+15);
-  document.getElementById('f-valid').value=v.toISOString().split('T')[0];
-  document.getElementById('lineItems').innerHTML='';
-  addLine();
+  sel.innerHTML='<option value="">Select Client</option>'+clients.map((c,i)=>`<option value="${c._id||i}">${c.name}</option>`).join('');
+  if(idx>=0){
+    const q=quotes[idx];
+    document.getElementById('modalTitle').textContent='Edit Quotation';
+    document.getElementById('f-qno').value=q.qno||'';
+    document.getElementById('f-date').value=q.date||'';
+    document.getElementById('f-valid').value=q.valid||'';
+    sel.value=q.clientId||'';
+    document.getElementById('f-subject').value=q.subject||'';
+    document.getElementById('f-status').value=q.status||'draft';
+    document.getElementById('f-notes').value=q.notes||'';
+    document.getElementById('lineItems').innerHTML='';
+    (q.lines||[]).forEach(l=>addLine(l));
+    calcTotals();
+  } else {
+    document.getElementById('modalTitle').textContent='New Quotation';
+    const next='QT-'+String(quotes.length+1).padStart(3,'0');
+    document.getElementById('f-qno').value=next;
+    document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+    const v=new Date();v.setDate(v.getDate()+15);
+    document.getElementById('f-valid').value=v.toISOString().split('T')[0];
+    document.getElementById('f-subject').value='';
+    document.getElementById('f-status').value='draft';
+    document.getElementById('f-notes').value='';
+    document.getElementById('lineItems').innerHTML='';
+    addLine();
+  }
   document.getElementById('modalBg').classList.add('open');
 }
-function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function editQuote(i){openModal(i);}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');editIdx=-1;}
 
-function addLine(){
+function addLine(data){
   const tbody=document.getElementById('lineItems');
   const tr=document.createElement('tr');
   const prodOpts='<option value="">Custom</option>'+products.map((p,i)=>`<option value="${i}" data-price="${p.price}" data-gst="${p.gst}">${p.name}</option>`).join('');
   tr.innerHTML=`
-    <td><select class="li-input" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" data-field="desc"/></td>
-    <td><input class="li-input" type="number" value="1" min="1" data-field="qty" oninput="calcTotals()"/></td>
-    <td><input class="li-input" type="number" placeholder="0.00" data-field="rate" oninput="calcTotals()"/></td>
-    <td><select class="li-input" data-field="gst" onchange="calcTotals()"><option>0</option><option>5</option><option>12</option><option selected>18</option><option>28</option></select></td>
-    <td><input class="li-input" readonly data-field="amount" value="0.00"/></td>
+    <td><select class="li-input" onchange="fillLine(this)">${prodOpts}</select><input class="li-input" style="margin-top:4px" placeholder="Description" data-field="desc" value="${data?.desc||''}"/></td>
+    <td><input class="li-input" type="number" value="${data?.qty||1}" min="1" data-field="qty" oninput="calcTotals()"/></td>
+    <td><input class="li-input" type="number" placeholder="0.00" value="${data?.rate||''}" data-field="rate" oninput="calcTotals()"/></td>
+    <td><select class="li-input" data-field="gst" onchange="calcTotals()"><option${(data?.gst||'18')==='0'?' selected':''}>0</option><option${(data?.gst||'18')==='5'?' selected':''}>5</option><option${(data?.gst||'18')==='12'?' selected':''}>12</option><option${(data?.gst||'18')==='18'||!data?' selected':''}>18</option><option${(data?.gst||'18')==='28'?' selected':''}>28</option></select></td>
+    <td><input class="li-input" readonly data-field="amount" value="${data?.amount||'0.00'}"/></td>
     <td><button class="li-del" onclick="this.closest('tr').remove();calcTotals()"><span class="material-icons-round">close</span></button></td>`;
   tbody.appendChild(tr);
 }
@@ -293,39 +341,38 @@ function calcTotals(){
   document.getElementById('t-gst').textContent=fmt(gst);
   document.getElementById('t-total').textContent=fmt(sub+gst);
 }
-function saveQuote(s){
+async function saveQuote(s){
   const qno=document.getElementById('f-qno').value.trim();
-  const cIdx=document.getElementById('f-client').value;
-  if(!qno||cIdx===''){alert('Quote No and Client required');return;}
+  const cId=document.getElementById('f-client').value;
+  if(!qno||!cId){alert('Quote No and Client required');return;}
+  const clientObj=clients.find(c=>(c._id||c.name)===cId)||clients.find(c=>c._id===cId)||null;
   const lines=Array.from(document.querySelectorAll('#lineItems tr')).map(tr=>({desc:tr.querySelector('[data-field="desc"]')?.value||'',qty:tr.querySelector('[data-field="qty"]')?.value,rate:tr.querySelector('[data-field="rate"]')?.value,gst:tr.querySelector('[data-field="gst"]')?.value,amount:tr.querySelector('[data-field="amount"]')?.value}));
   const sub=lines.reduce((a,l)=>a+parseFloat(l.amount||0),0);
-  const gst=lines.reduce((a,l)=>a+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
-  quotes.push({qno,date:document.getElementById('f-date').value,valid:document.getElementById('f-valid').value,clientIdx:cIdx,clientName:clients[cIdx]?.name,subject:document.getElementById('f-subject').value,lines,total:(sub+gst).toFixed(2),status:s||document.getElementById('f-status').value,notes:document.getElementById('f-notes').value});
-  localStorage.setItem('kidv-quotes',JSON.stringify(quotes));
+  const gstAmt=lines.reduce((a,l)=>a+parseFloat(l.amount||0)*parseFloat(l.gst||0)/100,0);
+  const data={qno,date:document.getElementById('f-date').value,valid:document.getElementById('f-valid').value,clientId:cId,clientName:clientObj?.name||'',subject:document.getElementById('f-subject').value,lines,subtotal:sub.toFixed(2),gstAmount:gstAmt.toFixed(2),total:(sub+gstAmt).toFixed(2),status:s||document.getElementById('f-status').value,notes:document.getElementById('f-notes').value};
+  if(editIdx>=0){
+    const id=quotes[editIdx]._id||editIdx;
+    await KIDV.set('quotations',id,data);
+    quotes[editIdx]={...data,_id:id};
+  } else {
+    const id=await KIDV.add('quotations',data);
+    quotes.push({...data,_id:id});
+  }
   closeModal();renderQuotes();
 }
-function deleteQuote(i){if(confirm('Delete?')){quotes.splice(i,1);localStorage.setItem('kidv-quotes',JSON.stringify(quotes));renderQuotes();}}
+async function deleteQuote(i){if(confirm('Delete this quotation?')){const id=quotes[i]._id||i;await KIDV.delete('quotations',id);quotes.splice(i,1);renderQuotes();}}
 function convertToInvoice(i){
   const q=quotes[i];
-  // Store pending conversion and redirect
   localStorage.setItem('kidv-convert-quote',JSON.stringify(q));
-  alert('Opening Invoices page. The quotation data will be pre-filled.');
   location.href='/invoices/';
 }
-renderQuotes();
-
-document.addEventListener('kidv:db-ready', ()=>{
-  if(window.KIDV && KIDV.isAdmin){
-    const b = document.getElementById('adminBtn');
-    if(b) b.style.display = '';
-  }
-});
 </script>
 
 <script>
 document.addEventListener('kidv:data-refreshed', function(e) {
   if (e.detail.col === 'quotations') {
-    renderQuotations(e.detail.data);
+    quotes = e.detail.data;
+    renderQuotes();
   }
 });
 </script>
