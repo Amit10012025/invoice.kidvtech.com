@@ -16,456 +16,390 @@ html,body{height:100%;font-family:'Outfit',sans-serif;}
 body{
   min-height:100vh;
   background:#07090f;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:grid;
+  grid-template-columns:1fr 480px;
   position:relative;
   overflow:hidden;
 }
 
-/* ── Animated mesh background ── */
-.bg{position:fixed;inset:0;z-index:0;overflow:hidden;}
-.bg-circle{
-  position:absolute;border-radius:50%;
-  filter:blur(100px);pointer-events:none;
-  animation:drift linear infinite;
-}
-.c1{width:700px;height:700px;background:rgba(37,99,235,0.15);top:-200px;left:-200px;animation-duration:25s;}
-.c2{width:500px;height:500px;background:rgba(124,58,237,0.12);bottom:-150px;right:-100px;animation-duration:30s;animation-direction:reverse;}
-.c3{width:400px;height:400px;background:rgba(6,182,212,0.1);top:30%;left:40%;animation-duration:20s;animation-delay:-8s;}
-@keyframes drift{
-  0%{transform:translate(0,0) scale(1);}
-  33%{transform:translate(40px,-30px) scale(1.05);}
-  66%{transform:translate(-20px,40px) scale(0.97);}
-  100%{transform:translate(0,0) scale(1);}
+/* ══ BACKGROUND ══ */
+.bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);}
+.orb1{width:800px;height:800px;background:radial-gradient(circle,rgba(37,99,235,0.16),transparent 70%);top:-300px;left:-200px;}
+.orb2{width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.12),transparent 70%);bottom:-200px;right:300px;}
+.orb3{width:500px;height:500px;background:radial-gradient(circle,rgba(6,182,212,0.1),transparent 70%);top:40%;left:35%;}
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);
+  background-size:48px 48px;
 }
 
-/* Grid lines */
-.bg::after{
-  content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
-  background-size:50px 50px;
-}
-
-/* Floating particles */
-.particle{position:absolute;border-radius:50%;pointer-events:none;animation:rise linear infinite;}
-@keyframes rise{
-  0%{transform:translateY(0) scale(1);opacity:0;}
-  10%{opacity:1;}
-  90%{opacity:.2;}
-  100%{transform:translateY(-100vh) scale(.5);opacity:0;}
-}
-
-/* ── Main wrapper ── */
-.page{
+/* ══ LEFT PANEL ══ */
+.left{
   position:relative;z-index:1;
-  width:100%;
-  max-width:1100px;
+  display:flex;flex-direction:column;
+  padding:48px 64px;
   min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 24px;
-  gap:56px;
+  overflow-y:auto;
 }
 
-/* ── LEFT INFO ── */
-.info{flex:1;max-width:500px;}
-
-.brand{display:flex;align-items:center;gap:14px;margin-bottom:48px;}
-.brand-logo{
+/* Brand */
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:56px;}
+.b-logo{
   width:52px;height:52px;border-radius:16px;overflow:hidden;
   background:linear-gradient(135deg,#1d4ed8,#0ea5e9);
   display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:18px;color:#fff;
-  box-shadow:0 0 0 1px rgba(255,255,255,.12),0 8px 28px rgba(29,78,216,.45);
-  flex-shrink:0;
+  font-size:18px;font-weight:900;color:#fff;flex-shrink:0;
+  box-shadow:0 0 0 1px rgba(255,255,255,.12),0 8px 28px rgba(29,78,216,.4);
 }
-.brand-logo img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
-.brand-name{font-size:19px;font-weight:700;color:#fff;}
-.brand-sub{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.05em;margin-top:2px;}
+.b-logo img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block;}
+.b-name{font-size:18px;font-weight:700;color:#fff;}
+.b-tag{font-size:11px;color:rgba(255,255,255,.28);letter-spacing:.06em;margin-top:2px;}
 
-.pill{
+/* Live badge */
+.live{
   display:inline-flex;align-items:center;gap:8px;
-  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);
-  border-radius:100px;padding:5px 14px;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  padding:5px 14px;border-radius:100px;
   font-size:11px;font-weight:700;color:#34d399;letter-spacing:.1em;
-  margin-bottom:28px;
+  margin-bottom:20px;width:fit-content;
 }
-.pill-dot{width:6px;height:6px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 5px transparent}}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#10b981;
+  animation:blink 2s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
 .kicker{
-  font-size:11px;font-weight:700;color:rgba(99,102,241,.9);
-  letter-spacing:.15em;text-transform:uppercase;
-  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  font-size:11px;font-weight:700;color:rgba(99,102,241,.85);
+  letter-spacing:.16em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
 }
 .kicker::before{content:'';width:28px;height:2px;background:rgba(99,102,241,.7);border-radius:1px;}
 
 h1{
-  font-size:52px;font-weight:900;line-height:1.08;
-  letter-spacing:-.025em;margin-bottom:18px;color:#fff;
+  font-size:54px;font-weight:900;color:#fff;
+  line-height:1.07;letter-spacing:-.025em;margin-bottom:16px;
 }
-h1 .line2{
-  display:block;
-  background:linear-gradient(135deg,#818cf8 0%,#c084fc 50%,#f472b6 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;font-style:italic;
-}
-h1 .line3{
-  display:block;
-  background:linear-gradient(135deg,#38bdf8 0%,#34d399 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
+.g-purple{background:linear-gradient(135deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;}
+.g-cyan{background:linear-gradient(135deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-.desc{font-size:15px;color:rgba(255,255,255,.38);line-height:1.75;margin-bottom:40px;max-width:420px;}
+.desc{font-size:15px;color:rgba(255,255,255,.35);line-height:1.78;max-width:440px;margin-bottom:40px;}
 
-/* Feature list */
-.feats{display:flex;flex-direction:column;gap:8px;margin-bottom:44px;}
+/* Features - 2 column grid */
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:40px;}
 .feat{
   display:flex;align-items:center;gap:12px;
-  padding:11px 14px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:12px;
-  transition:background .2s;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:14px 16px;
+  transition:all .2s;cursor:default;
 }
-.feat:hover{background:rgba(255,255,255,.06);}
-.fi{
-  width:32px;height:32px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+.feat:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);transform:translateY(-1px);}
+.fic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fic .material-icons-round{font-size:18px;}
+.fn{font-size:13px;font-weight:600;color:rgba(255,255,255,.78);}
+.fs{font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;}
+
+/* Testimonial card */
+.tcard{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:20px;margin-bottom:36px;
+  display:flex;gap:14px;align-items:flex-start;
 }
-.fi .material-icons-round{font-size:17px;}
-.ft{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);}
-.fs{font-size:11px;color:rgba(255,255,255,.28);margin-top:1px;}
+.tcard .material-icons-round{color:#fbbf24;font-size:18px;flex-shrink:0;margin-top:2px;}
+.tquote{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;font-style:italic;}
+.tauthor{font-size:11px;color:rgba(255,255,255,.3);margin-top:8px;font-weight:600;}
 
 /* Stats */
-.stats{display:flex;gap:0;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;}
-.stat{flex:1;padding:14px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.08);}
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;
+  margin-top:auto;
+}
+.stat{padding:16px 12px;text-align:center;border-right:1px solid rgba(255,255,255,.08);}
 .stat:last-child{border-right:none;}
-.sv{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.01em;}
+.sv{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.01em;}
 .sl{font-size:10px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}
 
-/* ── RIGHT CARD ── */
-.card-wrap{width:400px;flex-shrink:0;}
+/* ══ RIGHT PANEL ══ */
+.right{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 40px;
+  background:rgba(0,0,0,.3);
+  backdrop-filter:blur(30px);
+  border-left:1px solid rgba(255,255,255,.07);
+  min-height:100vh;
+}
 
+/* Card */
 .card{
+  width:100%;max-width:380px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.1);
-  border-radius:28px;
-  padding:40px 36px;
-  backdrop-filter:blur(40px);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.06) inset,
-    0 40px 100px rgba(0,0,0,.6),
-    0 0 80px rgba(37,99,235,.08),
-    0 0 0 60px rgba(37,99,235,.02);
+  border-radius:28px;padding:40px 36px;
+  box-shadow:0 40px 100px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06) inset;
   position:relative;
-  overflow:hidden;
 }
-/* Card top shine */
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
-}
+.card::before{content:'';position:absolute;top:0;left:30px;right:30px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);}
 
-.card-logo{
-  width:76px;height:76px;border-radius:22px;overflow:hidden;
+.clogo{
+  width:72px;height:72px;border-radius:20px;overflow:hidden;
   background:linear-gradient(135deg,#1d4ed8,#0ea5e9);
   display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:26px;color:#fff;
-  margin:0 auto 20px;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.2),
-    0 16px 48px rgba(29,78,216,.5),
-    0 0 80px rgba(14,165,233,.2);
+  font-size:24px;font-weight:900;color:#fff;
+  margin:0 auto 18px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.18),0 16px 48px rgba(29,78,216,.5),0 0 60px rgba(14,165,233,.18);
 }
-.card-logo img{width:100%;height:100%;object-fit:cover;border-radius:22px;}
-
-.card-title{text-align:center;font-size:23px;font-weight:700;color:#fff;margin-bottom:6px;}
-.card-sub{text-align:center;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px;}
+.clogo img{width:100%;height:100%;object-fit:cover;border-radius:20px;display:block;}
+.ctitle{text-align:center;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;}
+.csub{text-align:center;font-size:13px;color:rgba(255,255,255,.32);margin-bottom:28px;}
 
 /* Error */
-.err{
-  display:none;align-items:center;gap:10px;
-  background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);
-  border-radius:12px;padding:12px 14px;margin-bottom:16px;
-  font-size:13px;color:#fca5a5;line-height:1.4;
-}
+.err{display:none;align-items:center;gap:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#fca5a5;}
 .err .material-icons-round{font-size:17px;color:#f87171;flex-shrink:0;}
 
 /* Fields */
-.field{margin-bottom:16px;}
-.field label{
-  display:block;font-size:10.5px;font-weight:700;
-  color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.09em;
-  margin-bottom:8px;
-}
+.fld{margin-bottom:16px;}
+.fld label{display:block;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px;}
 .iw{position:relative;}
-.ii{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.22);pointer-events:none;}
+.ii{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.2);pointer-events:none;}
 .ii .material-icons-round{font-size:17px;}
-.iw input{
-  width:100%;
-  background:rgba(255,255,255,.07);
-  border:1.5px solid rgba(255,255,255,.1);
-  border-radius:13px;
-  padding:14px 44px;
-  font-family:'Outfit',sans-serif;font-size:14px;color:#fff;
-  outline:none;transition:all .2s;
-}
+.iw input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:13px;padding:14px 44px;font-family:'Outfit',sans-serif;font-size:14px;color:#fff;outline:none;transition:all .2s;}
 .iw input::placeholder{color:rgba(255,255,255,.18);}
-.iw input:focus{
-  border-color:rgba(99,102,241,.6);
-  background:rgba(99,102,241,.08);
-  box-shadow:0 0 0 3px rgba(99,102,241,.12);
-}
-.eye{
-  position:absolute;right:13px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;
-  color:rgba(255,255,255,.22);padding:4px;
-  transition:color .15s;border-radius:6px;
-}
-.eye:hover{color:rgba(255,255,255,.55);}
-.eye .material-icons-round{font-size:17px;}
+.iw input:focus{border-color:rgba(99,102,241,.65);background:rgba(99,102,241,.09);box-shadow:0 0 0 3px rgba(99,102,241,.13);}
+.eyebtn{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.22);padding:4px;transition:color .15s;}
+.eyebtn:hover{color:rgba(255,255,255,.55);}
+.eyebtn .material-icons-round{font-size:17px;}
 
 .row-end{display:flex;justify-content:flex-end;margin:-4px 0 18px;}
-.fl{font-size:12px;color:rgba(99,102,241,.75);text-decoration:none;font-weight:500;transition:color .15s;}
-.fl:hover{color:#a5b4fc;}
+.fgl{font-size:12px;color:rgba(99,102,241,.75);text-decoration:none;font-weight:500;transition:color .15s;}
+.fgl:hover{color:#a5b4fc;}
 
-/* Submit */
-.sub{
+/* Button */
+.btn-sub{
   width:100%;padding:15px;border:none;border-radius:13px;
-  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:#fff;
-  cursor:pointer;
-  background:linear-gradient(135deg,#2563eb 0%,#7c3aed 50%,#0ea5e9 100%);
-  background-size:200% 200%;
-  animation:shimmer 4s ease infinite;
+  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,#2563eb,#7c3aed,#0ea5e9);
+  background-size:200% 200%;animation:grad 4s ease infinite;
   display:flex;align-items:center;justify-content:center;gap:8px;
   box-shadow:0 8px 32px rgba(37,99,235,.4),0 0 0 1px rgba(255,255,255,.1) inset;
-  transition:transform .2s,box-shadow .2s;
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;
 }
-.sub::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 60%);
-}
-@keyframes shimmer{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-.sub:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(37,99,235,.5),0 0 0 1px rgba(255,255,255,.15) inset;}
-.sub:active{transform:translateY(0);}
-.sub:disabled{opacity:.55;cursor:not-allowed;transform:none;animation:none;}
+.btn-sub::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent 60%);pointer-events:none;}
+@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.btn-sub:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(37,99,235,.5);}
+.btn-sub:active{transform:none;}
+.btn-sub:disabled{opacity:.55;cursor:not-allowed;transform:none;animation:none;}
 
 .spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:none;}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* Trust */
-.trust{display:flex;justify-content:center;gap:20px;margin-top:18px;}
+.trust{display:flex;justify-content:center;gap:18px;margin-top:18px;}
 .ti{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.2);}
 .ti .material-icons-round{font-size:13px;}
 
-/* Divider */
-.div{display:flex;align-items:center;gap:10px;margin:16px 0;color:rgba(255,255,255,.15);font-size:11px;}
-.div::before,.div::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
+.dv{display:flex;align-items:center;gap:10px;margin:18px 0;color:rgba(255,255,255,.15);font-size:11px;}
+.dv::before,.dv::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
 
-/* WA */
-.wa{
-  width:100%;padding:12px;
-  background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);
-  border-radius:13px;
-  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:#4ade80;
-  text-decoration:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .2s;
-}
+.wa{width:100%;padding:13px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:13px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:#4ade80;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
 .wa:hover{background:rgba(37,211,102,.16);border-color:rgba(37,211,102,.4);}
 .wa .material-icons-round{font-size:18px;color:#22c55e;}
 
-/* Forgot */
 .fp{display:none;}
 
-/* Footer */
+/* ══ FOOTER ══ */
 footer{
   position:fixed;bottom:0;left:0;right:0;z-index:10;
-  padding:12px 32px;
+  padding:11px 40px;
   display:flex;justify-content:space-between;align-items:center;
   border-top:1px solid rgba(255,255,255,.05);
-  backdrop-filter:blur(10px);
+  background:rgba(7,9,15,.8);backdrop-filter:blur(10px);
 }
 footer a{font-size:11px;color:rgba(255,255,255,.2);text-decoration:none;transition:color .15s;}
 footer a:hover{color:rgba(255,255,255,.5);}
 .flinks{display:flex;gap:18px;}
 .fright{font-size:11px;color:rgba(255,255,255,.15);}
 
-@keyframes _in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-body{animation:_in .3s ease-out;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+body{animation:pgIn .28s ease-out;}
 
-@media(max-width:860px){
-  .info{display:none;}
-  .page{padding:24px;}
-  .card-wrap{width:100%;max-width:420px;}
+/* ══ MOBILE ══ */
+@media(max-width:900px){
+  body{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .left{
+    padding:28px 24px 32px;
+    min-height:auto;
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .brand{margin-bottom:24px;}
+  h1{font-size:36px;}
+  .desc{font-size:14px;margin-bottom:24px;}
+  .feats{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;}
+  .feat{padding:10px 12px;}
+  .fn{font-size:12px;}
+  .tcard{display:none;}
+  .stats{grid-template-columns:repeat(4,1fr);margin-top:0;}
+  .sv{font-size:18px;}
+  .right{
+    padding:28px 20px 60px;
+    border-left:none;
+    background:none;
+    backdrop-filter:none;
+    min-height:auto;
+    align-items:flex-start;
+    padding-top:32px;
+  }
+  .card{padding:28px 24px;}
+  footer{padding:10px 20px;}
+  .fright{display:none;}
+}
+@media(max-width:500px){
+  .feats{grid-template-columns:1fr;}
+  h1{font-size:30px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .stat:nth-child(2){border-right:none;}
+  .stat:nth-child(3){border-top:1px solid rgba(255,255,255,.08);}
+  .stat:nth-child(4){border-top:1px solid rgba(255,255,255,.08);border-right:none;}
 }
 </style>
 </head>
 <body>
 
-<!-- Background -->
-<div class="bg">
-  <div class="bg-circle c1"></div>
-  <div class="bg-circle c2"></div>
-  <div class="bg-circle c3"></div>
+<div class="bg-wrap">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="grid-lines"></div>
 </div>
 
-<div class="page">
-
-  <!-- ══ LEFT INFO ══ -->
-  <div class="info">
-
-    <div class="brand">
-      <div class="brand-logo">
-        <img src="/logo.jpg" onerror="this.style.display='none';this.parentElement.textContent='KI'"/>
-      </div>
-      <div>
-        <div class="brand-name">KIDV Invoice</div>
-        <div class="brand-sub">BY KIDV TECH · KIDVTECH.COM</div>
-      </div>
-    </div>
-
-    <div class="pill"><span class="pill-dot"></span>GST READY — INDIA</div>
-
-    <div class="kicker">India's #1 Invoicing Platform</div>
-
-    <h1>
-      Professional<br>
-      <span class="line2">GST Invoicing</span>
-      <span class="line3">Made Simple</span>
-    </h1>
-
-    <p class="desc">Create GST-compliant tax invoices, track payments in real-time, manage customers & generate returns — all from one beautiful dashboard.</p>
-
-    <div class="feats">
-      <div class="feat">
-        <div class="fi" style="background:rgba(6,182,212,.15)"><span class="material-icons-round" style="color:#22d3ee">receipt_long</span></div>
-        <div><div class="ft">GST Tax Invoices</div><div class="fs">CGST, SGST & IGST ready</div></div>
-        <span class="material-icons-round" style="color:rgba(255,255,255,.15);font-size:16px;margin-left:auto">check_circle</span>
-      </div>
-      <div class="feat">
-        <div class="fi" style="background:rgba(99,102,241,.15)"><span class="material-icons-round" style="color:#818cf8">payments</span></div>
-        <div><div class="ft">Payment Tracking</div><div class="fs">Real-time status updates</div></div>
-        <span class="material-icons-round" style="color:rgba(255,255,255,.15);font-size:16px;margin-left:auto">check_circle</span>
-      </div>
-      <div class="feat">
-        <div class="fi" style="background:rgba(16,185,129,.15)"><span class="material-icons-round" style="color:#34d399">cloud_sync</span></div>
-        <div><div class="ft">Cloud Backup</div><div class="fs">Auto-sync across devices</div></div>
-        <span class="material-icons-round" style="color:rgba(255,255,255,.15);font-size:16px;margin-left:auto">check_circle</span>
-      </div>
-      <div class="feat">
-        <div class="fi" style="background:rgba(245,158,11,.15)"><span class="material-icons-round" style="color:#fbbf24">bar_chart</span></div>
-        <div><div class="ft">GST Returns</div><div class="fs">GSTR-1, 3B reports</div></div>
-        <span class="material-icons-round" style="color:rgba(255,255,255,.15);font-size:16px;margin-left:auto">check_circle</span>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat"><div class="sv">100%</div><div class="sl">GST Compliant</div></div>
-      <div class="stat"><div class="sv">₹4,999</div><div class="sl">Per Year</div></div>
-      <div class="stat"><div class="sv">24/7</div><div class="sl">Cloud Access</div></div>
-      <div class="stat"><div class="sv">🇮🇳</div><div class="sl">Made in India</div></div>
-    </div>
-
-  </div>
-
-  <!-- ══ RIGHT CARD ══ -->
-  <div class="card-wrap">
-    <div class="card">
-
-      <div class="card-logo">
-        <img src="/logo.jpg" onerror="this.style.display='none';this.parentElement.textContent='KI'"/>
-      </div>
-      <div class="card-title" id="cardTitle">Welcome back 👋</div>
-      <div class="card-sub" id="cardSub">Sign in to your KIDV Invoice account</div>
-
-      <!-- Error -->
-      <div class="err" id="errBox">
-        <span class="material-icons-round">error_outline</span>
-        <span id="errMsg">Invalid credentials</span>
-      </div>
-
-      <!-- Login Form -->
-      <div id="loginForm">
-        <div class="field">
-          <label>Email Address</label>
-          <div class="iw">
-            <div class="ii"><span class="material-icons-round">mail_outline</span></div>
-            <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"
-              onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Password</label>
-          <div class="iw">
-            <div class="ii"><span class="material-icons-round">lock_outline</span></div>
-            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"
-              onkeydown="if(event.key==='Enter')doLogin()"/>
-            <button class="eye" type="button" onclick="togglePass()">
-              <span class="material-icons-round" id="eyeIco">visibility_off</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="row-end">
-          <a class="fl" href="#" onclick="showForgot();return false">Forgot password?</a>
-        </div>
-
-        <button class="sub" id="loginBtn" onclick="doLogin()">
-          <div class="spin" id="loginSpin"></div>
-          <span class="material-icons-round" id="loginIco" style="font-size:18px">login</span>
-          <span id="loginTxt">Sign In</span>
-        </button>
-
-        <div class="trust">
-          <div class="ti"><span class="material-icons-round">lock</span>SSL Secured</div>
-          <div class="ti"><span class="material-icons-round">local_fire_department</span>Firebase</div>
-          <div class="ti"><span class="material-icons-round">verified</span>GST Ready</div>
-        </div>
-
-        <div class="div">or</div>
-
-        <a class="wa" href="https://wa.me/917984486885?text=Hi, I need help with KIDV Invoice." target="_blank">
-          <span class="material-icons-round">whatsapp</span>
-          Need help? WhatsApp Support
-        </a>
-      </div>
-
-      <!-- Forgot Password -->
-      <div id="forgotForm" class="fp">
-        <div class="field">
-          <label>Your Email Address</label>
-          <div class="iw">
-            <div class="ii"><span class="material-icons-round">mail_outline</span></div>
-            <input type="email" id="forgotEmail" placeholder="your@email.com"/>
-          </div>
-        </div>
-        <button class="sub" id="forgotBtn" onclick="doForgot()">
-          <div class="spin" id="forgotSpin"></div>
-          <span class="material-icons-round" id="forgotIco" style="font-size:18px">send</span>
-          <span id="forgotTxt">Send Reset Link</span>
-        </button>
-        <div style="text-align:center;margin-top:16px;">
-          <a href="#" onclick="showLogin();return false"
-            style="font-size:13px;color:rgba(255,255,255,.3);text-decoration:none;transition:color .15s"
-            onmouseover="this.style.color='rgba(255,255,255,.6)'"
-            onmouseout="this.style.color='rgba(255,255,255,.3)'">← Back to Sign In</a>
-        </div>
-      </div>
-
+<!-- ══ LEFT ══ -->
+<div class="left">
+  <div class="brand">
+    <div class="b-logo"><img src="/logo.jpg" onerror="this.style.display='none';this.parentElement.textContent='KI'"/></div>
+    <div>
+      <div class="b-name">KIDV Invoice</div>
+      <div class="b-tag">BY KIDV TECH · KIDVTECH.COM</div>
     </div>
   </div>
 
+  <div class="live"><span class="live-dot"></span>GST READY — INDIA</div>
+  <div class="kicker">India's #1 Invoicing Platform</div>
+
+  <h1>Professional<br><span class="g-purple">GST Invoicing</span><br><span class="g-cyan">Made Simple</span></h1>
+  <p class="desc">Create GST-compliant tax invoices, track payments in real-time, manage customers & generate returns — all from one beautiful dashboard.</p>
+
+  <div class="feats">
+    <div class="feat">
+      <div class="fic" style="background:rgba(6,182,212,.15)"><span class="material-icons-round" style="color:#22d3ee">receipt_long</span></div>
+      <div><div class="fn">GST Tax Invoices</div><div class="fs">CGST, SGST & IGST</div></div>
+    </div>
+    <div class="feat">
+      <div class="fic" style="background:rgba(99,102,241,.15)"><span class="material-icons-round" style="color:#818cf8">payments</span></div>
+      <div><div class="fn">Payment Tracking</div><div class="fs">Real-time updates</div></div>
+    </div>
+    <div class="feat">
+      <div class="fic" style="background:rgba(16,185,129,.15)"><span class="material-icons-round" style="color:#34d399">cloud_sync</span></div>
+      <div><div class="fn">Cloud Backup</div><div class="fs">Auto-sync devices</div></div>
+    </div>
+    <div class="feat">
+      <div class="fic" style="background:rgba(245,158,11,.15)"><span class="material-icons-round" style="color:#fbbf24">bar_chart</span></div>
+      <div><div class="fn">GST Returns</div><div class="fs">GSTR-1, 3B reports</div></div>
+    </div>
+    <div class="feat">
+      <div class="fic" style="background:rgba(239,68,68,.15)"><span class="material-icons-round" style="color:#f87171">local_shipping</span></div>
+      <div><div class="fn">E-Way Bill</div><div class="fs">Generate instantly</div></div>
+    </div>
+    <div class="feat">
+      <div class="fic" style="background:rgba(168,85,247,.15)"><span class="material-icons-round" style="color:#c084fc">account_balance_wallet</span></div>
+      <div><div class="fn">Party Ledger</div><div class="fs">All transactions</div></div>
+    </div>
+  </div>
+
+  <!-- Testimonial -->
+  <div class="tcard">
+    <span class="material-icons-round">format_quote</span>
+    <div>
+      <div class="tquote">KIDV Invoice ne GST filing badhuj simple thayi gayu. Invoice banavo, PDF download karo, direct WhatsApp par moko — badhu ek j jagah thi.</div>
+      <div class="tauthor">— Rahul Shah, Ahmedabad Business Owner</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="sv">100%</div><div class="sl">GST Compliant</div></div>
+    <div class="stat"><div class="sv">₹4,999</div><div class="sl">Per Year</div></div>
+    <div class="stat"><div class="sv">24/7</div><div class="sl">Cloud Access</div></div>
+    <div class="stat"><div class="sv">🇮🇳</div><div class="sl">Made in India</div></div>
+  </div>
+</div>
+
+<!-- ══ RIGHT ══ -->
+<div class="right">
+  <div class="card">
+    <div class="clogo"><img src="/logo.jpg" onerror="this.style.display='none';this.parentElement.textContent='KI'"/></div>
+    <div class="ctitle" id="cardTitle">Welcome back 👋</div>
+    <div class="csub" id="cardSub">Sign in to your KIDV Invoice account</div>
+
+    <div class="err" id="errBox">
+      <span class="material-icons-round">error_outline</span>
+      <span id="errMsg">Invalid credentials</span>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="fld">
+        <label>Email Address</label>
+        <div class="iw">
+          <div class="ii"><span class="material-icons-round">mail_outline</span></div>
+          <input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
+        </div>
+      </div>
+      <div class="fld">
+        <label>Password</label>
+        <div class="iw">
+          <div class="ii"><span class="material-icons-round">lock_outline</span></div>
+          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button class="eyebtn" type="button" onclick="togglePass()"><span class="material-icons-round" id="eyeIco">visibility_off</span></button>
+        </div>
+      </div>
+      <div class="row-end"><a class="fgl" href="#" onclick="showForgot();return false">Forgot password?</a></div>
+
+      <button class="btn-sub" id="loginBtn" onclick="doLogin()">
+        <div class="spin" id="loginSpin"></div>
+        <span class="material-icons-round" id="loginIco" style="font-size:18px">login</span>
+        <span id="loginTxt">Sign In</span>
+      </button>
+
+      <div class="trust">
+        <div class="ti"><span class="material-icons-round">lock</span>SSL</div>
+        <div class="ti"><span class="material-icons-round">local_fire_department</span>Firebase</div>
+        <div class="ti"><span class="material-icons-round">verified</span>GST Ready</div>
+      </div>
+      <div class="dv">or</div>
+      <a class="wa" href="https://wa.me/917984486885?text=Hi, I need help with KIDV Invoice." target="_blank">
+        <span class="material-icons-round">whatsapp</span>Need help? WhatsApp Support
+      </a>
+    </div>
+
+    <!-- Forgot Password -->
+    <div id="forgotForm" class="fp">
+      <div class="fld">
+        <label>Your Email Address</label>
+        <div class="iw">
+          <div class="ii"><span class="material-icons-round">mail_outline</span></div>
+          <input type="email" id="forgotEmail" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <button class="btn-sub" id="forgotBtn" onclick="doForgot()">
+        <div class="spin" id="forgotSpin"></div>
+        <span class="material-icons-round" id="forgotIco" style="font-size:18px">send</span>
+        <span id="forgotTxt">Send Reset Link</span>
+      </button>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="#" onclick="showLogin();return false" style="font-size:13px;color:rgba(255,255,255,.3);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.6)'" onmouseout="this.style.color='rgba(255,255,255,.3)'">← Back to Sign In</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Footer -->
@@ -482,8 +416,8 @@ body{animation:_in .3s ease-out;}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-const FIREBASE_CONFIG={apiKey:"AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",authDomain:"kidv-tech-project.firebaseapp.com",projectId:"kidv-tech-project",storageBucket:"kidv-tech-project.firebasestorage.app",messagingSenderId:"168663801953",appId:"1:168663801953:web:af953338df12480b4fca20"};
-if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+const FC={apiKey:"AIzaSyDFx2hxhTo2HJKbNK-FUgBiMgvHDzCVmoE",authDomain:"kidv-tech-project.firebaseapp.com",projectId:"kidv-tech-project",storageBucket:"kidv-tech-project.firebasestorage.app",messagingSenderId:"168663801953",appId:"1:168663801953:web:af953338df12480b4fca20"};
+if(!firebase.apps.length)firebase.initializeApp(FC);
 const auth=firebase.auth(),db=firebase.firestore();
 const ADMIN=['amit@kidvtech.com'];
 const ERR={'auth/user-not-found':'Email not found. Contact admin for access.','auth/wrong-password':'Incorrect password. Try again.','auth/invalid-credential':'Invalid email or password.','auth/too-many-requests':'Too many attempts. Wait a few minutes.','auth/network-request-failed':'Network error. Check your connection.','auth/user-disabled':'Account disabled. Contact admin.'};
@@ -525,25 +459,11 @@ async function doForgot(){
   setBusy('forgot',true);
   try{
     await auth.sendPasswordResetEmail(email);
-    document.getElementById('forgotForm').innerHTML=`<div style="text-align:center;padding:20px 0"><div style="width:64px;height:64px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="material-icons-round" style="color:#34d399;font-size:28px">mark_email_read</span></div><div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px">Email Sent!</div><div style="font-size:13px;color:rgba(255,255,255,.35);line-height:1.65;margin-bottom:24px">Check your inbox for the password reset link. May take a minute.</div><a href="#" onclick="showLogin();return false" style="font-size:13px;color:#818cf8;text-decoration:none;font-weight:600">← Back to Sign In</a></div>`;
+    document.getElementById('forgotForm').innerHTML='<div style="text-align:center;padding:20px 0"><div style="width:64px;height:64px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px"><span class="material-icons-round" style="color:#34d399;font-size:28px">mark_email_read</span></div><div style="font-size:17px;font-weight:700;color:#fff;margin-bottom:8px">Email Sent!</div><div style="font-size:13px;color:rgba(255,255,255,.35);line-height:1.65;margin-bottom:24px">Check your inbox for the reset link.</div><a href="#" onclick="showLogin();return false" style="font-size:13px;color:#818cf8;text-decoration:none;font-weight:600">← Back to Sign In</a></div>';
   }catch(e){showErr(ERR[e.code]||e.message);setBusy('forgot',false);}
 }
 
 auth.onAuthStateChanged(u=>{if(u)location.replace('/');});
-
-// Floating particles
-(function(){
-  const body=document.body;
-  for(let i=0;i<18;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    const size=2+Math.random()*4;
-    const colors=['rgba(99,102,241,.5)','rgba(14,165,233,.4)','rgba(124,58,237,.4)','rgba(6,182,212,.35)'];
-    p.style.cssText=`width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;left:${Math.random()*100}%;bottom:-10px;animation-duration:${10+Math.random()*15}s;animation-delay:${Math.random()*12}s;`;
-    body.appendChild(p);
-  }
-})();
-
 document.getElementById('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
 </script>
 </body>

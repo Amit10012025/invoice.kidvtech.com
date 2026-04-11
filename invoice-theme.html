@@ -144,6 +144,20 @@ tr:hover td{background:#f8faff;}
   /* Page transition */
   @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
   body{animation:_pgIn 0.2s ease-out;}
+
+  /* ── Mobile Responsive ── */
+  @media(max-width:768px){
+    :root{--rail-w:0px;}
+    .rail{display:none;}
+    .main,.main.shifted{margin-left:0;padding:16px;}
+    .footer-bar{left:0;}
+    /* Mobile top nav */
+    .mobile-nav{display:flex!important;}
+  }
+  @media(min-width:769px){
+    .mobile-nav{display:none!important;}
+  }
+
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
