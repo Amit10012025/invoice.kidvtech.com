@@ -12,13 +12,13 @@ service cloud.firestore {
       }
     }
     
-    // Admin can read all users
+    // Admin can read and write all users
     match /users/{userId} {
-      allow read: if request.auth != null && 
+      allow read, write: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
-      
+
       match /{subcollection}/{docId} {
-        allow read: if request.auth != null && 
+        allow read, write: if request.auth != null &&
           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
       }
     }
