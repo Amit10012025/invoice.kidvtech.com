@@ -331,15 +331,21 @@ table.items-table tbody tr:last-child td{border-bottom:none;}
 
 <script>
 // ── Load data ──
-const invoices = JSON.parse(localStorage.getItem('kidv-invoices') || '[]');
+const params   = new URLSearchParams(location.search);
+const invId    = params.get('id') || '';
+
+// Read the specific invoice stored by previewInvoice()
+const _invRaw  = (invId ? localStorage.getItem('kidv-inv-'+invId) : null)
+                 || localStorage.getItem('kidv-preview-invoice')
+                 || 'null';
+const _invData = JSON.parse(_invRaw);
+const invoices = _invData ? [_invData] : JSON.parse(localStorage.getItem('kidv-invoices') || '[]');
+
 const comp     = JSON.parse(localStorage.getItem('kidv-company')  || '{}');
 const gst      = JSON.parse(localStorage.getItem('kidv-gst')      || '{}');
 const bank     = JSON.parse(localStorage.getItem('kidv-bank')     || '{}');
 
-// Get index from URL param, default 0
-const params   = new URLSearchParams(location.search);
-let currentIdx = parseInt(params.get('idx') || (invoices.length-1));
-if(currentIdx < 0) currentIdx = 0;
+let currentIdx = 0;
 
 const ONES = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
 const TENS = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
