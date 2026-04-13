@@ -12,126 +12,212 @@
 <link rel="apple-touch-icon" href="/logo.jpg">
 <meta property="og:image" content="https://invoice.kidvtech.com/logo.jpg">
 <style>
-  :root{--rail-w:68px;--flyout-w:240px;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f5f7fa;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--accent:#2f81f7;--accent2:#39d0d8;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-dash:#2f81f7;--c-clients:#3fb950;--c-products:#f0883e;--c-invoice:#39d0d8;--c-quote:#bc8cff;--c-payment:#58a6ff;--c-settings:#7d8590;}
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;}
-  .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;border-right:none;box-shadow:2px 0 12px rgba(0,0,0,0.12);display:flex;flex-direction:column;align-items:center;padding:10px 0;z-index:200;gap:2px;}
-  .rail-logo{width:42px;height:42px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.5px;margin-bottom:14px;box-shadow:0 0 18px rgba(47,129,247,0.35);}
-  .rail-item{width:44px;height:44px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;color:var(--muted);transition:background .18s,color .18s;border:1.5px solid transparent;}
-  .rail-item .material-icons-round{font-size:22px;}
-  .rail-item:hover{background:#f0f4f8;color:#fff;}
-  .rail-item.active{background:rgba(47,129,247,0.15);color:var(--c-dash);border-color:rgba(47,129,247,0.3);}
-  .rail-item[data-section="clients"].active{background:rgba(63,185,80,0.12);color:var(--c-clients);border-color:rgba(63,185,80,0.3);}
-  .rail-item[data-section="products"].active{background:rgba(240,136,62,0.12);color:var(--c-products);border-color:rgba(240,136,62,0.3);}
-  .rail-item[data-section="invoices"].active{background:rgba(57,208,216,0.12);color:var(--c-invoice);border-color:rgba(57,208,216,0.3);}
-  .rail-item[data-section="quotations"].active{background:rgba(188,140,255,0.12);color:var(--c-quote);border-color:rgba(188,140,255,0.3);}
-  .rail-item[data-section="payments"].active{background:rgba(88,166,255,0.12);color:var(--c-payment);border-color:rgba(88,166,255,0.3);}
-  .rail-tooltip{position:absolute;left:calc(100% + 10px);background:#1e293b;border:none;color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:7px;white-space:nowrap;pointer-events:none;opacity:0;transform:translateX(-4px);transition:opacity .15s,transform .15s;z-index:400;}
-  .rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
-  .rail-spacer{flex:1;}
-  .flyout{position:fixed;left:var(--rail-w);top:0;bottom:0;width:var(--flyout-w);background:#fff;border-right:1.5px solid #e2e8f0;box-shadow:4px 0 16px rgba(0,0,0,0.08);padding:20px 0;z-index:190;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;}
-  .flyout.open{transform:translateX(0);}
-  .flyout-header{padding:0 18px 14px;border-bottom:1px solid var(--border);margin-bottom:8px;}
-  .flyout-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
-  .flyout-title.c-dash{color:var(--c-dash);}.flyout-title.c-clients{color:var(--c-clients);}.flyout-title.c-products{color:var(--c-products);}.flyout-title.c-invoices{color:var(--c-invoice);}.flyout-title.c-quotes{color:var(--c-quote);}.flyout-title.c-payments{color:var(--c-payment);}
-  .flyout-link{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13.5px;font-weight:400;color:var(--muted);cursor:pointer;text-decoration:none;transition:background .15s,color .15s;border-left:3px solid transparent;}
-  .flyout-link .material-icons-round{font-size:18px;}
-  .flyout-link:hover{background:rgba(0,0,0,0.03);color:var(--text);}
-  .flyout-link.active{color:var(--text);background:rgba(47,129,247,0.1);border-left-color:var(--accent);}
-  .overlay{display:none;position:fixed;inset:0;z-index:180;}
-  .overlay.show{display:block;}
-  .main{margin-left:var(--rail-w);flex:1;padding:28px 30px;transition:margin-left .22s;min-height:100vh;}
-  .main.shifted{margin-left:calc(var(--rail-w) + var(--flyout-w));}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-  .page-title{font-size:22px;font-weight:700;color:#1a2332;}.page-subtitle{font-size:13px;color:#6b7a90;margin-top:2px;}
-  .topbar-right{display:flex;align-items:center;gap:12px;}
-  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
-  .btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
-  .btn-primary:hover{box-shadow:0 6px 20px rgba(47,129,247,0.45);transform:translateY(-1px);}
-  .btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
-  .btn-ghost:hover{background:#f0f4f8;}
-  .btn .material-icons-round{font-size:18px;}
-  .avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;cursor:pointer;}
-  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px;}
-  .stat-card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);padding:20px 22px;position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s;}
-  .stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-  .stat-card::before{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:.08;transform:translate(20px,-20px);}
-  .stat-card.c1::before{background:var(--c-invoice);}.stat-card.c2::before{background:var(--c-clients);}.stat-card.c3::before{background:var(--c-payment);}.stat-card.c4::before{background:#f85149;}
-  .stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
-  .stat-card.c1 .stat-icon{background:rgba(57,208,216,0.15);color:var(--c-invoice);}
-  .stat-card.c2 .stat-icon{background:rgba(63,185,80,0.15);color:var(--c-clients);}
-  .stat-card.c3 .stat-icon{background:rgba(88,166,255,0.15);color:var(--c-payment);}
-  .stat-card.c4 .stat-icon{background:rgba(248,81,73,0.15);color:#f85149;}
-  .stat-label{font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.06em;}
-  .stat-value{font-size:28px;font-weight:700;margin:6px 0 4px;line-height:1;}
-  .stat-meta{font-size:12px;color:var(--muted);}
-  .stat-meta span{color:#3fb950;font-weight:500;}
-  .stat-meta span.down{color:#f85149;}
-  .two-col{display:grid;grid-template-columns:1fr 360px;gap:20px;margin-bottom:28px;}
-  @media(max-width:1100px){.two-col{grid-template-columns:1fr;}}
-  .card{background:#fff;border:1px solid #e8edf5;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.05);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-  .card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border);}
-  .card-title{font-size:14px;font-weight:600;}
-  .card-action{font-size:12px;color:var(--accent);cursor:pointer;font-weight:500;}
-  .card-action:hover{text-decoration:underline;}
-  .inv-table{width:100%;border-collapse:collapse;}
-  .inv-table th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
-  .inv-table td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);color:var(--text);}
-  .inv-table tr:last-child td{border-bottom:none;}
-  .inv-table tr:hover td{background:#f8faff;}
-  .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
-  .badge-paid{background:rgba(63,185,80,0.12);color:#3fb950;}
-  .badge-pending{background:rgba(240,136,62,0.12);color:#f0883e;}
-  .badge-overdue{background:rgba(248,81,73,0.12);color:#f85149;}
-  .badge-draft{background:rgba(125,133,144,0.12);color:#7d8590;}
-  .inv-num{font-weight:600;color:var(--accent);font-size:13px;}
-  .quick-actions{padding:14px;display:flex;flex-direction:column;gap:8px;}
-  .qa-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:12px;background:#f8faff;border:1.5px solid #e2e8f0;cursor:pointer;transition:all .18s;}
-  .qa-item:hover{border-color:var(--accent);transform:translateX(3px);}
-  .qa-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
-  .qa-text{font-size:13.5px;font-weight:500;}.qa-sub{font-size:11.5px;color:var(--muted);margin-top:1px;}
-  .qa-arrow{margin-left:auto;color:var(--muted);font-size:18px;}
-  .gst-row{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--border);}
-  .gst-row:last-child{border-bottom:none;}
-  .gst-label{font-size:13px;color:var(--muted);}
-  .gst-val{font-size:14px;font-weight:600;}
-  .gst-val.highlight{color:var(--c-invoice);}
-  ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
-  .firebase-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,160,0,0.1);border:1px solid rgba(255,160,0,0.2);color:#ffa000;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;}
-  .firebase-badge.connected{background:rgba(63,185,80,0.1);border-color:rgba(63,185,80,0.2);color:#3fb950;}
-  .firebase-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:pulse 1.5s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+:root{
+  --rail-w:60px;
+  --bg:#f0f4f8;
+  --surface:#ffffff;
+  --border:#e2e8f0;
+  --text:#1e293b;
+  --muted:#64748b;
+  --accent:#2563eb;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
 
-  /* ── Footer bar ── */
-  .footer-bar{position:fixed;bottom:0;left:var(--rail-w,68px);right:0;height:38px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:150;box-shadow:0 -1px 8px rgba(0,0,0,0.05);}
-  .footer-bar .fb-left{display:flex;align-items:center;gap:14px;}
-  .footer-bar a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;transition:color .15s;}
-  .footer-bar a:hover{color:#2f81f7;}
-  .footer-bar a .material-icons-round{font-size:13px;}
-  .footer-bar .fb-sep{color:#e2e8f0;font-size:11px;}
-  .footer-bar .fb-right{display:flex;align-items:center;gap:6px;font-size:11px;color:#9ca3af;font-family:'Outfit',sans-serif;}
-  .footer-bar .fb-right a{color:#6b7a90;font-weight:500;font-size:11px;text-decoration:none;}
-  .footer-bar .fb-right a:hover{color:#2f81f7;}
-  /* extra bottom padding so content doesn't hide behind footer */
-  .main{padding-bottom:52px!important;}
+/* ── Rail ── */
+.rail{
+  position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);
+  background:#1e293b;
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 0;z-index:200;gap:2px;
+}
+.rail-logo{
+  width:38px;height:38px;background:linear-gradient(135deg,#2563eb,#0ea5e9);
+  border-radius:10px;overflow:hidden;margin-bottom:14px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 14px rgba(37,99,235,.4);cursor:pointer;
+}
+.rail-logo img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.rail-item{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;
+  color:rgba(255,255,255,.4);
+  transition:background .18s,color .18s;
+}
+.rail-item .material-icons-round{font-size:20px;}
+.rail-item:hover{background:rgba(255,255,255,.12);color:#fff;}
+.rail-item.active{background:rgba(37,99,235,.25);color:#60a5fa;}
+.rail-tooltip{
+  position:absolute;left:calc(100% + 8px);
+  background:#1e293b;color:#fff;font-size:12px;font-weight:500;
+  padding:5px 10px;border-radius:7px;white-space:nowrap;
+  pointer-events:none;opacity:0;transform:translateX(-4px);
+  transition:opacity .15s,transform .15s;z-index:400;
+  border:1px solid rgba(255,255,255,.1);
+}
+.rail-item:hover .rail-tooltip{opacity:1;transform:translateX(0);}
+.rail-spacer{flex:1;}
 
-  /* Page transition */
-  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-  body{animation:_pgIn 0.2s ease-out;}
+/* ── Main ── */
+.main{
+  margin-left:var(--rail-w);flex:1;
+  padding:28px 28px 60px;
+  min-height:100vh;
+}
 
-  /* ── Mobile Responsive ── */
-  @media(max-width:768px){
-    :root{--rail-w:0px;}
-    .rail{display:none;}
-    .main,.main.shifted{margin-left:0;padding:16px;}
-    .footer-bar{left:0;}
-    /* Mobile top nav */
-    .mobile-nav{display:flex!important;}
-  }
-  @media(min-width:769px){
-    .mobile-nav{display:none!important;}
-  }
+/* ── Topbar ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+}
+.page-title{font-size:20px;font-weight:700;color:var(--text);}
+.page-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;box-shadow:0 3px 12px rgba(37,99,235,.3);}
+.btn-primary:hover{box-shadow:0 5px 18px rgba(37,99,235,.4);transform:translateY(-1px);}
+.btn .material-icons-round{font-size:16px;}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;}
 
+/* ── Shortcuts Section ── */
+.section-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.shortcuts-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+  gap:12px;
+  margin-bottom:28px;
+}
+.sc-card{
+  background:#fff;
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:18px 14px 14px;
+  cursor:pointer;
+  transition:all .18s;
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:10px;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+}
+.sc-card::before{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;opacity:.06;
+  background:var(--sc-color,#2563eb);
+}
+.sc-card:hover{
+  border-color:var(--sc-color,#2563eb);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+.sc-icon{
+  width:42px;height:42px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb, var(--sc-color,#2563eb) 12%, white);
+  flex-shrink:0;
+}
+.sc-icon .material-icons-round{font-size:20px;color:var(--sc-color,#2563eb);}
+.sc-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+.sc-desc{font-size:11px;color:var(--muted);margin-top:1px;}
+
+/* ── Stats ── */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;
+  margin-bottom:24px;
+}
+.stat-card{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;
+  display:flex;align-items:center;gap:14px;
+  transition:transform .18s,box-shadow .18s;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.stat-icon{
+  width:44px;height:44px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.stat-icon .material-icons-round{font-size:22px;}
+.s-label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.s-value{font-size:22px;font-weight:800;color:var(--text);line-height:1.1;margin:3px 0;}
+.s-meta{font-size:11.5px;color:var(--muted);}
+.s-meta .up{color:#22c55e;font-weight:600;}
+.s-meta .dn{color:#ef4444;font-weight:600;}
+
+/* ── Two column ── */
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:20px;margin-bottom:24px;}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr;}}
+
+/* ── Card ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:13.5px;font-weight:700;color:var(--text);}
+.card-action{font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;text-decoration:none;}
+.card-action:hover{text-decoration:underline;}
+
+/* Table */
+.inv-table{width:100%;border-collapse:collapse;}
+.inv-table th{padding:10px 18px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:1.5px solid var(--border);}
+.inv-table td{padding:12px 18px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);}
+.inv-table tr:last-child td{border-bottom:none;}
+.inv-table tr:hover td{background:#f8faff;}
+.inv-num{font-weight:700;color:var(--accent);font-size:13px;}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-paid{background:rgba(34,197,94,.1);color:#16a34a;}
+.badge-pending{background:rgba(245,158,11,.1);color:#d97706;}
+.badge-overdue{background:rgba(239,68,68,.1);color:#dc2626;}
+.badge-draft{background:rgba(100,116,139,.1);color:#475569;}
+
+/* GST rows */
+.gst-row{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--border);}
+.gst-row:last-child{border-bottom:none;}
+.gst-label{font-size:13px;color:var(--muted);}
+.gst-val{font-size:14px;font-weight:700;color:var(--text);}
+.gst-val.hi{color:#0ea5e9;}
+
+/* Firebase badge */
+.fb-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#d97706;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;}
+.fb-badge.connected{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:#16a34a;}
+.fb-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Footer */
+.footer-bar{
+  position:fixed;bottom:0;left:var(--rail-w);right:0;height:36px;
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:150;
+}
+.footer-bar a{font-size:11.5px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.footer-bar a:hover{color:var(--accent);}
+.fb-links{display:flex;gap:16px;}
+.fb-right{font-size:11px;color:#94a3b8;}
+
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:4px;}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+body{animation:pgIn .2s ease-out;}
+
+/* Mobile */
+@media(max-width:768px){
+  :root{--rail-w:0px;}
+  .rail{display:none;}
+  .main{margin-left:0;padding:16px 12px 60px;}
+  .shortcuts-grid{grid-template-columns:repeat(3,1fr);}
+  .footer-bar{left:0;}
+  .two-col{grid-template-columns:1fr;}
+  .fb-right{display:none;}
+}
+@media(max-width:420px){
+  .shortcuts-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -141,9 +227,12 @@
 </head>
 <body>
 
+<!-- Rail -->
 <nav class="rail">
-  <div class="rail-logo" onclick="location.href='/'"><img src="/logo.jpg" style="width:36px;height:36px;border-radius:8px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block'" onerror="this.src='/logo.png';this.onerror=function(){this.style.display='none';this.parentElement.querySelector('.logo-init').style.display='flex'}"/><span class="logo-init" style="display:none;font-size:15px;font-weight:800;color:#fff;width:100%;height:100%;align-items:center;justify-content:center;">KI</span></div>
-  <div class="rail-item active" onclick="location.href='/'" title="Dashboard"><span class="material-icons-round">dashboard</span><div class="rail-tooltip">Dashboard</div></div>
+  <div class="rail-logo" onclick="location.href='/'">
+    <img src="/logo.jpg" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#2563eb,#0ea5e9)'"/>
+  </div>
+  <div class="rail-item active" onclick="location.href='/'" title="Dashboard"><span class="material-icons-round">home</span><div class="rail-tooltip">Home</div></div>
   <div class="rail-item" onclick="location.href='/clients/'" title="Customers"><span class="material-icons-round">people_alt</span><div class="rail-tooltip">Customers</div></div>
   <div class="rail-item" onclick="location.href='/suppliers/'" title="Suppliers"><span class="material-icons-round">local_shipping</span><div class="rail-tooltip">Suppliers</div></div>
   <div class="rail-item" onclick="location.href='/products/'" title="Products"><span class="material-icons-round">inventory_2</span><div class="rail-tooltip">Products</div></div>
@@ -154,129 +243,180 @@
   <div class="rail-item" onclick="location.href='/reports/'" title="Reports"><span class="material-icons-round">bar_chart</span><div class="rail-tooltip">Reports</div></div>
   <div class="rail-item" onclick="location.href='/ledger/'" title="Ledger"><span class="material-icons-round">account_balance_wallet</span><div class="rail-tooltip">Ledger</div></div>
   <div class="rail-spacer"></div>
-  <div class="rail-item" onclick="location.href='/admin/'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin Panel</div></div>
+  <div class="rail-item" onclick="location.href='/admin/'" id="adminBtn" style="display:none" title="Admin"><span class="material-icons-round">admin_panel_settings</span><div class="rail-tooltip">Admin</div></div>
   <div class="rail-item" onclick="location.href='/settings/'" title="Settings"><span class="material-icons-round">settings</span><div class="rail-tooltip">Settings</div></div>
-  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile / Logout</div></div>
+  <div class="rail-item avatar" id="avatarBtn">A<div class="rail-tooltip">Profile</div></div>
 </nav>
 
-
 <main class="main" id="main">
+
+  <!-- Topbar -->
   <div class="topbar">
     <div>
-      <div class="page-title">Dashboard</div>
-      <div class="page-subtitle" id="welcomeText">Welcome back · March 2026</div>
+      <div class="page-title" id="welcomeTitle">Good morning</div>
+      <div class="page-sub" id="welcomeText">Loading...</div>
     </div>
     <div class="topbar-right">
-      <div class="firebase-badge" id="fbBadge"><div class="dot"></div>Connecting...</div>
+      <div class="fb-badge" id="fbBadge"><div class="dot"></div><span>Connecting...</span></div>
       <button class="btn btn-primary" onclick="location.href='/invoices/'"><span class="material-icons-round">add</span>New Invoice</button>
       <div class="avatar" id="avatarTop">A</div>
     </div>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-card c1"><div class="stat-icon"><span class="material-icons-round">receipt_long</span></div><div class="stat-label">Total Invoiced</div><div class="stat-value" id="totalInvoiced">₹0</div><div class="stat-meta">This month &nbsp;<span id="invoiceChange">+0%</span></div></div>
-    <div class="stat-card c2"><div class="stat-icon"><span class="material-icons-round">people_alt</span></div><div class="stat-label">Active Clients</div><div class="stat-value" id="totalClients">0</div><div class="stat-meta"><span id="newClients">0</span> new this month</div></div>
-    <div class="stat-card c3"><div class="stat-icon"><span class="material-icons-round">payments</span></div><div class="stat-label">Amount Received</div><div class="stat-value" id="totalReceived">₹0</div><div class="stat-meta">Pending: <span id="pendingAmt">₹0</span></div></div>
-    <div class="stat-card c4"><div class="stat-icon"><span class="material-icons-round">warning_amber</span></div><div class="stat-label">Overdue</div><div class="stat-value" id="overdueCount">0</div><div class="stat-meta">Invoices <span class="down" id="overdueAmt">₹0</span></div></div>
+  <!-- Shortcuts -->
+  <div class="section-label">Shortcuts</div>
+  <div class="shortcuts-grid">
+    <a class="sc-card" href="/invoices/" style="--sc-color:#0ea5e9">
+      <div class="sc-icon"><span class="material-icons-round">receipt_long</span></div>
+      <div><div class="sc-name">Invoices</div><div class="sc-desc">GST tax invoices</div></div>
+    </a>
+    <a class="sc-card" href="/quotations/" style="--sc-color:#8b5cf6">
+      <div class="sc-icon"><span class="material-icons-round">request_quote</span></div>
+      <div><div class="sc-name">Quotations</div><div class="sc-desc">Estimates & quotes</div></div>
+    </a>
+    <a class="sc-card" href="/clients/" style="--sc-color:#22c55e">
+      <div class="sc-icon"><span class="material-icons-round">people_alt</span></div>
+      <div><div class="sc-name">Customers</div><div class="sc-desc">Client database</div></div>
+    </a>
+    <a class="sc-card" href="/payments/" style="--sc-color:#3b82f6">
+      <div class="sc-icon"><span class="material-icons-round">payments</span></div>
+      <div><div class="sc-name">Payments</div><div class="sc-desc">Track receipts</div></div>
+    </a>
+    <a class="sc-card" href="/products/" style="--sc-color:#f59e0b">
+      <div class="sc-icon"><span class="material-icons-round">inventory_2</span></div>
+      <div><div class="sc-name">Products</div><div class="sc-desc">Items & services</div></div>
+    </a>
+    <a class="sc-card" href="/suppliers/" style="--sc-color:#ef4444">
+      <div class="sc-icon"><span class="material-icons-round">local_shipping</span></div>
+      <div><div class="sc-name">Suppliers</div><div class="sc-desc">Vendor management</div></div>
+    </a>
+    <a class="sc-card" href="/gst-returns/" style="--sc-color:#6366f1">
+      <div class="sc-icon"><span class="material-icons-round">receipt</span></div>
+      <div><div class="sc-name">GST Returns</div><div class="sc-desc">GSTR-1, 3B</div></div>
+    </a>
+    <a class="sc-card" href="/reports/" style="--sc-color:#ec4899">
+      <div class="sc-icon"><span class="material-icons-round">bar_chart</span></div>
+      <div><div class="sc-name">Reports</div><div class="sc-desc">Analytics</div></div>
+    </a>
+    <a class="sc-card" href="/ledger/" style="--sc-color:#f59e0b">
+      <div class="sc-icon"><span class="material-icons-round">account_balance_wallet</span></div>
+      <div><div class="sc-name">Ledger</div><div class="sc-desc">Party accounts</div></div>
+    </a>
+    <a class="sc-card" href="/settings/" style="--sc-color:#64748b">
+      <div class="sc-icon"><span class="material-icons-round">settings</span></div>
+      <div><div class="sc-name">Settings</div><div class="sc-desc">Company & config</div></div>
+    </a>
   </div>
 
+  <!-- Stats -->
+  <div class="section-label">Overview</div>
+  <div class="stats-grid" style="margin-bottom:24px">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(14,165,233,.1)"><span class="material-icons-round" style="color:#0ea5e9">receipt_long</span></div>
+      <div><div class="s-label">Total Invoiced</div><div class="s-value" id="totalInvoiced">₹0</div><div class="s-meta">All time</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(34,197,94,.1)"><span class="material-icons-round" style="color:#22c55e">people_alt</span></div>
+      <div><div class="s-label">Clients</div><div class="s-value" id="totalClients">0</div><div class="s-meta" id="newClients">Total clients</div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(59,130,246,.1)"><span class="material-icons-round" style="color:#3b82f6">payments</span></div>
+      <div><div class="s-label">Received</div><div class="s-value" id="totalReceived">₹0</div><div class="s-meta">Pending: <span class="dn" id="pendingAmt">₹0</span></div></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:rgba(239,68,68,.1)"><span class="material-icons-round" style="color:#ef4444">warning_amber</span></div>
+      <div><div class="s-label">Overdue</div><div class="s-value" id="overdueCount">0</div><div class="s-meta">Value: <span class="dn" id="overdueAmt">₹0</span></div></div>
+    </div>
+  </div>
+
+  <!-- Recent + GST -->
+  <div class="section-label">Recent Activity</div>
   <div class="two-col">
     <div class="card">
-      <div class="card-header"><div class="card-title">Recent Invoices</div><div class="card-action" onclick="location.href='/invoices/'">View All →</div></div>
+      <div class="card-header">
+        <div class="card-title">Recent Invoices</div>
+        <a class="card-action" href="/invoices/">View All →</a>
+      </div>
       <table class="inv-table">
         <thead><tr><th>#</th><th>Client</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
-        <tbody id="recentInvoices"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px">Loading... <span style="opacity:.5">⏳</span></td></tr></tbody>
+        <tbody id="recentInvoices">
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px 20px">Loading... ⏳</td></tr>
+        </tbody>
       </table>
     </div>
-    <div>
-      <div class="card" style="margin-bottom:20px">
-        <div class="card-header"><div class="card-title">Quick Actions</div></div>
-        <div class="quick-actions">
-          <div class="qa-item" onclick="location.href='/invoices/'"><div class="qa-icon" style="background:rgba(57,208,216,0.12);color:var(--c-invoice)"><span class="material-icons-round">receipt_long</span></div><div><div class="qa-text">Create Invoice</div><div class="qa-sub">GST tax invoice</div></div><span class="material-icons-round qa-arrow">chevron_right</span></div>
-          <div class="qa-item" onclick="location.href='/quotations/'"><div class="qa-icon" style="background:rgba(188,140,255,0.12);color:var(--c-quote)"><span class="material-icons-round">request_quote</span></div><div><div class="qa-text">New Quotation</div><div class="qa-sub">Send estimate to client</div></div><span class="material-icons-round qa-arrow">chevron_right</span></div>
-          <div class="qa-item" onclick="location.href='/clients/'"><div class="qa-icon" style="background:rgba(63,185,80,0.12);color:var(--c-clients)"><span class="material-icons-round">person_add</span></div><div><div class="qa-text">Add Client</div><div class="qa-sub">GSTIN auto-fetch</div></div><span class="material-icons-round qa-arrow">chevron_right</span></div>
-          <div class="qa-item" onclick="location.href='/payments/'"><div class="qa-icon" style="background:rgba(88,166,255,0.12);color:var(--c-payment)"><span class="material-icons-round">add_card</span></div><div><div class="qa-text">Record Payment</div><div class="qa-sub">Mark invoice paid</div></div><span class="material-icons-round qa-arrow">chevron_right</span></div>
-        </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="gstTitle">GST Summary</div>
+        <a class="card-action" href="/gst-returns/">GSTR-1 →</a>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title" id="gstTitle">GST Summary</div><div class="card-action" onclick="location.href='/gst-returns/'">GSTR-1 →</div></div>
-        <div class="gst-row"><div class="gst-label">Taxable Amount</div><div class="gst-val" id="taxableAmt">₹0.00</div></div>
-        <div class="gst-row"><div class="gst-label">CGST</div><div class="gst-val" id="cgstAmt">₹0.00</div></div>
-        <div class="gst-row"><div class="gst-label">SGST</div><div class="gst-val" id="sgstAmt">₹0.00</div></div>
-        <div class="gst-row"><div class="gst-label">IGST</div><div class="gst-val" id="igstAmt">₹0.00</div></div>
-        <div class="gst-row" style="background:rgba(57,208,216,0.04)"><div class="gst-label" style="font-weight:600;color:var(--text)">Total GST Collected</div><div class="gst-val highlight" id="totalGST">₹0.00</div></div>
+      <div class="gst-row"><div class="gst-label">Taxable Amount</div><div class="gst-val" id="taxableAmt">₹0.00</div></div>
+      <div class="gst-row"><div class="gst-label">CGST</div><div class="gst-val" id="cgstAmt">₹0.00</div></div>
+      <div class="gst-row"><div class="gst-label">SGST</div><div class="gst-val" id="sgstAmt">₹0.00</div></div>
+      <div class="gst-row"><div class="gst-label">IGST</div><div class="gst-val" id="igstAmt">₹0.00</div></div>
+      <div class="gst-row" style="background:#f0f9ff">
+        <div class="gst-label" style="font-weight:700;color:var(--text)">Total GST Collected</div>
+        <div class="gst-val hi" id="totalGST">₹0.00</div>
       </div>
     </div>
   </div>
+
 </main>
 
+<!-- Footer -->
+<div class="footer-bar">
+  <div class="fb-links">
+    <a href="/about/">About</a>
+    <a href="/privacy/">Privacy</a>
+    <a href="/terms/">Terms</a>
+  </div>
+  <div class="fb-right">© 2025 KIDV Tech · <a href="https://www.kidvtech.com" target="_blank" style="color:#64748b">KIDVTech</a></div>
+</div>
+
 <script>
-const flyoutData={
-  dashboard:{title:'Dashboard',colorClass:'c-dash',links:[{icon:'dashboard',label:'Overview',href:'/index/',active:true},{icon:'bar_chart',label:'Reports',href:'/reports/'}]},
-  clients:{title:'Clients',colorClass:'c-clients',links:[{icon:'people_alt',label:'All Clients',href:'/clients/'},{icon:'person_add',label:'Add Client',href:'/clients/'}]},
-  products:{title:'Products',colorClass:'c-products',links:[{icon:'inventory_2',label:'All Items',href:'/products/'},{icon:'add_box',label:'Add Item',href:'/products/'}]},
-  invoices:{title:'Invoices',colorClass:'c-invoices',links:[{icon:'receipt_long',label:'All Invoices',href:'/invoices/'},{icon:'add_circle',label:'New Invoice',href:'/invoices/'}]},
-  quotations:{title:'Quotations',colorClass:'c-quotes',links:[{icon:'request_quote',label:'All Quotations',href:'/quotations/'},{icon:'add_circle',label:'New Quotation',href:'/quotations/'}]},
-  payments:{title:'Payments',colorClass:'c-payments',links:[{icon:'payments',label:'All Payments',href:'/payments/'},{icon:'add_card',label:'Record Payment',href:'/payments/'}]},
-  // settings handled by direct link
-};
-
-let flyoutOpen=false,currentSection='dashboard';
-function openFlyout(section,el){
-  const data=flyoutData[section];
-  if(!data) return;
-  if(flyoutOpen&&currentSection===section){closeFlyout();return;}
-  document.querySelectorAll('.rail-item').forEach(r=>r.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('flyout').innerHTML=`<div class="flyout-header"><div class="flyout-title ${data.colorClass}">${data.title}</div></div>`+data.links.map(l=>`<a class="flyout-link ${l.active?'active':''}" href="${l.href}"><span class="material-icons-round">${l.icon}</span>${l.label}</a>`).join('');
-  document.getElementById('flyout').classList.add('open');
-  document.getElementById('overlay').classList.add('show');
-  document.getElementById('main').classList.add('shifted');
-  currentSection=section;flyoutOpen=true;
-}
-function closeFlyout(){document.getElementById('flyout').classList.remove('open');document.getElementById('overlay').classList.remove('show');document.getElementById('main').classList.remove('shifted');flyoutOpen=false;}
-
 function fmt(n){return'₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
 
-// ── Load from Firestore ──
+function setGreeting(){
+  const h=new Date().getHours();
+  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('welcomeTitle').textContent=g;
+}
+setGreeting();
+
 async function loadDashboardData(){
-  // Welcome text with user name
-  const user = KIDV._user;
+  const user=KIDV._user;
   if(user){
-    const name = user.displayName || user.email.split('@')[0];
-    const month = new Date().toLocaleString('en-IN',{month:'long',year:'numeric'});
-    document.getElementById('welcomeText').textContent = 'Welcome back, '+name+' · '+month;
+    const name=user.displayName||user.email.split('@')[0];
+    const month=new Date().toLocaleString('en-IN',{month:'long',year:'numeric'});
+    document.getElementById('welcomeText').textContent=name+' · '+month;
+    const initials=(name||'U').substring(0,1).toUpperCase();
+    document.getElementById('avatarTop').textContent=initials;
+    const ab=document.getElementById('avatarBtn');if(ab)ab.textContent=initials;
   }
 
-  // Load from Firestore
-  const [invoices, clients] = await Promise.all([
-    KIDV.list('invoices'),
-    KIDV.list('clients')
-  ]);
+  const [invoices,clients]=await Promise.all([KIDV.list('invoices'),KIDV.list('clients')]);
 
-  // Stats
-  const totalInv = invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);
-  const paid     = invoices.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  const pending  = invoices.filter(i=>i.status==='pending').reduce((s,i)=>s+parseFloat(i.total||0),0);
-  const overdue  = invoices.filter(i=>i.status==='overdue');
+  const totalInv=invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);
+  const paid=invoices.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
+  const pending=invoices.filter(i=>i.status==='pending').reduce((s,i)=>s+parseFloat(i.total||0),0);
+  const overdue=invoices.filter(i=>i.status==='overdue');
 
-  document.getElementById('totalInvoiced').textContent = '₹'+totalInv.toLocaleString('en-IN');
-  document.getElementById('totalClients').textContent  = clients.length;
-  document.getElementById('totalReceived').textContent = '₹'+paid.toLocaleString('en-IN');
-  document.getElementById('pendingAmt').textContent    = '₹'+pending.toLocaleString('en-IN');
-  document.getElementById('overdueCount').textContent  = overdue.length;
-  document.getElementById('overdueAmt').textContent    = '₹'+overdue.reduce((s,i)=>s+parseFloat(i.total||0),0).toLocaleString('en-IN');
+  document.getElementById('totalInvoiced').textContent='₹'+totalInv.toLocaleString('en-IN');
+  document.getElementById('totalClients').textContent=clients.length;
+  document.getElementById('totalReceived').textContent='₹'+paid.toLocaleString('en-IN');
+  document.getElementById('pendingAmt').textContent='₹'+pending.toLocaleString('en-IN');
+  document.getElementById('overdueCount').textContent=overdue.length;
+  document.getElementById('overdueAmt').textContent='₹'+overdue.reduce((s,i)=>s+parseFloat(i.total||0),0).toLocaleString('en-IN');
 
-  // GST Summary — current month
+  // GST Summary current month
   const now=new Date();
   const thisMonth=invoices.filter(i=>i.date&&new Date(i.date).getMonth()===now.getMonth()&&new Date(i.date).getFullYear()===now.getFullYear());
   let taxable=0,cgst=0,sgst=0,igst=0;
   thisMonth.forEach(i=>{
     taxable+=parseFloat(i.sub||0);
     const g=parseFloat(i.totalGST||0);
-    if(i.supply==='inter') igst+=g; else {cgst+=g/2;sgst+=g/2;}
+    if(i.supply==='inter')igst+=g;else{cgst+=g/2;sgst+=g/2;}
   });
-  document.getElementById('gstTitle').textContent='GST Summary · '+now.toLocaleString('en-IN',{month:'long',year:'numeric'});
+  document.getElementById('gstTitle').textContent='GST · '+now.toLocaleString('en-IN',{month:'short',year:'numeric'});
   document.getElementById('taxableAmt').textContent=fmt(taxable);
   document.getElementById('cgstAmt').textContent=fmt(cgst);
   document.getElementById('sgstAmt').textContent=fmt(sgst);
@@ -285,37 +425,28 @@ async function loadDashboardData(){
 
   // Recent invoices
   if(invoices.length>0){
-    document.getElementById('recentInvoices').innerHTML=invoices.slice(0,5).map(inv=>`
+    document.getElementById('recentInvoices').innerHTML=invoices.slice(0,6).map(inv=>`
       <tr>
         <td><span class="inv-num">${inv.invoiceNo||'—'}</span></td>
         <td>${inv.clientName||'—'}</td>
         <td>${inv.date||'—'}</td>
-        <td style="font-weight:600">${fmt(inv.total)}</td>
-        <td><span class="badge badge-${inv.status||'draft'}">${inv.status||'Draft'}</span></td>
+        <td style="font-weight:700">${fmt(inv.total)}</td>
+        <td><span class="badge badge-${inv.status||'draft'}">${(inv.status||'Draft').charAt(0).toUpperCase()+(inv.status||'draft').slice(1)}</span></td>
       </tr>`).join('');
-  } else {
+  }else{
     document.getElementById('recentInvoices').innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:30px">No invoices yet. <a href="/invoices/" style="color:var(--accent)">Create one →</a></td></tr>`;
   }
 }
 
-document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
-document.addEventListener('kidv:db-ready', loadDashboardData);
+document.addEventListener('kidv:db-ready',()=>{
+  const b=document.getElementById('adminBtn');
+  if(window.KIDV&&KIDV.isAdmin&&b)b.style.display='';
+  const badge=document.getElementById('fbBadge');
+  if(badge){badge.classList.add('connected');badge.querySelector('span').textContent='Connected';}
+  loadDashboardData();
+});
 </script>
-  <script src="/kidv-common.js"></script>
+<script src="/kidv-common.js"></script>
 
-<div class="footer-bar">
-  <div class="fb-left">
-    <a href="/about/"><span class="material-icons-round">info</span>About</a>
-    <span class="fb-sep">|</span>
-    <a href="/privacy/"><span class="material-icons-round">privacy_tip</span>Privacy</a>
-    <span class="fb-sep">|</span>
-    <a href="/terms/"><span class="material-icons-round">gavel</span>Terms</a>
-  </div>
-  <div class="fb-right">
-    <span>© 2025 KIDV Tech</span>
-    <span class="fb-sep">·</span>
-    <a href="https://www.kidvtech.com" target="_blank">Developed by KIDVTech</a>
-  </div>
-</div>
 </body>
 </html>

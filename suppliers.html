@@ -421,7 +421,7 @@ tr:hover td{background:#f8faff;}
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="clearForm()"><span class="material-icons-round">restart_alt</span>Clear</button>
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveClient()"><span class="material-icons-round">save</span>Save Client</button>
+      <button class="btn btn-primary" onclick="saveClient()"><span class="material-icons-round">save</span>Save Supplier</button>
     </div>
   </div>
 </div>
@@ -652,14 +652,9 @@ function openModal(idx=-1){
     contacts  = c.contacts  && c.contacts.length  ? c.contacts  : [{name:c.contact||'',role:'Primary Contact',phone:c.phone||'',email:c.email||'',dept:''}];
     renderAddressList();
     renderContactList();
-    // Restore addresses & contacts
-    tempAddresses = c.addresses || (c.address?[{type:'billing',text:c.address,city:c.city||'',state:c.state||'',pin:c.pin||''}]:[]);
-    tempContacts = c.contacts || (c.contact?[{name:c.contact,phone:c.phone||'',email:c.email||'',role:'Primary Contact'}]:[]);
-    renderAddrList(); renderContactList();
   } else {
     document.getElementById('modalTitle').textContent='Add New Supplier';
     tempAddresses=[]; tempContacts=[];
-    renderAddrList(); renderContactList();
   }
   document.getElementById('modalBg').classList.add('open');
 }
@@ -678,11 +673,6 @@ function clearForm(){
   tempContacts  = [];
   renderAddressList();
   renderContactList();
-  // Reset addresses & contacts
-  tempAddresses=[]; tempContacts=[];
-  renderAddrList(); renderContactList();
-  document.getElementById('addrForm').style.display='none';
-  document.getElementById('contactForm').style.display='none';
 }
 
 // ── Address Management ──
