@@ -140,19 +140,19 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
 body{animation:pgIn .2s ease-out;}
 
 /* ── Mobile ── */
-@media(max-width:768px){
-  :root{--rail-w:0px;}
-  .rail{display:none;}
-  .main{margin-left:0;}
+@media(max-width:900px){
+  :root{--rail-w:0px!important;}
+  .rail{display:none!important;}
+  .main{margin-left:0!important;}
   .hero{padding:20px 16px 18px;}
   .hero-stats{grid-template-columns:repeat(2,1fr);gap:10px;}
   .content{padding:16px 14px;}
   .modules-grid{grid-template-columns:repeat(3,1fr);}
-  .footer-bar{left:0;}
+  .footer-bar{left:0!important;}
   .h-greeting{font-size:18px;}
   .fb-right{display:none;}
 }
-@media(max-width:420px){
+@media(max-width:500px){
   .modules-grid{grid-template-columns:repeat(2,1fr);}
   .hero-actions .fb-badge{display:none;}
 }
