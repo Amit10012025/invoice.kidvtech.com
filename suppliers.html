@@ -871,8 +871,8 @@ function removeContact(i){
 async function saveClient(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('Client name is required');return;}
-  // Primary address from first billing address
-  const primaryAddr = tempAddresses.find(a=>a.type==='billing') || tempAddresses[0] || {};
+  // Primary address from addresses array (rendered cards)
+  const primaryAddr = addresses.find(a=>a.type==='Billing'||a.type==='Both') || addresses[0] || {};
   const c={
     name, contact:document.getElementById('f-contact').value,
     email:document.getElementById('f-email').value, phone:document.getElementById('f-phone').value,
@@ -881,11 +881,11 @@ async function saveClient(){
     pan:document.getElementById('f-pan').value.toUpperCase(),
     state:document.getElementById('f-state').value,
     stateCode:document.getElementById('f-statecode').value,
-    address: primaryAddr.text || document.getElementById('f-address').value,
-    city: primaryAddr.city || document.getElementById('f-city').value,
-    pin: primaryAddr.pin || document.getElementById('f-pin').value,
-    addresses: tempAddresses,
-    contacts: tempContacts,
+    address: primaryAddr.address || '',
+    city: primaryAddr.city || '',
+    pin: primaryAddr.pin || '',
+    addresses: addresses,
+    contacts: contacts,
     isTransporter: document.getElementById('f-is-transporter')?.value === 'yes',
     transporterGSTId: document.getElementById('f-transporter-gst-id')?.value || '',
     createdAt:new Date().toISOString()
