@@ -196,7 +196,6 @@ body{animation:_pgIn 0.2s ease-out;}
 .items-tbl tbody tr:last-child td{border-bottom:none;}
 /* column widths */
 .items-tbl .c-sr{width:36px;text-align:center;}
-.items-tbl .c-pkgs{width:66px;text-align:center;}
 .items-tbl .c-desc{text-align:left;}
 .items-tbl .c-hsn{width:72px;text-align:center;font-size:10px;}
 .items-tbl .c-qty{width:56px;text-align:center;}
@@ -296,6 +295,15 @@ body{animation:_pgIn 0.2s ease-out;}
     <button class="btn btn-ghost" id="prevBtn" onclick="navigate(-1)"><span class="material-icons-round">chevron_left</span></button>
     <span id="navCounter" style="font-size:13px;color:var(--muted);min-width:60px;text-align:center">1 / 1</span>
     <button class="btn btn-ghost" id="nextBtn" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
+    <!-- Print Format Selector -->
+    <div style="position:relative;display:inline-flex;align-items:center;">
+      <select id="printFormatSelect" onchange="applyPrintFormat(this.value)" style="background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:8px 32px 8px 12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;">
+        <option value="gst">GST Tax Invoice</option>
+        <option value="proforma">Proforma Invoice</option>
+        <option value="delivery">Delivery Challan</option>
+      </select>
+      <span class="material-icons-round" style="position:absolute;right:8px;font-size:16px;pointer-events:none;color:var(--muted)">expand_more</span>
+    </div>
     <button class="btn btn-ghost" onclick="shareWhatsApp()"><span class="material-icons-round">share</span>WhatsApp</button>
     <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print / PDF</button>
   </div>
@@ -378,7 +386,6 @@ body{animation:_pgIn 0.2s ease-out;}
       <thead>
         <tr>
           <th class="c-sr">Sr.<br/>No.</th>
-          <th class="c-pkgs">No of<br/>Pkgs</th>
           <th class="c-desc">Description of Goods / Services</th>
           <th class="c-hsn">HSN/SAC</th>
           <th class="c-qty">Qty</th>
@@ -389,7 +396,7 @@ body{animation:_pgIn 0.2s ease-out;}
         </tr>
       </thead>
       <tbody id="itemsBody">
-        <tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">No items</td></tr>
+        <tr><td colspan="8" style="text-align:center;padding:20px;color:#9ca3af">No items</td></tr>
       </tbody>
       <tfoot id="totalsFoot"></tfoot>
     </table>
@@ -523,13 +530,15 @@ function renderInvoice(idx){
   const coFallback=document.getElementById('coLogoFallback');
   coFallback.textContent=cName.substring(0,2).toUpperCase();
   if(comp.logo){
+    // Company has uploaded their own logo
     coLogoImg.src=comp.logo;
     coLogoImg.style.display='';
     coFallback.style.display='none';
-  } else {
-    coLogoImg.src='/logo.jpg';
-    coLogoImg.style.display='';
     coLogoImg.onerror=function(){this.style.display='none';coFallback.style.display='flex';};
+  } else {
+    // No logo uploaded — show initials placeholder
+    coLogoImg.style.display='none';
+    coFallback.style.display='flex';
   }
 
   const compGSTIN=gst.gstin||comp.gstin||'';
@@ -606,7 +615,6 @@ function renderInvoice(idx){
       const disc=l.disc?parseFloat(l.disc):'';
       return `<tr>
         <td class="c-sr" style="text-align:center">${i+1}</td>
-        <td class="c-pkgs" style="text-align:center">${l.pkgs||''}</td>
         <td class="c-desc"><strong style="font-size:11px">${l.desc||'—'}</strong>${l.itemCode?'<br/><span style="font-size:9px;color:#777">Item Code: '+l.itemCode+'</span>':''}</td>
         <td class="c-hsn">${l.hsn||'—'}</td>
         <td class="c-qty" style="text-align:center">${qty.toLocaleString('en-IN')}</td>
@@ -616,7 +624,7 @@ function renderInvoice(idx){
         <td class="c-amt">₹ ${fmtN(amt)}</td>
       </tr>`;
     }).join('')
-    :'<tr><td colspan="9" style="text-align:center;padding:24px;color:#9ca3af">No items added</td></tr>';
+    :'<tr><td colspan="8" style="text-align:center;padding:24px;color:#9ca3af">No items added</td></tr>';
 
   // ── Totals in tfoot ──
   const sub=parseFloat(inv.sub||0);
@@ -636,7 +644,7 @@ function renderInvoice(idx){
   let tfoot='';
   const TR=(label,val,cls='')=>
     `<tr class="tot-row ${cls}">
-      <td colspan="8" style="text-align:right;padding-right:10px;${cls==='tot-grand'||cls==='tot-final'?'font-weight:700;':''}font-size:${cls==='tot-final'?'11':'10.5'}px;">${label}</td>
+      <td colspan="7" style="text-align:right;padding-right:10px;${cls==='tot-grand'||cls==='tot-final'?'font-weight:700;':''}font-size:${cls==='tot-final'?'11':'10.5'}px;">${label}</td>
       <td class="c-amt" style="${cls==='tot-final'?'color:#fff;background:#1a2332;':''}border-left:1px solid #bbb;">${val}</td>
     </tr>`;
 
@@ -656,7 +664,7 @@ function renderInvoice(idx){
 
   // Qty + Rounded Total row
   tfoot+=`<tr class="tot-qty-row">
-    <td colspan="5" style="border-right:1px solid #bbb">
+    <td colspan="4" style="border-right:1px solid #bbb">
       <span style="font-weight:600;color:#444">Total Qty:</span>
       <span style="font-weight:700;color:#1a1a1a;margin-left:5px">${totalQty.toLocaleString('en-IN')}</span>
       <span style="font-style:italic;font-size:9.5px;color:#888;margin-left:12px">E. & O.E</span>
@@ -681,6 +689,15 @@ function renderInvoice(idx){
 function navigate(dir){
   currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));
   renderInvoice(currentIdx);
+}
+
+// Print format labels
+const FORMAT_LABELS={gst:'TAX INVOICE',proforma:'PROFORMA INVOICE',delivery:'DELIVERY CHALLAN'};
+function applyPrintFormat(fmt){
+  const label=FORMAT_LABELS[fmt]||'TAX INVOICE';
+  document.getElementById('invTypeTitle').textContent=label;
+  // Update toolbar title
+  document.getElementById('toolbarTitle').textContent=(invoices[currentIdx]?.invoiceNo||'Invoice')+' — '+label;
 }
 
 function shareWhatsApp(){
