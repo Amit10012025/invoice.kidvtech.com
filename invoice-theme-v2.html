@@ -5,8 +5,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>KIDV Invoice – Preview</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<title>KIDV Invoice – Print</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="/logo.jpg">
 <link rel="apple-touch-icon" href="/logo.jpg">
@@ -34,161 +34,253 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
 
 /* ── PREVIEW WRAPPER ── */
 .preview-outer{padding:32px 24px;display:flex;justify-content:center;min-height:calc(100vh - 60px);}
+
+/* ── INVOICE PAPER ── */
 .invoice-paper{
   background:#fff;
-  width:794px;
+  width:820px;
   max-width:100%;
-  border-radius:8px;
+  border-radius:4px;
   overflow:hidden;
   box-shadow:0 24px 80px rgba(0,0,0,0.5);
   font-family:'Outfit',sans-serif;
-  color:#1a1a2e;
-}
-
-/* ── INVOICE HEADER ── */
-.inv-header{
-  background:linear-gradient(135deg,#0f1f3d 0%,#1a3a6b 60%,#0d3359 100%);
-  padding:36px 40px 28px;
-  position:relative;
-  overflow:hidden;
-}
-.inv-header::before{
-  content:'';position:absolute;top:-40px;right:-40px;
-  width:220px;height:220px;
-  border-radius:50%;
-  background:rgba(47,129,247,0.12);
-}
-.inv-header::after{
-  content:'';position:absolute;bottom:-60px;right:80px;
-  width:150px;height:150px;
-  border-radius:50%;
-  background:rgba(57,208,216,0.08);
-}
-.inv-header-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
-.company-block{}
-.company-logo-text{font-family:'DM Serif Display',serif;font-size:28px;color:#fff;letter-spacing:-0.5px;line-height:1;}
-.company-logo-sub{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.15em;text-transform:uppercase;margin-top:3px;}
-.inv-title-block{text-align:right;}
-.inv-title{font-size:36px;font-weight:800;color:rgba(255,255,255,0.12);letter-spacing:-1px;line-height:1;font-style:italic;}
-.inv-number{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;font-weight:500;}
-.inv-number span{color:#39d0d8;font-weight:700;font-size:15px;}
-
-.inv-header-meta{display:flex;gap:40px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1);position:relative;z-index:1;}
-.meta-item{}
-.meta-label{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;}
-.meta-val{font-size:13px;color:#fff;font-weight:600;}
-
-/* ── ACCENT BAR ── */
-.accent-bar{height:4px;background:linear-gradient(90deg,#2f81f7,#39d0d8,#bc8cff);}
-
-/* ── PARTIES ── */
-.inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #eef0f5;}
-.party-block{padding:28px 40px;}
-.party-block:first-child{border-right:1px solid #eef0f5;}
-.party-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#2f81f7;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.party-type::before{content:'';width:16px;height:2px;background:linear-gradient(90deg,#2f81f7,#39d0d8);border-radius:1px;}
-.party-name{font-size:17px;font-weight:700;color:#1a1a2e;margin-bottom:4px;}
-.party-detail{font-size:12.5px;color:#6b7280;line-height:1.7;}
-.party-gstin{font-family:'Courier New',monospace;font-size:11.5px;background:#f0f4ff;color:#1a3a6b;padding:3px 10px;border-radius:4px;display:inline-block;margin-top:6px;font-weight:600;border:1px solid #d0deff;}
-
-/* ── LINE ITEMS ── */
-.inv-items{padding:0;}
-table.items-table{width:100%;border-collapse:collapse;}
-table.items-table thead tr{background:linear-gradient(90deg,#f0f4ff,#f8f9fc);}
-table.items-table th{
-  padding:13px 16px;
-  font-size:10.5px;font-weight:700;
-  color:#6b7280;
-  text-transform:uppercase;letter-spacing:0.08em;
-  text-align:left;
-  border-bottom:2px solid #e5e9f0;
-}
-table.items-table th:last-child,
-table.items-table td:last-child{text-align:right;}
-table.items-table th:nth-child(3),
-table.items-table td:nth-child(3),
-table.items-table th:nth-child(4),
-table.items-table td:nth-child(4),
-table.items-table th:nth-child(5),
-table.items-table td:nth-child(5){text-align:center;}
-table.items-table td{
-  padding:13px 16px;
-  font-size:13px;
-  color:#374151;
-  border-bottom:1px solid #f0f2f7;
-  vertical-align:middle;
-}
-table.items-table tbody tr:hover td{background:#fafbff;}
-table.items-table tbody tr:last-child td{border-bottom:none;}
-.item-sno{width:36px;height:36px;border-radius:8px;background:#f0f4ff;color:#2f81f7;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
-.item-desc{font-weight:600;color:#1a1a2e;font-size:13.5px;}
-.item-hsn{font-size:11px;color:#9ca3af;font-family:'Courier New',monospace;margin-top:2px;}
-.item-gst-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#f0f4ff;color:#2f81f7;border:1px solid #d0deff;}
-
-/* ── TOTALS ── */
-.inv-totals-section{display:grid;grid-template-columns:1fr 280px;border-top:2px solid #f0f2f7;}
-.inv-notes{padding:28px 40px;border-right:1px solid #f0f2f7;}
-.notes-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;margin-bottom:8px;}
-.notes-text{font-size:13px;color:#6b7280;line-height:1.6;}
-.inv-totals{padding:20px 30px;}
-.total-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px;color:#6b7280;}
-.total-row .tl{font-weight:500;}
-.total-row .tv{font-weight:600;color:#374151;}
-.total-divider{height:1px;background:#f0f2f7;margin:8px 0;}
-.total-row.grand{background:linear-gradient(135deg,#0f1f3d,#1a3a6b);margin:-20px -30px -20px;padding:18px 30px;border-radius:0;}
-.total-row.grand .tl{color:rgba(255,255,255,0.7);font-size:12px;text-transform:uppercase;letter-spacing:0.08em;}
-.total-row.grand .tv{color:#fff;font-size:20px;font-weight:800;}
-
-/* ── BANK & FOOTER ── */
-.inv-bank{background:#f8f9fc;border-top:1px solid #eef0f5;padding:22px 40px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;}
-.bank-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;margin-bottom:8px;}
-.bank-details{font-size:12.5px;color:#374151;line-height:1.8;}
-.bank-detail-val{font-weight:600;color:#1a1a2e;}
-.upi-block{text-align:center;}
-.upi-label{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;}
-.upi-id{font-size:13px;font-weight:600;color:#2f81f7;background:#f0f4ff;padding:6px 14px;border-radius:6px;border:1px solid #d0deff;}
-
-.inv-footer{padding:18px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eef0f5;}
-.inv-footer-brand{font-size:11.5px;color:#9ca3af;}
-.inv-footer-brand strong{color:#2f81f7;}
-.inv-signature{text-align:right;}
-.sig-label{font-size:10px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:28px;}
-.sig-name{font-size:12.5px;font-weight:700;color:#1a1a2e;border-top:1.5px solid #d1d5db;padding-top:6px;}
-
-/* ── STATUS STAMP ── */
-.status-stamp{
-  position:absolute;top:40px;right:40px;
-  width:90px;height:90px;
-  border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
-  transform:rotate(-15deg);
-  z-index:10;
-  display:none;
-}
-.status-stamp.paid{border:3px solid #3fb950;color:#3fb950;background:rgba(63,185,80,0.06);display:flex;}
-.status-stamp.overdue{border:3px solid #f85149;color:#f85149;background:rgba(248,81,73,0.06);display:flex;}
-.status-stamp .material-icons-round{font-size:22px;margin-bottom:2px;}
-
-/* ── WATERMARK for draft ── */
-.draft-watermark{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);
-  font-size:80px;font-weight:800;color:rgba(0,0,0,0.04);
-  letter-spacing:-2px;pointer-events:none;white-space:nowrap;
-  display:none;
+  color:#1a1a1a;
+  font-size:11px;
+  border:1.5px solid #555;
 }
 
 /* ── PRINT ── */
 @media print{
   .toolbar{display:none !important;}
   .preview-outer{padding:0;}
-  .invoice-paper{box-shadow:none;border-radius:0;width:100%;}
+  .invoice-paper{box-shadow:none;border-radius:0;width:100%;border:none;}
   body{background:#fff;}
 }
+@keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+body{animation:_pgIn 0.2s ease-out;}
 
-  /* Page transition */
-  @keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-  body{animation:_pgIn 0.2s ease-out;}
+/* ══════════════════════════════════════
+   INVOICE CONTENT STYLES
+══════════════════════════════════════ */
+
+/* IRN / e-Invoice header */
+.irn-bar{
+  border-bottom:1px solid #555;
+  padding:5px 10px;
+  font-size:9.5px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+  background:#fafafa;
+}
+.irn-rows{display:flex;flex-direction:column;gap:2px;}
+.irn-row{display:flex;gap:18px;flex-wrap:wrap;}
+.irn-item{display:flex;gap:5px;}
+.irn-key{font-weight:700;color:#333;}
+.irn-val{color:#111;}
+
+/* Main company + invoice type header */
+.inv-header-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  border-bottom:1.5px solid #555;
+  min-height:110px;
+}
+.company-cell{
+  display:flex;
+  gap:12px;
+  padding:10px 14px;
+  border-right:1.5px solid #555;
+  align-items:flex-start;
+}
+.co-logo{
+  width:64px;height:64px;
+  object-fit:contain;
+  flex-shrink:0;
+  border:1px solid #ccc;
+  border-radius:4px;
+  background:#f8f9fa;
+}
+.co-logo-fallback{
+  width:64px;height:64px;flex-shrink:0;
+  background:linear-gradient(135deg,#2f81f7,#39d0d8);
+  border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;
+}
+.co-info{}
+.co-name{font-size:13.5px;font-weight:700;color:#1a1a1a;margin-bottom:4px;line-height:1.2;}
+.co-detail{font-size:9.5px;color:#333;line-height:1.65;}
+.inv-type-cell{
+  min-width:250px;
+  display:flex;
+  flex-direction:column;
+}
+.inv-type-title{
+  font-size:15px;font-weight:700;
+  text-align:center;
+  border-bottom:1px solid #555;
+  padding:8px 12px;
+  letter-spacing:0.08em;
+  color:#1a1a1a;
+}
+.meta-tbl{width:100%;border-collapse:collapse;flex:1;}
+.meta-tbl td{
+  padding:3.5px 10px;
+  font-size:10px;
+  border-bottom:1px solid #ddd;
+  vertical-align:middle;
+}
+.meta-tbl tr:last-child td{border-bottom:none;}
+.meta-key{font-weight:600;color:#444;white-space:nowrap;width:115px;}
+.meta-val{color:#1a1a1a;font-weight:500;}
+
+/* Parties + Transport row */
+.parties-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 210px;
+  border-bottom:1.5px solid #555;
+  min-height:90px;
+}
+.party-cell{padding:0;border-right:1px solid #555;}
+.party-cell:last-child{border-right:none;}
+.party-head{
+  font-size:10px;font-weight:700;
+  background:#f0f0f0;
+  padding:4px 10px;
+  border-bottom:1px solid #ccc;
+  color:#333;
+  letter-spacing:0.02em;
+}
+.party-body{padding:6px 10px;}
+.party-name-lg{font-size:11.5px;font-weight:700;color:#1a1a1a;margin-bottom:3px;}
+.party-addr{font-size:9.5px;color:#333;line-height:1.6;}
+.party-gstin{font-size:9.5px;font-weight:700;color:#333;margin-top:3px;}
+
+/* Transport table inside party-cell */
+.transport-tbl{width:100%;border-collapse:collapse;height:100%;}
+.transport-tbl td{
+  padding:3.5px 8px;
+  font-size:10px;
+  border-bottom:1px solid #e0e0e0;
+  vertical-align:middle;
+}
+.transport-tbl tr:last-child td{border-bottom:none;}
+.tr-key{font-weight:600;color:#444;white-space:nowrap;width:85px;}
+.tr-val{color:#1a1a1a;font-weight:500;}
+
+/* Items table */
+.items-section{border-bottom:1px solid #555;}
+.items-tbl{width:100%;border-collapse:collapse;table-layout:fixed;}
+.items-tbl th{
+  padding:5px 5px;
+  font-size:10px;font-weight:700;
+  background:#f0f0f0;
+  border-bottom:2px solid #555;
+  border-right:1px solid #bbb;
+  text-align:center;
+  color:#111;
+  line-height:1.3;
+}
+.items-tbl th:last-child{border-right:none;}
+.items-tbl td{
+  padding:5px 5px;
+  font-size:10.5px;
+  border-bottom:1px solid #ddd;
+  border-right:1px solid #ddd;
+  vertical-align:top;
+  color:#1a1a1a;
+}
+.items-tbl td:last-child{border-right:none;}
+.items-tbl tbody tr:last-child td{border-bottom:none;}
+/* column widths */
+.items-tbl .c-sr{width:36px;text-align:center;}
+.items-tbl .c-pkgs{width:66px;text-align:center;}
+.items-tbl .c-desc{text-align:left;}
+.items-tbl .c-hsn{width:72px;text-align:center;font-size:10px;}
+.items-tbl .c-qty{width:56px;text-align:center;}
+.items-tbl .c-uom{width:48px;text-align:center;}
+.items-tbl .c-rate{width:76px;text-align:right;}
+.items-tbl .c-disc{width:52px;text-align:center;}
+.items-tbl .c-amt{width:86px;text-align:right;font-weight:600;}
+
+/* Totals (continuation of items table) */
+.items-tbl .tot-row td{
+  border-bottom:1px solid #e0e0e0;
+  padding:3.5px 5px;
+  font-size:10.5px;
+  background:#fff;
+}
+.items-tbl .tot-row.tot-bold td{font-weight:700;}
+.items-tbl .tot-row.tot-grand td{background:#f0f4ff;font-weight:700;font-size:11px;}
+.items-tbl .tot-row.tot-final td{background:#1a2332;color:#fff;font-weight:700;font-size:11.5px;}
+.items-tbl .tot-divider td{border-top:1.5px solid #555;padding:0;height:0;}
+.items-tbl .tot-qty-row td{
+  padding:4px 5px;
+  font-size:10.5px;
+  border-top:1.5px solid #555;
+  border-bottom:none;
+  font-weight:600;
+}
+
+/* Amount in words */
+.words-section{
+  border-bottom:1px solid #555;
+  padding:5px 10px;
+  font-size:10px;
+  line-height:1.7;
+  background:#fafafa;
+}
+.words-section strong{font-weight:700;color:#333;}
+.words-section span{font-style:italic;color:#1a1a1a;font-weight:500;}
+
+/* Footer: PAN + Bank */
+.footer-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-bottom:1px solid #555;
+  min-height:100px;
+}
+.footer-left{padding:8px 12px;border-right:1px solid #555;}
+.footer-right{padding:0;}
+.f-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#555;margin-bottom:3px;}
+.f-val{font-size:10.5px;color:#1a1a1a;line-height:1.65;}
+.f-pan{font-size:12px;font-weight:700;font-family:monospace;color:#1a1a1a;}
+.decl-text{font-size:9.5px;color:#444;line-height:1.55;margin-top:5px;}
+.seal-text{font-size:10px;color:#555;margin-top:10px;padding-top:4px;}
+
+.bank-header{
+  font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#555;
+  padding:5px 12px;
+  border-bottom:1px solid #ddd;
+}
+.bank-tbl{width:100%;border-collapse:collapse;}
+.bank-tbl td{padding:3px 12px;font-size:10px;border-bottom:1px solid #eee;vertical-align:top;}
+.bank-tbl tr:last-child td{border-bottom:none;}
+.bk-key{font-weight:600;color:#444;white-space:nowrap;width:110px;}
+.bk-val{font-weight:600;color:#1a1a1a;}
+
+.sig-block{
+  padding:6px 12px 6px;
+  text-align:right;
+  border-top:1px solid #ddd;
+}
+.sig-for{font-size:10.5px;font-weight:700;color:#1a1a1a;}
+.sig-gap{height:28px;}
+.sig-line{border-top:1px solid #888;padding-top:4px;font-size:10px;color:#555;display:inline-block;min-width:160px;text-align:center;}
+
+/* Jurisdiction bar */
+.jurisdiction-bar{
+  text-align:center;
+  padding:6px 10px;
+  font-size:10.5px;
+  font-weight:700;
+  color:#333;
+  letter-spacing:0.08em;
+  border-top:1.5px solid #555;
+  background:#f5f5f5;
+}
 </style>
 </head>
 <body>
@@ -204,7 +296,6 @@ table.items-table tbody tr:last-child td{border-bottom:none;}
     <button class="btn btn-ghost" id="prevBtn" onclick="navigate(-1)"><span class="material-icons-round">chevron_left</span></button>
     <span id="navCounter" style="font-size:13px;color:var(--muted);min-width:60px;text-align:center">1 / 1</span>
     <button class="btn btn-ghost" id="nextBtn" onclick="navigate(1)"><span class="material-icons-round">chevron_right</span></button>
-    <button class="btn btn-ghost" onclick="toggleTheme()"><span class="material-icons-round">palette</span>Theme</button>
     <button class="btn btn-ghost" onclick="shareWhatsApp()"><span class="material-icons-round">share</span>WhatsApp</button>
     <button class="btn btn-primary" onclick="window.print()"><span class="material-icons-round">print</span>Print / PDF</button>
   </div>
@@ -212,305 +303,422 @@ table.items-table tbody tr:last-child td{border-bottom:none;}
 
 <!-- Preview -->
 <div class="preview-outer">
-  <div class="invoice-paper" id="invoicePaper">
+<div class="invoice-paper" id="invoicePaper">
 
-    <!-- Status stamp (shown conditionally) -->
-    <div class="status-stamp" id="statusStamp">
-      <span class="material-icons-round" id="stampIcon">check_circle</span>
-      <span id="stampText">PAID</span>
-    </div>
-
-    <!-- Draft watermark -->
-    <div class="draft-watermark" id="draftWatermark">DRAFT</div>
-
-    <!-- Header -->
-    <div class="inv-header" id="invHeader">
-      <div class="inv-header-top">
-        <div class="company-block">
-          <div class="company-logo-text" id="compName">KIDV Tech</div>
-          <div class="company-logo-sub">Technology Solutions</div>
-        </div>
-        <div class="inv-title-block">
-          <div class="inv-title">INVOICE</div>
-          <div class="inv-number">No. <span id="invNo">INV-001</span></div>
-        </div>
+  <!-- 1. IRN / E-Invoice header (hidden unless IRN data present) -->
+  <div class="irn-bar" id="irnBar" style="display:none">
+    <div class="irn-rows">
+      <div class="irn-row">
+        <div class="irn-item"><span class="irn-key">IRN</span><span class="irn-val" id="irnNo">—</span></div>
+        <div class="irn-item"><span class="irn-key">Ack No:</span><span class="irn-val" id="ackNo">—</span></div>
+        <div class="irn-item"><span class="irn-key">Ack Date:</span><span class="irn-val" id="ackDate">—</span></div>
       </div>
-      <div class="inv-header-meta">
-        <div class="meta-item"><div class="meta-label">Invoice Date</div><div class="meta-val" id="invDate">—</div></div>
-        <div class="meta-item"><div class="meta-label">Due Date</div><div class="meta-val" id="invDue">—</div></div>
-        <div class="meta-item"><div class="meta-label">Payment Terms</div><div class="meta-val" id="invTerms">Net 30</div></div>
-        <div class="meta-item"><div class="meta-label">Supply Type</div><div class="meta-val" id="invSupply">Intra-State</div></div>
+      <div class="irn-row">
+        <div class="irn-item"><span class="irn-key">Document No:</span><span class="irn-val" id="docNo">—</span></div>
+        <div class="irn-item"><span class="irn-key">E-Way Bill No:</span><span class="irn-val" id="ewayBillNo">—</span></div>
       </div>
     </div>
+  </div>
 
-    <!-- Accent Bar -->
-    <div class="accent-bar"></div>
-
-    <!-- Parties -->
-    <div class="inv-parties">
-      <div class="party-block">
-        <div class="party-type">From</div>
-        <div class="party-name" id="fromName">KIDV Tech</div>
-        <div class="party-detail" id="fromDetail">info@kidvtech.com<br/>Ahmedabad, Gujarat</div>
-        <div class="party-gstin" id="fromGSTIN">GSTIN: 24XXXXX0000X1ZX</div>
-      </div>
-      <div class="party-block">
-        <div class="party-type">Bill To</div>
-        <div class="party-name" id="toName">Client Name</div>
-        <div class="party-detail" id="toDetail">client@email.com<br/>City, State</div>
-        <div class="party-gstin" id="toGSTIN" style="display:none"></div>
+  <!-- 2. Company + Invoice Type header -->
+  <div class="inv-header-grid">
+    <div class="company-cell">
+      <img id="coLogoImg" class="co-logo" src="/logo.jpg" alt="Logo"
+           onerror="this.style.display='none';document.getElementById('coLogoFallback').style.display='flex'"/>
+      <div class="co-logo-fallback" id="coLogoFallback" style="display:none">KI</div>
+      <div class="co-info">
+        <div class="co-name" id="coName">KIDV Tech</div>
+        <div class="co-detail" id="coDetail">Ahmedabad, Gujarat</div>
       </div>
     </div>
-
-    <!-- Line Items -->
-    <div class="inv-items">
-      <table class="items-table">
-        <thead>
-          <tr>
-            <th style="width:44px">#</th>
-            <th>Description</th>
-            <th style="width:80px">HSN/SAC</th>
-            <th style="width:60px">Qty</th>
-            <th style="width:100px">Rate</th>
-            <th style="width:70px">GST</th>
-            <th style="width:110px">Amount</th>
-          </tr>
-        </thead>
-        <tbody id="itemsBody">
-          <tr><td colspan="7" style="text-align:center;padding:30px;color:#9ca3af">No items</td></tr>
-        </tbody>
+    <div class="inv-type-cell">
+      <div class="inv-type-title" id="invTypeTitle">TAX INVOICE</div>
+      <table class="meta-tbl">
+        <tr><td class="meta-key">Invoice No</td><td class="meta-val" id="invNo">—</td></tr>
+        <tr><td class="meta-key">Invoice Date</td><td class="meta-val" id="invDate">—</td></tr>
+        <tr><td class="meta-key">Customer PO No</td><td class="meta-val" id="invPoNo"></td></tr>
+        <tr><td class="meta-key">Customer PO Date</td><td class="meta-val" id="invPoDate"></td></tr>
+        <tr><td class="meta-key">Payment Terms</td><td class="meta-val" id="invTerms">—</td></tr>
       </table>
     </div>
+  </div>
 
-    <!-- Totals Section -->
-    <div class="inv-totals-section">
-      <div class="inv-notes">
-        <div class="notes-label">Notes / Terms</div>
-        <div class="notes-text" id="invNotes">Thank you for your business!</div>
-
-        <div style="margin-top:20px">
-          <div class="notes-label">Amount in Words</div>
-          <div class="notes-text" id="amountWords" style="font-style:italic;color:#374151"></div>
-        </div>
-      </div>
-      <div class="inv-totals">
-        <div class="total-row"><span class="tl">Subtotal</span><span class="tv" id="t-sub">₹0.00</span></div>
-        <div id="cgst-row" class="total-row"><span class="tl" id="cgst-label">CGST (9%)</span><span class="tv" id="t-cgst">₹0.00</span></div>
-        <div id="sgst-row" class="total-row"><span class="tl" id="sgst-label">SGST (9%)</span><span class="tv" id="t-sgst">₹0.00</span></div>
-        <div id="igst-row" class="total-row" style="display:none"><span class="tl" id="igst-label">IGST (18%)</span><span class="tv" id="t-igst">₹0.00</span></div>
-        <div class="total-divider"></div>
-        <div class="total-row grand"><span class="tl">Total Payable</span><span class="tv" id="t-total">₹0.00</span></div>
+  <!-- 3. Consignee | Buyer | Transport -->
+  <div class="parties-row">
+    <div class="party-cell">
+      <div class="party-head">Consignee (Ship to)</div>
+      <div class="party-body">
+        <div class="party-name-lg" id="consigneeName">—</div>
+        <div class="party-addr" id="consigneeAddr"></div>
+        <div class="party-gstin" id="consigneeGSTIN"></div>
       </div>
     </div>
-
-    <!-- Bank Details -->
-    <div class="inv-bank" id="bankSection">
-      <div>
-        <div class="bank-label">Bank Transfer Details</div>
-        <div class="bank-details" id="bankDetails">
-          <span style="color:#9ca3af">Add bank details in Settings → Bank Details</span>
-        </div>
-      </div>
-      <div class="upi-block" id="upiBlock" style="display:none">
-        <div class="upi-label">Pay via UPI</div>
-        <div class="upi-id" id="upiId"></div>
+    <div class="party-cell">
+      <div class="party-head">Buyer (Bill To)</div>
+      <div class="party-body">
+        <div class="party-name-lg" id="buyerName">—</div>
+        <div class="party-addr" id="buyerAddr"></div>
+        <div class="party-gstin" id="buyerGSTIN"></div>
       </div>
     </div>
+    <div class="party-cell">
+      <table class="transport-tbl">
+        <tr><td class="tr-key">Transporter Name</td><td class="tr-val" id="tTransporter"></td></tr>
+        <tr><td class="tr-key">Destination</td><td class="tr-val" id="tDestination"></td></tr>
+        <tr><td class="tr-key">LR No</td><td class="tr-val" id="tLrNo"></td></tr>
+        <tr><td class="tr-key">LR Date</td><td class="tr-val" id="tLrDate"></td></tr>
+        <tr><td class="tr-key">Vehicle No</td><td class="tr-val" id="tVehicleNo"></td></tr>
+      </table>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <div class="inv-footer">
-      <div class="inv-footer-brand">Generated by <strong>KIDV Invoice</strong> · kidvtech.com</div>
-      <div class="inv-signature">
-        <div class="sig-label">Authorised Signatory</div>
-        <div class="sig-name" id="sigName">KIDV Tech</div>
+  <!-- 4. Line Items + Totals (single table) -->
+  <div class="items-section">
+    <table class="items-tbl">
+      <thead>
+        <tr>
+          <th class="c-sr">Sr.<br/>No.</th>
+          <th class="c-pkgs">No of<br/>Pkgs</th>
+          <th class="c-desc">Description of Goods / Services</th>
+          <th class="c-hsn">HSN/SAC</th>
+          <th class="c-qty">Qty</th>
+          <th class="c-uom">UOM</th>
+          <th class="c-rate">Rate</th>
+          <th class="c-disc">Disc.<br/>%</th>
+          <th class="c-amt">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody">
+        <tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">No items</td></tr>
+      </tbody>
+      <tfoot id="totalsFoot"></tfoot>
+    </table>
+  </div>
+
+  <!-- 5. Amount in Words -->
+  <div class="words-section">
+    <div><strong>Amount in Words:</strong> <span id="amountWords">—</span></div>
+    <div><strong>Tax Amount in Words:</strong> <span id="taxAmtWords">—</span></div>
+  </div>
+
+  <!-- 6. Footer: PAN / Declaration | Bank Details / Signature -->
+  <div class="footer-grid">
+    <div class="footer-left">
+      <div><span class="f-label">Company's PAN: </span><span class="f-pan" id="compPAN">—</span></div>
+      <div style="margin-top:8px">
+        <div class="f-label">Declaration</div>
+        <div class="decl-text" id="declText">We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</div>
+      </div>
+      <div class="seal-text">Customer's Seal and Signature</div>
+    </div>
+    <div class="footer-right" style="display:flex;flex-direction:column;">
+      <div class="bank-header">Company's Bank Details:</div>
+      <table class="bank-tbl">
+        <tr><td class="bk-key">Bank Name:</td><td class="bk-val" id="bkName">—</td></tr>
+        <tr><td class="bk-key">A/c No.:</td><td class="bk-val" id="bkAcc">—</td></tr>
+        <tr><td class="bk-key">Branch &amp; IFS Code:</td><td class="bk-val" id="bkBranch">—</td></tr>
+      </table>
+      <div class="sig-block" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8px;">
+        <div class="sig-for">For, <span id="sigCoName">KIDV Tech</span></div>
+        <div class="sig-gap"></div>
+        <div style="text-align:right"><span class="sig-line">Authorised Signatory</span></div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /invoice-paper -->
+  <!-- 7. Jurisdiction -->
+  <div class="jurisdiction-bar" id="jurisdictionBar">SUBJECT TO AHMEDABAD JURISDICTION</div>
+
+</div><!-- /invoice-paper -->
 </div><!-- /preview-outer -->
 
 <script>
 // ── Load data ──
-const params   = new URLSearchParams(location.search);
-const invId    = params.get('id') || '';
+const params  = new URLSearchParams(location.search);
+const invId   = params.get('id') || '';
 
-// Read the specific invoice stored by previewInvoice()
 const _invRaw  = (invId ? localStorage.getItem('kidv-inv-'+invId) : null)
                  || localStorage.getItem('kidv-preview-invoice')
                  || 'null';
 const _invData = JSON.parse(_invRaw);
 const invoices = _invData ? [_invData] : JSON.parse(localStorage.getItem('kidv-invoices') || '[]');
 
-const comp     = JSON.parse(localStorage.getItem('kidv-company')  || '{}');
-const gst      = JSON.parse(localStorage.getItem('kidv-gst')      || '{}');
-const bank     = JSON.parse(localStorage.getItem('kidv-bank')     || '{}');
+const comp = JSON.parse(localStorage.getItem('kidv-company') || '{}');
+const gst  = JSON.parse(localStorage.getItem('kidv-gst')     || '{}');
+const bank = JSON.parse(localStorage.getItem('kidv-bank')    || '{}');
 
 let currentIdx = 0;
 
-const ONES = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-const TENS = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+// ── Number → Words ──
+const ONES=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+const TENS=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
 function numToWords(n){
-  n = Math.floor(n);
-  if(n===0) return 'Zero';
-  if(n<20) return ONES[n];
-  if(n<100) return TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');
-  if(n<1000) return ONES[Math.floor(n/100)]+' Hundred'+(n%100?' '+numToWords(n%100):'');
-  if(n<100000) return numToWords(Math.floor(n/1000))+' Thousand'+(n%1000?' '+numToWords(n%1000):'');
-  if(n<10000000) return numToWords(Math.floor(n/100000))+' Lakh'+(n%100000?' '+numToWords(n%100000):'');
+  n=Math.floor(n);
+  if(n===0)return'Zero';
+  if(n<20)return ONES[n];
+  if(n<100)return TENS[Math.floor(n/10)]+(n%10?' '+ONES[n%10]:'');
+  if(n<1000)return ONES[Math.floor(n/100)]+' Hundred'+(n%100?' '+numToWords(n%100):'');
+  if(n<100000)return numToWords(Math.floor(n/1000))+' Thousand'+(n%1000?' '+numToWords(n%1000):'');
+  if(n<10000000)return numToWords(Math.floor(n/100000))+' Lakh'+(n%100000?' '+numToWords(n%100000):'');
   return numToWords(Math.floor(n/10000000))+' Crore'+(n%10000000?' '+numToWords(n%10000000):'');
 }
-
-function fmt(n){ return '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2}); }
-
-function renderInvoice(idx){
-  if(!invoices.length){
-    document.getElementById('toolbarTitle').textContent = 'No Invoices';
-    return;
-  }
-  const inv = invoices[idx];
-  if(!inv) return;
-
-  // Toolbar
-  document.getElementById('toolbarTitle').textContent = inv.invoiceNo || 'Invoice';
-  document.getElementById('navCounter').textContent = (idx+1)+' / '+invoices.length;
-
-  // Status stamp
-  const stamp = document.getElementById('statusStamp');
-  const draftWM = document.getElementById('draftWatermark');
-  stamp.className = 'status-stamp';
-  draftWM.style.display = 'none';
-  if(inv.status === 'paid'){ stamp.classList.add('paid'); document.getElementById('stampIcon').textContent='check_circle'; document.getElementById('stampText').textContent='PAID'; }
-  else if(inv.status === 'overdue'){ stamp.classList.add('overdue'); document.getElementById('stampIcon').textContent='warning_amber'; document.getElementById('stampText').textContent='OVERDUE'; }
-  else if(inv.status === 'draft'){ draftWM.style.display='block'; }
-
-  // Header
-  document.getElementById('invNo').textContent    = inv.invoiceNo || '—';
-  document.getElementById('invDate').textContent  = formatDate(inv.date);
-  document.getElementById('invDue').textContent   = formatDate(inv.due);
-  document.getElementById('invTerms').textContent = inv.terms || 'Net 30';
-  document.getElementById('invSupply').textContent= inv.supply==='inter'?'Inter-State (IGST)':'Intra-State (CGST+SGST)';
-
-  // Company (From)
-  const cName = comp.name || 'Your Company';
-  document.getElementById('compName').textContent = cName;
-  document.getElementById('fromName').textContent = cName;
-  document.getElementById('sigName').textContent  = cName;
-  const fromDetail = [comp.email, comp.phone, comp.address, comp.city].filter(Boolean).join('\n');
-  document.getElementById('fromDetail').innerHTML = fromDetail.replace(/\n/g,'<br/>') || '—';
-  const compGSTIN = gst.gstin || comp.gstin;
-  document.getElementById('fromGSTIN').textContent = compGSTIN ? 'GSTIN: '+compGSTIN : '';
-  document.getElementById('fromGSTIN').style.display = compGSTIN ? '' : 'none';
-
-  // Client (To)
-  document.getElementById('toName').textContent = inv.clientName || '—';
-  const toDetail = [inv.clientAddress, inv.clientState].filter(Boolean).join(', ');
-  document.getElementById('toDetail').innerHTML = toDetail || '—';
-  const toGSTIN = document.getElementById('toGSTIN');
-  if(inv.clientGSTIN){ toGSTIN.textContent='GSTIN: '+inv.clientGSTIN; toGSTIN.style.display=''; }
-  else { toGSTIN.style.display='none'; }
-
-  // Line Items
-  const lines = inv.lines || [];
-  document.getElementById('itemsBody').innerHTML = lines.length ? lines.map((l,i)=>{
-    const amt = parseFloat(l.amount||0);
-    return `<tr>
-      <td><div class="item-sno">${i+1}</div></td>
-      <td><div class="item-desc">${l.desc||'—'}</div><div class="item-hsn">${l.hsn?'HSN/SAC: '+l.hsn:''}</div></td>
-      <td style="text-align:center;font-family:monospace;font-size:12px;color:#6b7280">${l.hsn||'—'}</td>
-      <td style="text-align:center">${l.qty}</td>
-      <td style="text-align:right">₹${parseFloat(l.rate||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
-      <td style="text-align:center"><span class="item-gst-pill">${l.gst}%</span></td>
-      <td style="text-align:right;font-weight:600">₹${amt.toLocaleString('en-IN',{minimumFractionDigits:2})}</td>
-    </tr>`;
-  }).join('') : '<tr><td colspan="7" style="text-align:center;padding:30px;color:#9ca3af">No items</td></tr>';
-
-  // Totals
-  const sub  = parseFloat(inv.sub || 0);
-  const gstT = parseFloat(inv.totalGST || 0);
-  const half = gstT / 2;
-  const tot  = parseFloat(inv.total || 0);
-  const intra= inv.supply !== 'inter';
-
-  document.getElementById('t-sub').textContent  = fmt(sub);
-  document.getElementById('t-total').textContent= fmt(tot);
-  document.getElementById('cgst-row').style.display = intra?'':'none';
-  document.getElementById('sgst-row').style.display = intra?'':'none';
-  document.getElementById('igst-row').style.display = intra?'none':'';
-  if(intra){
-    document.getElementById('t-cgst').textContent = fmt(half);
-    document.getElementById('t-sgst').textContent = fmt(half);
-  } else {
-    document.getElementById('t-igst').textContent = fmt(gstT);
-  }
-
-  // Amount in words
-  document.getElementById('amountWords').textContent = numToWords(Math.floor(tot)) + ' Rupees Only';
-
-  // Notes
-  document.getElementById('invNotes').textContent = inv.notes || 'Thank you for your business!';
-
-  // Bank Details
-  if(bank.acc){
-    document.getElementById('bankDetails').innerHTML =
-      `Account: <span class="bank-detail-val">${bank.acc}</span><br/>
-       Bank: <span class="bank-detail-val">${bank.bank||'—'}</span> &nbsp;|&nbsp;
-       IFSC: <span class="bank-detail-val">${bank.ifsc||'—'}</span><br/>
-       Branch: <span class="bank-detail-val">${bank.branch||'—'}</span>`;
-  }
-  if(bank.upi){
-    document.getElementById('upiBlock').style.display='';
-    document.getElementById('upiId').textContent = bank.upi;
-  } else {
-    document.getElementById('upiBlock').style.display='none';
-  }
+function toWordsINR(amt){
+  const n=Math.floor(amt);
+  const p=Math.round((amt-n)*100);
+  let s='INR '+numToWords(n);
+  if(p)s+=' and '+numToWords(p)+' Paise';
+  return s+' Only.';
 }
 
-function formatDate(d){
-  if(!d) return '—';
-  const dt = new Date(d);
-  return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+function fmt(n){return '₹'+parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
+function fmtN(n){return parseFloat(n||0).toLocaleString('en-IN',{minimumFractionDigits:2});}
+function setTxt(id,v){const e=document.getElementById(id);if(e)e.textContent=v||'';}
+function setHTML(id,v){const e=document.getElementById(id);if(e)e.innerHTML=v||'';}
+
+function fmtDate(d){
+  if(!d)return'—';
+  try{
+    const dt=new Date(d);
+    if(isNaN(dt))return d;
+    const dd=String(dt.getDate()).padStart(2,'0');
+    const mm=String(dt.getMonth()+1).padStart(2,'0');
+    return dd+'-'+mm+'-'+dt.getFullYear();
+  }catch(e){return d;}
+}
+
+function buildAddr(addr,city,state,pin){
+  const parts=[];
+  if(addr)parts.push(addr);
+  if(city)parts.push(city);
+  if(state||pin)parts.push((state||'')+(state&&pin?', ':'')+( pin||''));
+  return parts.join('<br/>');
+}
+
+function renderInvoice(idx){
+  if(!invoices.length){setTxt('toolbarTitle','No Invoices');return;}
+  const inv=invoices[idx];
+  if(!inv)return;
+
+  setTxt('toolbarTitle',inv.invoiceNo||'Invoice');
+  setTxt('navCounter',(idx+1)+' / '+invoices.length);
+
+  // ── 1. IRN Bar ──
+  const hasIRN=!!(inv.irn||inv.ackNo||inv.ewayBill);
+  const irnBar=document.getElementById('irnBar');
+  irnBar.style.display=hasIRN?'flex':'none';
+  if(hasIRN){
+    setTxt('irnNo',inv.irn||'—');
+    setTxt('ackNo',inv.ackNo||'—');
+    setTxt('ackDate',fmtDate(inv.ackDate));
+    setTxt('docNo',inv.invoiceNo||'—');
+    setTxt('ewayBillNo',inv.ewayBill||'—');
+  }
+
+  // ── 2. Company ──
+  const cName=comp.name||'Your Company';
+  setTxt('coName',cName);
+  setTxt('sigCoName',cName);
+
+  const coLogoImg=document.getElementById('coLogoImg');
+  const coFallback=document.getElementById('coLogoFallback');
+  coFallback.textContent=cName.substring(0,2).toUpperCase();
+  if(comp.logo){
+    coLogoImg.src=comp.logo;
+    coLogoImg.style.display='';
+    coFallback.style.display='none';
+  } else {
+    coLogoImg.src='/logo.jpg';
+    coLogoImg.style.display='';
+    coLogoImg.onerror=function(){this.style.display='none';coFallback.style.display='flex';};
+  }
+
+  const compGSTIN=gst.gstin||comp.gstin||'';
+  const compAddr=[comp.address,comp.city&&comp.state?comp.city+', '+comp.state:comp.city||comp.state,comp.pin].filter(Boolean).join(', ');
+  const detailParts=[
+    compAddr,
+    comp.cin?'CIN: '+comp.cin:'',
+    compGSTIN?'GSTIN/UIN: '+compGSTIN:'',
+    (comp.stateCode||gst.stateCode)?'State Code: '+(comp.stateCode||gst.stateCode):'',
+    comp.phone?'Contact: '+comp.phone:'',
+    comp.email?'Email Id: '+comp.email:'',
+    comp.website?'Website: '+comp.website:'',
+  ].filter(Boolean);
+  setHTML('coDetail',detailParts.join('<br/>')||'Add company details in Settings');
+
+  const compPAN=comp.pan||gst.pan||'—';
+  setTxt('compPAN',compPAN);
+
+  const city=comp.city||'Your City';
+  setTxt('jurisdictionBar','SUBJECT TO '+city.toUpperCase()+' JURISDICTION');
+
+  // ── Invoice meta ──
+  setTxt('invNo',inv.invoiceNo||'—');
+  setTxt('invDate',fmtDate(inv.date));
+  setTxt('invPoNo',inv.poNo||'');
+  setTxt('invPoDate',inv.poDate?fmtDate(inv.poDate):'');
+  setTxt('invTerms',inv.terms||'Net 30');
+  setTxt('invTypeTitle',inv.invoiceType||'TAX INVOICE');
+
+  // ── 3. Parties ──
+  const bName=inv.clientName||'—';
+  const bAddr=buildAddr(inv.clientAddress,inv.clientCity,inv.clientState,inv.clientPin);
+  const bGSTIN=inv.clientGSTIN||'';
+  const bSC=inv.clientStateCode||inv.stateCode||'';
+  const bContact=[
+    inv.clientContact?'Contact Person: '+inv.clientContact:'',
+    inv.clientPhone?'Mo: '+inv.clientPhone:'',
+    inv.clientEmail?'Email: '+inv.clientEmail:'',
+    inv.placeOfSupply?'Place of Supply: '+inv.placeOfSupply:'',
+  ].filter(Boolean).join('<br/>');
+
+  // Consignee = shipTo if available, else buyer
+  const cName2=inv.shipToName||bName;
+  const cAddr=inv.shipToAddress?buildAddr(inv.shipToAddress,inv.shipToCity,inv.shipToState,inv.shipToPin):bAddr;
+  const cGSTIN=inv.shipToGSTIN||bGSTIN;
+
+  setTxt('consigneeName',cName2);
+  setHTML('consigneeAddr',cAddr);
+  setHTML('consigneeGSTIN',cGSTIN?'GSTIN: '+cGSTIN:'');
+
+  setTxt('buyerName',bName);
+  setHTML('buyerAddr',bAddr+(bContact?'<br/>'+bContact:''));
+  setHTML('buyerGSTIN',(bGSTIN?'GSTIN: '+bGSTIN:'')+
+    (bSC?'<br/>State Code: '+bSC:''));
+
+  // Transport
+  setTxt('tTransporter',inv.transporterName||'');
+  setTxt('tDestination',inv.destination||'');
+  setTxt('tLrNo',inv.lrNo||'');
+  setTxt('tLrDate',inv.lrDate?fmtDate(inv.lrDate):'');
+  setTxt('tVehicleNo',inv.vehicleNo||'');
+
+  // ── 4. Line Items ──
+  const lines=inv.lines||[];
+  const intra=inv.supply!=='inter';
+  let totalQty=0;
+
+  document.getElementById('itemsBody').innerHTML=lines.length
+    ?lines.map((l,i)=>{
+      const qty=parseFloat(l.qty||0);
+      totalQty+=qty;
+      const rate=parseFloat(l.rate||0);
+      const amt=parseFloat(l.amount||0);
+      const disc=l.disc?parseFloat(l.disc):'';
+      return `<tr>
+        <td class="c-sr" style="text-align:center">${i+1}</td>
+        <td class="c-pkgs" style="text-align:center">${l.pkgs||''}</td>
+        <td class="c-desc"><strong style="font-size:11px">${l.desc||'—'}</strong>${l.itemCode?'<br/><span style="font-size:9px;color:#777">Item Code: '+l.itemCode+'</span>':''}</td>
+        <td class="c-hsn">${l.hsn||'—'}</td>
+        <td class="c-qty" style="text-align:center">${qty.toLocaleString('en-IN')}</td>
+        <td class="c-uom" style="text-align:center">${l.uom||'Nos'}</td>
+        <td class="c-rate" style="text-align:right">₹ ${fmtN(rate)}</td>
+        <td class="c-disc" style="text-align:center">${disc!==''?disc+'%':''}</td>
+        <td class="c-amt">₹ ${fmtN(amt)}</td>
+      </tr>`;
+    }).join('')
+    :'<tr><td colspan="9" style="text-align:center;padding:24px;color:#9ca3af">No items added</td></tr>';
+
+  // ── Totals in tfoot ──
+  const sub=parseFloat(inv.sub||0);
+  const gstT=parseFloat(inv.totalGST||0);
+  const half=gstT/2;
+  const tot=parseFloat(inv.total||0);
+  const rounded=Math.round(tot);
+  const rounding=rounded-tot;
+
+  // detect common GST rate from first line
+  const gstPct=lines.length?parseFloat(lines[0].gst||18):18;
+  const halfPct=gstPct/2;
+
+  // P&F charges
+  const pf=parseFloat(inv.pf||0);
+
+  let tfoot='';
+  const TR=(label,val,cls='')=>
+    `<tr class="tot-row ${cls}">
+      <td colspan="8" style="text-align:right;padding-right:10px;${cls==='tot-grand'||cls==='tot-final'?'font-weight:700;':''}font-size:${cls==='tot-final'?'11':'10.5'}px;">${label}</td>
+      <td class="c-amt" style="${cls==='tot-final'?'color:#fff;background:#1a2332;':''}border-left:1px solid #bbb;">${val}</td>
+    </tr>`;
+
+  tfoot+=TR('Total','₹ '+fmtN(sub));
+  if(pf>0) tfoot+=TR('Packing & Forwarding Charges','₹ '+fmtN(pf));
+
+  if(intra){
+    tfoot+=TR('Output Tax CGST @ '+halfPct+'%','₹ '+fmtN(half));
+    tfoot+=TR('Output Tax SGST @ '+halfPct+'%','₹ '+fmtN(half));
+  }else{
+    tfoot+=TR('Output Tax IGST @ '+gstPct+'%','₹ '+fmtN(gstT));
+  }
+
+  tfoot+=TR('Total Taxes and Charges','₹ '+fmtN(gstT),'tot-bold');
+  tfoot+=TR('Grand Total','₹ '+fmtN(tot),'tot-grand');
+  tfoot+=TR('Rounding Adjustment','₹ '+fmtN(rounding));
+
+  // Qty + Rounded Total row
+  tfoot+=`<tr class="tot-qty-row">
+    <td colspan="5" style="border-right:1px solid #bbb">
+      <span style="font-weight:600;color:#444">Total Qty:</span>
+      <span style="font-weight:700;color:#1a1a1a;margin-left:5px">${totalQty.toLocaleString('en-IN')}</span>
+      <span style="font-style:italic;font-size:9.5px;color:#888;margin-left:12px">E. & O.E</span>
+    </td>
+    <td colspan="3" style="text-align:right;padding-right:10px;font-weight:700;font-size:11px;border-right:1px solid #bbb">Rounded Total</td>
+    <td style="font-weight:700;font-size:11px;text-align:right;padding:4px 5px">₹ ${fmtN(rounded)}</td>
+  </tr>`;
+
+  document.getElementById('totalsFoot').innerHTML=tfoot;
+
+  // ── 5. Amount in Words ──
+  setHTML('amountWords',toWordsINR(rounded));
+  setHTML('taxAmtWords',toWordsINR(gstT));
+
+  // ── 6. Bank Details ──
+  setTxt('bkName',bank.bank||'—');
+  setTxt('bkAcc',bank.acc||'—');
+  const branchIFS=[bank.branch,bank.ifsc].filter(Boolean).join(' & ');
+  setTxt('bkBranch',branchIFS||(bank.upi?'UPI: '+bank.upi:'—'));
 }
 
 function navigate(dir){
-  currentIdx = Math.max(0, Math.min(invoices.length-1, currentIdx+dir));
+  currentIdx=Math.max(0,Math.min(invoices.length-1,currentIdx+dir));
   renderInvoice(currentIdx);
 }
 
-let darkTheme = true;
-function toggleTheme(){
-  darkTheme = !darkTheme;
-  document.body.style.background = darkTheme?'var(--bg)':'#e8ecf0';
-}
-
 function shareWhatsApp(){
-  const inv = invoices[currentIdx];
-  if(!inv) return;
-  const msg = `*Invoice ${inv.invoiceNo}*\nClient: ${inv.clientName}\nAmount: ₹${parseFloat(inv.total).toLocaleString('en-IN')}\nDue: ${inv.due||'—'}\n\n_Sent from KIDV Invoice_`;
-  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+  const inv=invoices[currentIdx];
+  if(!inv)return;
+  if(window.KIDV)KIDV.shareWhatsApp(inv,inv.clientPhone||'');
 }
 
-// No invoices → show demo
+// ── Demo if no data ──
 if(!invoices.length){
-  // Demo invoice
-  const demo = {
-    invoiceNo:'INV-001', date:'2026-03-20', due:'2026-04-19',
-    terms:'Net 30', supply:'intra', status:'pending',
-    clientName:'Acme Industries Pvt. Ltd.',
-    clientGSTIN:'24AABCU9603R1ZX',
-    clientAddress:'Plot 42, GIDC Phase 2', clientState:'Gujarat',
+  invoices.push({
+    invoiceNo:'TAX/26-27/001',
+    date:'2026-04-14',
+    terms:'Net 30',
+    supply:'intra',
+    status:'pending',
+    invoiceType:'TAX INVOICE',
+    clientName:'Lakshmi Machine Works Ltd',
+    clientGSTIN:'33AAACL5244N1ZF',
+    clientAddress:'Unit - II, Kaniyur Post, Coimbatore',
+    clientCity:'Coimbatore',
+    clientState:'Tamil Nadu',
+    clientStateCode:'33',
+    clientPin:'641659',
+    transporterName:'',
+    destination:'',
     lines:[
-      {desc:'ERPNext Implementation',hsn:'998314',qty:1,rate:50000,gst:18,amount:50000},
-      {desc:'Custom Module Development',hsn:'998314',qty:3,rate:8000,gst:18,amount:24000},
-      {desc:'Annual Support & Maintenance',hsn:'998315',qty:1,rate:12000,gst:18,amount:12000},
+      {desc:'Software Development Services',hsn:'998314',qty:5,rate:10000,gst:18,amount:50000,uom:'Nos'},
+      {desc:'Annual Support & Maintenance',hsn:'998315',qty:1,rate:12000,gst:18,amount:12000,uom:'Nos'},
     ],
-    sub:'86000.00', totalGST:'15480.00', total:'101480.00',
-    notes:'Payment due within 30 days. Late fee of 2% per month applicable after due date.',
-  };
-  invoices.push(demo); currentIdx=0;
+    sub:'62000.00',totalGST:'11160.00',total:'73160.00',
+    notes:'Thank you for your business!',
+  });
+  currentIdx=0;
 }
 
 renderInvoice(currentIdx);
 </script>
-  <script src="/kidv-common.js"></script>
+<script src="/kidv-common.js"></script>
 </body>
 </html>
