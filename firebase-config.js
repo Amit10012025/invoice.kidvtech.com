@@ -150,20 +150,34 @@ window.KIDV = {
     if (cached) { try { return JSON.parse(cached); } catch(e) {} }
     if (!this._uid) return {};
     try {
-      const doc = await _fbDb.collection('users').doc(this._uid).get();
-      const d   = doc.exists ? (doc.data()[key] || {}) : {};
-      if (Object.keys(d).length) localStorage.setItem('kidv-' + key, JSON.stringify(d));
+      // Primary: settings subcollection (reliable, separate from auth doc)
+      const doc = await _fbDb.collection('users').doc(this._uid)
+        .collection('settings').doc(key).get();
+      if (doc.exists) {
+        const d = doc.data() || {};
+        if (Object.keys(d).length) localStorage.setItem('kidv-' + key, JSON.stringify(d));
+        return d;
+      }
+      // Fallback: top-level user doc fields (backward compat)
+      const userDoc = await _fbDb.collection('users').doc(this._uid).get();
+      const d = userDoc.exists ? (userDoc.data()[key] || {}) : {};
+      if (Object.keys(d).length) {
+        localStorage.setItem('kidv-' + key, JSON.stringify(d));
+        // Migrate to subcollection
+        _fbDb.collection('users').doc(this._uid).collection('settings').doc(key)
+          .set({ ...d, updatedAt: new Date().toISOString() }, { merge: true }).catch(()=>{});
+      }
       return d;
-    } catch(e) { return {}; }
+    } catch(e) { console.error('[KIDV] getSettings error:', e); return {}; }
   },
 
   async saveSettings(key, data) {
     localStorage.setItem('kidv-' + key, JSON.stringify(data));
     if (!this._uid) return;
     try {
-      await _fbDb.collection('users').doc(this._uid).set(
-        { [key]: data, updatedAt: new Date().toISOString() }, { merge: true }
-      );
+      await _fbDb.collection('users').doc(this._uid)
+        .collection('settings').doc(key)
+        .set({ ...data, updatedAt: new Date().toISOString() }, { merge: true });
     } catch(e) { console.error('[KIDV] saveSettings error:', e); }
   },
 
