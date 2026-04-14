@@ -540,7 +540,9 @@ function renderInvoice(idx){
   setTxt('navCounter',(idx+1)+' / '+invoices.length);
 
   // ── 1. IRN Bar ──
-  const hasIRN=!!(inv.irn||inv.ackNo||inv.ewayBill);
+  // ewayNo is inside inv.transport nested object
+  const t = inv.transport || {};
+  const hasIRN=!!(inv.irn||inv.ackNo||t.ewayNo||inv.ewayBill);
   const irnBar=document.getElementById('irnBar');
   irnBar.style.display=hasIRN?'flex':'none';
   if(hasIRN){
@@ -548,7 +550,7 @@ function renderInvoice(idx){
     setTxt('ackNo',inv.ackNo||'—');
     setTxt('ackDate',fmtDate(inv.ackDate));
     setTxt('docNo',inv.invoiceNo||'—');
-    setTxt('ewayBillNo',inv.ewayBill||'—');
+    setTxt('ewayBillNo',t.ewayNo||inv.ewayBill||'—');
   }
 
   // ── 2. Company ──
@@ -600,6 +602,7 @@ function renderInvoice(idx){
 
   // ── 3. Parties ──
   const bName=inv.clientName||'—';
+  // clientCity / clientPin saved by newer form; older invoices may not have them
   const bAddr=buildAddr(inv.clientAddress,inv.clientCity,inv.clientState,inv.clientPin);
   const bGSTIN=inv.clientGSTIN||'';
   const bSC=inv.clientStateCode||inv.stateCode||'';
@@ -610,10 +613,14 @@ function renderInvoice(idx){
     inv.placeOfSupply?'Place of Supply: '+inv.placeOfSupply:'',
   ].filter(Boolean).join('<br/>');
 
-  // Consignee = shipTo if available, else buyer
-  const cName2=inv.shipToName||bName;
-  const cAddr=inv.shipToAddress?buildAddr(inv.shipToAddress,inv.shipToCity,inv.shipToState,inv.shipToPin):bAddr;
-  const cGSTIN=inv.shipToGSTIN||bGSTIN;
+  // Consignee = ship-to client if selected (saved as inv.shipName / inv.shipAddress)
+  // Falls back to buyer if no ship-to set
+  const hasShipTo = !!(inv.shipName);
+  const cName2 = hasShipTo ? inv.shipName : bName;
+  const cAddr  = hasShipTo
+    ? buildAddr(inv.shipAddress, inv.shipCity, inv.shipState, inv.shipPin||'')
+    : bAddr;
+  const cGSTIN = hasShipTo ? (inv.shipGSTIN||bGSTIN) : bGSTIN;
 
   setTxt('consigneeName',cName2);
   setHTML('consigneeAddr',cAddr);
@@ -624,12 +631,12 @@ function renderInvoice(idx){
   setHTML('buyerGSTIN',(bGSTIN?'GSTIN: '+bGSTIN:'')+
     (bSC?'<br/>State Code: '+bSC:''));
 
-  // Transport
-  setTxt('tTransporter',inv.transporterName||'');
-  setTxt('tDestination',inv.destination||'');
-  setTxt('tLrNo',inv.lrNo||'');
-  setTxt('tLrDate',inv.lrDate?fmtDate(inv.lrDate):'');
-  setTxt('tVehicleNo',inv.vehicleNo||'');
+  // Transport — saved as nested inv.transport object by invoice form
+  setTxt('tTransporter', t.transporter||inv.transporterName||'');
+  setTxt('tDestination', t.destination||inv.destination||'');
+  setTxt('tLrNo',        t.lrNo||inv.lrNo||'');
+  setTxt('tLrDate',     (t.lrDate||inv.lrDate)?fmtDate(t.lrDate||inv.lrDate):'');
+  setTxt('tVehicleNo',   t.vehicleNo||inv.vehicleNo||'');
 
   // ── 4. Line Items ──
   const lines=inv.lines||[];
