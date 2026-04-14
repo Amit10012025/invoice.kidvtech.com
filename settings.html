@@ -174,6 +174,22 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
               <span class="material-icons-round">lock</span>
               Company Name, GST, PAN fields are locked after first save. Contact admin to change: <strong>+91 79844 86885</strong>
             </div>
+            <!-- Logo Upload -->
+            <div style="display:flex;align-items:flex-start;gap:18px;padding:14px;background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:16px;">
+              <div id="logoPreviewWrap" style="width:80px;height:80px;border-radius:10px;border:2px dashed #cbd5e1;background:#f0f4f8;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;" onclick="document.getElementById('c-logo-input').click()">
+                <img id="logoPreviewImg" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:none;border-radius:8px;"/>
+                <span class="material-icons-round" id="logoUploadIcon" style="font-size:28px;color:#94a3b8">add_photo_alternate</span>
+              </div>
+              <div style="flex:1">
+                <div style="font-size:12px;font-weight:700;color:#1a2332;margin-bottom:3px">Company Logo</div>
+                <div style="font-size:11.5px;color:#6b7a90;margin-bottom:10px;line-height:1.5">Upload your company logo. It will appear on printed invoices.<br/>Recommended: PNG/JPG, square, min 200×200px.</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <input type="file" id="c-logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)"/>
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('c-logo-input').click()"><span class="material-icons-round">upload</span>Upload Logo</button>
+                  <button class="btn btn-ghost btn-sm" id="logoRemoveBtn" onclick="removeLogo()" style="display:none;color:#f85149"><span class="material-icons-round">delete</span>Remove</button>
+                </div>
+              </div>
+            </div>
             <div class="form-row"><div class="form-group"><label>Company Name *</label><input type="text" id="c-name" placeholder="KIDV Tech"/></div><div class="form-group"><label>Display Name</label><input type="text" id="c-display" placeholder="Short name on invoice header"/></div></div>
             <div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="info@kidvtech.com"/></div><div class="form-group"><label>Phone</label><input type="tel" id="c-phone" placeholder="+91 99999 99999"/></div></div>
             <div class="form-row"><div class="form-group"><label>Website</label><input type="text" id="c-web" placeholder="https://kidvtech.com"/></div><div class="form-group"><label>City</label><input type="text" id="c-city" placeholder="Ahmedabad"/></div></div>
@@ -374,6 +390,7 @@ async function loadAll(){
   if(comp.web) document.getElementById('c-web').value=comp.web;
   if(comp.city) document.getElementById('c-city').value=comp.city;
   if(comp.address) document.getElementById('c-address').value=comp.address;
+  if(comp.logo){ _logoBase64=comp.logo; showLogoPreview(comp.logo); }
 
   const gst=await KIDV.getSettings('gst');
   if(gst.gstin) document.getElementById('g-gstin').value=gst.gstin;
@@ -436,9 +453,36 @@ async function loadAll(){
   }
 }
 
+// Logo helpers
+let _logoBase64 = '';
+function handleLogoUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ showToast('Logo must be under 2MB','error'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    _logoBase64 = e.target.result;
+    showLogoPreview(_logoBase64);
+  };
+  reader.readAsDataURL(file);
+}
+function showLogoPreview(src){
+  const img = document.getElementById('logoPreviewImg');
+  const icon = document.getElementById('logoUploadIcon');
+  const removeBtn = document.getElementById('logoRemoveBtn');
+  if(src){ img.src=src; img.style.display=''; icon.style.display='none'; removeBtn.style.display=''; }
+  else { img.src=''; img.style.display='none'; icon.style.display=''; removeBtn.style.display='none'; }
+}
+function removeLogo(){
+  _logoBase64 = '';
+  document.getElementById('c-logo-input').value='';
+  showLogoPreview('');
+}
+
 async function saveCompany(){
   const existing = await KIDV.getSettings('company');
   const locked = !KIDV.isAdmin && existing.name && existing.name.trim();
+  const logo = _logoBase64 || existing.logo || '';
   const c={
     name:    locked ? existing.name    : document.getElementById('c-name').value,
     display: locked ? existing.display : document.getElementById('c-display').value,
@@ -446,7 +490,8 @@ async function saveCompany(){
     phone:document.getElementById('c-phone').value,
     web:document.getElementById('c-web').value,
     city:document.getElementById('c-city').value,
-    address:document.getElementById('c-address').value
+    address:document.getElementById('c-address').value,
+    logo,
   };
   await KIDV.saveSettings('company',c);
   showToast('Company profile saved! ✅');
