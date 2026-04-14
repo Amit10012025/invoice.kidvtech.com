@@ -359,9 +359,10 @@ function setGreeting(){
 setGreeting();
 
 async function loadDash(){
+  try {
   const user=KIDV._user;
   if(user){
-    const name=user.displayName||user.email.split('@')[0];
+    const name=user.displayName||(user.email||'').split('@')[0]||'User';
     const month=new Date().toLocaleString('en-IN',{month:'long',year:'numeric'});
     document.getElementById('hSub').textContent=name+' · '+month;
     const init=(name||'U')[0].toUpperCase();
@@ -369,7 +370,7 @@ async function loadDash(){
     const ab=document.getElementById('avatarBtn');if(ab)ab.childNodes[0].textContent=init;
   }
 
-  const [invoices,clients]=await Promise.all([KIDV.list('invoices'),KIDV.list('clients')]);
+  const [invoices,clients]=await Promise.all([KIDV.list('invoices',{forceRefresh:true}),KIDV.list('clients',{forceRefresh:true})]);
 
   const total=invoices.reduce((s,i)=>s+parseFloat(i.total||0),0);
   const paid=invoices.filter(i=>i.status==='paid').reduce((s,i)=>s+parseFloat(i.total||0),0);
@@ -407,13 +408,12 @@ async function loadDash(){
   }else{
     tb.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:28px">No invoices yet. <a href="/invoice-form/" style="color:var(--accent)">Create one →</a></td></tr>`;
   }
+  } catch(e){ console.error('[Dashboard] loadDash error:',e); }
 }
 
 document.addEventListener('kidv:db-ready',()=>{
   const ab=document.getElementById('adminBtn');
   if(window.KIDV&&KIDV.isAdmin&&ab)ab.style.display='';
-  const badge=document.getElementById('fbBadge');
-  if(badge){badge.classList.add('connected');badge.querySelector('span').textContent='Connected';}
   loadDash();
 });
 </script>

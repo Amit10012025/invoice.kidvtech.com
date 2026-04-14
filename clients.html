@@ -168,9 +168,20 @@ tr:hover td{background:#f8faff;}
 @keyframes autofillFlash{0%{background:rgba(63,185,80,0.12)}100%{background:var(--surface2)}}
 .form-group input.autofilled{animation:autofillFlash 2.5s ease forwards;border-color:rgba(63,185,80,0.35)!important;}
 
-::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
-
-  /* ── Footer bar ── */
+/* Multiple addresses & contacts */
+.addr-contact-tabs{display:flex;gap:0;background:#f0f4f8;border-radius:8px;padding:3px;margin-bottom:14px;}
+.act-tab{flex:1;padding:7px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;border:none;color:#6b7a90;background:none;transition:all .15s;text-align:center;}
+.act-tab.active{background:#fff;color:#1a2332;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+.addr-card{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.addr-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.addr-badge{font-size:10px;font-weight:700;color:#2f81f7;background:#eff6ff;border:1px solid #bfdbfe;padding:2px 8px;border-radius:20px;}
+.addr-type-select{font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:#6b7a90;background:transparent;border:none;cursor:pointer;outline:none;}
+.addr-del{background:none;border:none;cursor:pointer;color:#ef4444;padding:2px;border-radius:4px;}
+.addr-del .material-icons-round{font-size:16px;}
+.contact-card{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.add-more-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1.5px dashed #c5d5e8;background:transparent;color:#6b7a90;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;cursor:pointer;width:100%;justify-content:center;transition:all .15s;}
+.add-more-btn:hover{border-color:#2f81f7;color:#2f81f7;background:#f0f7ff;}
+.add-more-btn .material-icons-round{font-size:16px;} */
   .footer-bar{position:fixed;bottom:0;left:var(--rail-w,68px);right:0;height:38px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:150;box-shadow:0 -1px 8px rgba(0,0,0,0.05);}
   .footer-bar .fb-left{display:flex;align-items:center;gap:14px;}
   .footer-bar a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;transition:color .15s;}
@@ -344,20 +355,28 @@ tr:hover td{background:#f8faff;}
         <div class="form-group"><label>State Code</label><input type="text" id="f-statecode" readonly placeholder="Auto"/></div>
       </div>
 
-      <!-- Address -->
-      <div class="section-label" style="margin-top:6px">Address</div>
-      <div class="form-row full">
-        <div class="form-group"><label>Billing Address</label><textarea id="f-address" placeholder="Auto-filled from GSTIN or enter manually..."></textarea></div>
+      <!-- Addresses & Contacts Tabs -->
+      <div class="section-label" style="margin-top:6px">Addresses & Contacts</div>
+      <div class="addr-contact-tabs">
+        <button class="act-tab active" onclick="switchACTab('addresses',this)"><span class="material-icons-round" style="font-size:14px;vertical-align:middle">location_on</span> Addresses</button>
+        <button class="act-tab" onclick="switchACTab('contacts',this)"><span class="material-icons-round" style="font-size:14px;vertical-align:middle">person</span> Contacts</button>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>City</label><input type="text" id="f-city" placeholder="Ahmedabad"/></div>
-        <div class="form-group"><label>Pincode</label><input type="text" id="f-pin" placeholder="380001" maxlength="6"/></div>
+      <div id="ac-tab-addresses">
+        <div id="addressList"></div>
+        <button class="add-more-btn" onclick="addAddress()"><span class="material-icons-round">add_location</span> Add Another Address</button>
+        <input type="hidden" id="f-address" value=""/>
+        <input type="hidden" id="f-city" value=""/>
+        <input type="hidden" id="f-pin" value=""/>
+      </div>
+      <div id="ac-tab-contacts" style="display:none">
+        <div id="contactList"></div>
+        <button class="add-more-btn" onclick="addContact()"><span class="material-icons-round">person_add</span> Add Another Contact</button>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="clearForm()"><span class="material-icons-round">restart_alt</span>Clear</button>
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveClient()"><span class="material-icons-round">save</span>Save Client</button>
+      <button class="btn btn-primary" onclick="saveClient()"><span class="material-icons-round">save</span>Save Customer</button>
     </div>
   </div>
 </div>
@@ -384,6 +403,8 @@ const ENTITY_MAP={
 
 let clients=[];
 let editIdx=-1;
+let addresses=[];
+let contacts=[];
 
 // Load from Firestore
 async function loadClients(){
@@ -564,6 +585,73 @@ function setFetchLoading(on){
 }
 
 // ── Modal ──
+function switchACTab(tab,el){
+  document.querySelectorAll('.act-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('ac-tab-addresses').style.display=tab==='addresses'?'':'none';
+  document.getElementById('ac-tab-contacts').style.display=tab==='contacts'?'':'none';
+}
+
+function renderAddressList(){
+  const list=document.getElementById('addressList');
+  if(!addresses.length) addresses=[{type:'Billing',address:'',city:'',state:'',pin:'',gstin:'',primary:true}];
+  list.innerHTML=addresses.map((a,i)=>`
+    <div class="addr-card">
+      <div class="addr-card-head">
+        <select class="addr-type-select" onchange="addresses[${i}].type=this.value">
+          <option ${a.type==='Billing'?'selected':''}>Billing</option>
+          <option ${a.type==='Shipping'?'selected':''}>Shipping</option>
+          <option ${a.type==='Both'?'selected':''}>Billing & Shipping</option>
+          <option ${a.type==='Factory'?'selected':''}>Factory</option>
+          <option ${a.type==='Branch'?'selected':''}>Branch</option>
+        </select>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${i===0?'<span class="addr-badge">Primary</span>':''}
+          ${addresses.length>1?`<button class="addr-del" onclick="removeAddress(${i})"><span class="material-icons-round">delete</span></button>`:''}
+        </div>
+      </div>
+      <div class="form-group"><label>Address</label>
+        <textarea style="min-height:52px" placeholder="Full address..." oninput="addresses[${i}].address=this.value">${a.address||''}</textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px">
+        <div class="form-group"><label>City</label><input type="text" placeholder="City" value="${a.city||''}" oninput="addresses[${i}].city=this.value"/></div>
+        <div class="form-group"><label>State</label><input type="text" placeholder="State" value="${a.state||''}" oninput="addresses[${i}].state=this.value"/></div>
+        <div class="form-group"><label>Pincode</label><input type="text" placeholder="380001" maxlength="6" value="${a.pin||''}" oninput="addresses[${i}].pin=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderContactList(){
+  const list=document.getElementById('contactList');
+  if(!contacts.length) contacts=[{name:'',role:'Primary Contact',phone:'',email:'',dept:'',primary:true}];
+  list.innerHTML=contacts.map((ct,i)=>`
+    <div class="contact-card">
+      <div class="addr-card-head">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="material-icons-round" style="font-size:16px;color:#6b7a90">person</span>
+          <input type="text" placeholder="Contact name" value="${ct.name||''}"
+            style="border:none;background:transparent;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:600;color:#1a2332;outline:none;width:160px"
+            oninput="contacts[${i}].name=this.value"/>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${i===0?'<span class="addr-badge">Primary</span>':''}
+          ${contacts.length>1?`<button class="addr-del" onclick="removeContact(${i})"><span class="material-icons-round">delete</span></button>`:''}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div class="form-group"><label>Role</label><input type="text" placeholder="Manager" value="${ct.role||''}" oninput="contacts[${i}].role=this.value"/></div>
+        <div class="form-group"><label>Mobile</label><input type="tel" placeholder="+91 9999999999" value="${ct.phone||''}" oninput="contacts[${i}].phone=this.value"/></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="email@company.com" value="${ct.email||''}" oninput="contacts[${i}].email=this.value"/></div>
+        <div class="form-group"><label>Department</label><input type="text" placeholder="Accounts" value="${ct.dept||''}" oninput="contacts[${i}].dept=this.value"/></div>
+      </div>
+    </div>`).join('');
+}
+
+function addAddress(){ addresses.push({type:'Shipping',address:'',city:'',state:'',pin:'',gstin:''}); renderAddressList(); }
+function removeAddress(i){ if(addresses.length<=1)return; addresses.splice(i,1); renderAddressList(); }
+function addContact(){ contacts.push({name:'',role:'',phone:'',email:'',dept:''}); renderContactList(); }
+function removeContact(i){ if(contacts.length<=1)return; contacts.splice(i,1); renderContactList(); }
+
 function openModal(idx=-1){
   editIdx=idx; clearForm();
   if(idx>=0){
@@ -576,7 +664,9 @@ function openModal(idx=-1){
     setVal('f-gstin',c.gstin||'');setVal('f-pan',c.pan||'');
     document.getElementById('f-state').value=c.state||'';
     setVal('f-statecode',c.stateCode||'');
-    setVal('f-address',c.address||'');setVal('f-city',c.city||'');setVal('f-pin',c.pin||'');
+    addresses=c.addresses&&c.addresses.length?c.addresses:[{type:'Billing',address:c.address||'',city:c.city||'',state:c.state||'',pin:c.pin||'',gstin:''}];
+    contacts=c.contacts&&c.contacts.length?c.contacts:[{name:c.contact||'',role:'Primary Contact',phone:c.phone||'',email:c.email||'',dept:''}];
+    renderAddressList(); renderContactList();
     if(c.gstin){ setVal('gstinLookup',c.gstin); localParse(c.gstin); document.getElementById('fetchBtn').disabled=false; document.getElementById('gstinLookup').classList.add('valid'); }
   } else {
     document.getElementById('modalTitle').textContent='Add New Customer';
@@ -587,17 +677,21 @@ function openModal(idx=-1){
 function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
 
 function clearForm(){
-  ['f-name','f-contact','f-email','f-phone','f-gstin','f-pan','f-statecode','f-address','f-city','f-pin','gstinLookup'].forEach(id=>setVal(id,''));
+  ['f-name','f-contact','f-email','f-phone','f-gstin','f-pan','f-statecode','gstinLookup'].forEach(id=>setVal(id,''));
   document.getElementById('gstinLookup').className='gstin-input';
   document.getElementById('f-state').value='';
   document.getElementById('fetchBtn').disabled=true;
   clearFeedback();
+  addresses=[{type:'Billing',address:'',city:'',state:'',pin:'',gstin:'',primary:true}];
+  contacts=[{name:'',role:'Primary Contact',phone:'',email:'',dept:'',primary:true}];
+  renderAddressList(); renderContactList();
 }
 
 // ── Save ──
 async function saveClient(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('Client name is required');return;}
+  const primaryAddr=addresses.find(a=>a.type==='Billing'||a.type==='Both')||addresses[0]||{};
   const c={
     name, contact:document.getElementById('f-contact').value,
     email:document.getElementById('f-email').value, phone:document.getElementById('f-phone').value,
@@ -606,8 +700,8 @@ async function saveClient(){
     pan:document.getElementById('f-pan').value.toUpperCase(),
     state:document.getElementById('f-state').value,
     stateCode:document.getElementById('f-statecode').value,
-    address:document.getElementById('f-address').value,
-    city:document.getElementById('f-city').value, pin:document.getElementById('f-pin').value,
+    address:primaryAddr.address||'', city:primaryAddr.city||'', pin:primaryAddr.pin||'',
+    addresses, contacts,
     createdAt:new Date().toISOString()
   };
   if(editIdx>=0){
