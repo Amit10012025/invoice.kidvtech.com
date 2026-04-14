@@ -390,6 +390,14 @@ async function loadAll(){
   if(bank.branch) document.getElementById('b-branch').value=bank.branch;
   if(bank.upi) document.getElementById('b-upi').value=bank.upi;
 
+  const inv=await KIDV.getSettings('invoiceSettings');
+  if(inv.prefix) document.getElementById('i-prefix').value=inv.prefix;
+  if(inv.start)  document.getElementById('i-start').value=inv.start;
+  if(inv.terms)  document.getElementById('i-terms').value=inv.terms;
+  if(inv.currency) document.getElementById('i-curr').value=inv.currency;
+  if(inv.note)   document.getElementById('i-note').value=inv.note;
+  if(inv.footer) document.getElementById('i-footer').value=inv.footer;
+
   const fb=JSON.parse(localStorage.getItem('kidv-firebase-config')||'{}'); // config stays local
   if(fb.apiKey){
     document.getElementById('fb-apikey').value=fb.apiKey;
@@ -478,10 +486,10 @@ function setFbStatus(ok){
   if(ok){dot.className='fb-dot ok';label.textContent='Config Saved';sub.textContent='Firebase will connect on reload';}
   else{dot.className='fb-dot err';label.textContent='Not Connected';sub.textContent='Enter config below';}
 }
-function saveInvoiceSettings(){
+async function saveInvoiceSettings(){
   const s={prefix:document.getElementById('i-prefix').value,start:document.getElementById('i-start').value,terms:document.getElementById('i-terms').value,currency:document.getElementById('i-curr').value,note:document.getElementById('i-note').value,footer:document.getElementById('i-footer').value};
-  localStorage.setItem('kidv-invoice-settings',JSON.stringify(s));
-  showToast('Invoice settings saved!');
+  await KIDV.saveSettings('invoiceSettings',s);
+  showToast('Invoice settings saved! ✅');
 }
 function exportData(){
   const data={clients:JSON.parse(localStorage.getItem('kidv-clients')||'[]'),products:JSON.parse(localStorage.getItem('kidv-products')||'[]'),invoices:JSON.parse(localStorage.getItem('kidv-invoices')||'[]'),quotes:JSON.parse(localStorage.getItem('kidv-quotes')||'[]'),payments:JSON.parse(localStorage.getItem('kidv-payments')||'[]'),exportedAt:new Date().toISOString()};
