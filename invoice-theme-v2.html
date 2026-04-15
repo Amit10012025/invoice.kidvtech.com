@@ -46,7 +46,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-
   font-family:'Outfit',sans-serif;
   color:#1a1a1a;
   font-size:11px;
-  border:2px solid #222;
+  border:1px solid var(--b-outer);
 }
 
 /* ── PRINT ── */
@@ -83,231 +83,117 @@ body{animation:_pgIn 0.2s ease-out;}
    INVOICE CONTENT STYLES
 ══════════════════════════════════════ */
 
-/* ── SECTION BORDER COLOR ── */
-:root{--ln:#555;--ln2:#aaa;--ln3:#ccc;}
-
-/* IRN / e-Invoice header */
-.irn-bar{
-  border-bottom:1px solid var(--ln);
-  padding:5px 10px;
-  font-size:9.5px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:8px;
-  background:#fafafa;
+/* All borders use same consistent gray — matches reference exactly */
+:root{
+  --b-outer: #666;   /* outer invoice border */
+  --b-sect:  #888;   /* section dividers (horizontal full-width lines) */
+  --b-col:   #aaa;   /* column separators inside sections */
+  --b-row:   #ccc;   /* row separators inside tables */
+  --bg-head: #f2f2f2;/* header row background */
 }
+
+/* IRN bar */
+.irn-bar{border-bottom:1px solid var(--b-sect);padding:5px 10px;font-size:9.5px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;background:#fafafa;}
 .irn-rows{display:flex;flex-direction:column;gap:2px;}
 .irn-row{display:flex;gap:18px;flex-wrap:wrap;}
 .irn-item{display:flex;gap:5px;}
 .irn-key{font-weight:700;color:#333;}
 .irn-val{color:#111;}
 
-/* Main company + invoice type header */
-.inv-header-grid{
-  display:grid;
-  grid-template-columns:1fr auto;
-  border-bottom:1.5px solid var(--ln);
-  min-height:110px;
-}
-.company-cell{
-  display:flex;
-  gap:12px;
-  padding:10px 14px;
-  border-right:1.5px solid var(--ln);
-  align-items:flex-start;
-}
-.co-logo{
-  width:64px;height:64px;
-  object-fit:contain;
-  flex-shrink:0;
-  border:1px solid var(--ln3);
-  border-radius:4px;
-  background:#f8f9fa;
-}
-.co-logo-fallback{
-  width:64px;height:64px;flex-shrink:0;
-  background:linear-gradient(135deg,#2f81f7,#39d0d8);
-  border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;
-}
-.co-info{}
-.co-name{font-size:13.5px;font-weight:700;color:#1a1a1a;margin-bottom:4px;line-height:1.2;}
+/* Company + Invoice-type header row */
+.inv-header-grid{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid var(--b-sect);}
+.company-cell{display:flex;gap:12px;padding:10px 14px;border-right:1px solid var(--b-sect);align-items:flex-start;}
+.co-logo{width:64px;height:64px;object-fit:contain;flex-shrink:0;border:1px solid var(--b-row);border-radius:4px;background:#f8f9fa;}
+.co-logo-fallback{width:64px;height:64px;flex-shrink:0;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;}
+.co-name{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px;line-height:1.25;}
 .co-detail{font-size:9.5px;color:#333;line-height:1.65;}
-.inv-type-cell{
-  min-width:260px;
-  display:flex;
-  flex-direction:column;
-}
-.inv-type-title{
-  font-size:15px;font-weight:700;
-  text-align:center;
-  border-bottom:1.5px solid var(--ln);
-  padding:8px 12px;
-  letter-spacing:0.08em;
-  color:#1a1a1a;
-}
+
+/* Invoice-type meta (right side of header) */
+.inv-type-cell{min-width:260px;display:flex;flex-direction:column;}
+.inv-type-title{font-size:14px;font-weight:700;text-align:center;border-bottom:1px solid var(--b-sect);padding:8px 12px;letter-spacing:0.06em;color:#1a1a1a;}
+
+/* Meta table — Invoice No / Date / PO / Terms */
 .meta-tbl{width:100%;border-collapse:collapse;flex:1;}
-.meta-tbl td{
-  padding:4px 10px;
-  font-size:10px;
-  border-bottom:1px solid var(--ln2);
-  vertical-align:middle;
-}
+.meta-tbl td{padding:4px 8px;font-size:10px;border-bottom:1px solid var(--b-row);vertical-align:middle;}
 .meta-tbl tr:last-child td{border-bottom:none;}
-/* KEY FIX: add right border to separate label from value */
-.meta-key{font-weight:600;color:#333;white-space:nowrap;width:120px;border-right:1px solid var(--ln2);}
-.meta-val{color:#1a1a1a;font-weight:500;padding-left:10px;}
+.meta-key{font-weight:600;color:#333;white-space:nowrap;width:118px;border-right:1px solid var(--b-row);}
+.meta-val{color:#1a1a1a;font-weight:500;}
 
 /* Parties + Transport row */
-.parties-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 215px;
-  border-bottom:1.5px solid var(--ln);
-  min-height:95px;
-}
-.party-cell{padding:0;border-right:1.5px solid var(--ln);}
+.parties-row{display:grid;grid-template-columns:1fr 1fr 210px;border-bottom:1px solid var(--b-sect);}
+.party-cell{padding:0;border-right:1px solid var(--b-col);}
 .party-cell:last-child{border-right:none;}
-.party-head{
-  font-size:10px;font-weight:700;
-  background:#f0f0f0;
-  padding:4px 10px;
-  border-bottom:1px solid var(--ln2);
-  color:#111;
-  letter-spacing:0.02em;
-}
+.party-head{font-size:10px;font-weight:700;background:var(--bg-head);padding:4px 10px;border-bottom:1px solid var(--b-col);color:#222;}
 .party-body{padding:7px 10px;}
-.party-name-lg{font-size:11.5px;font-weight:700;color:#1a1a1a;margin-bottom:3px;}
+.party-name-lg{font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:3px;}
 .party-addr{font-size:9.5px;color:#333;line-height:1.65;}
 .party-gstin{font-size:9.5px;font-weight:700;color:#222;margin-top:4px;}
 
-/* Transport table */
+/* Transport sub-table (rightmost party-cell) */
 .transport-tbl{width:100%;border-collapse:collapse;height:100%;}
-.transport-tbl td{
-  padding:4px 8px;
-  font-size:10px;
-  border-bottom:1px solid var(--ln2);
-  vertical-align:middle;
-}
+.transport-tbl td{padding:4px 7px;font-size:10px;border-bottom:1px solid var(--b-row);vertical-align:middle;}
 .transport-tbl tr:last-child td{border-bottom:none;}
-/* KEY FIX: right border on transport label */
-.tr-key{font-weight:600;color:#333;white-space:nowrap;width:90px;border-right:1px solid var(--ln2);}
-.tr-val{color:#1a1a1a;font-weight:500;padding-left:8px;}
+.tr-key{font-weight:600;color:#333;white-space:nowrap;width:88px;border-right:1px solid var(--b-row);}
+.tr-val{color:#1a1a1a;font-weight:500;padding-left:6px;}
 
 /* Items table */
-.items-section{border-bottom:1px solid var(--ln);}
+.items-section{border-bottom:1px solid var(--b-sect);}
 .items-tbl{width:100%;border-collapse:collapse;table-layout:fixed;}
-.items-tbl th{
-  padding:6px 5px;
-  font-size:10px;font-weight:700;
-  background:#f0f0f0;
-  border-bottom:2px solid var(--ln);
-  border-right:1px solid var(--ln2);
-  text-align:center;
-  color:#111;
-  line-height:1.35;
-}
+.items-tbl th{padding:5px 4px;font-size:10px;font-weight:700;background:var(--bg-head);border-bottom:1px solid var(--b-sect);border-right:1px solid var(--b-col);text-align:center;color:#111;line-height:1.3;}
 .items-tbl th:last-child{border-right:none;}
-.items-tbl td{
-  padding:6px 5px;
-  font-size:10.5px;
-  border-bottom:1px solid var(--ln2);
-  border-right:1px solid var(--ln2);
-  vertical-align:top;
-  color:#1a1a1a;
-}
+.items-tbl td{padding:5px 4px;font-size:10.5px;border-bottom:1px solid var(--b-row);border-right:1px solid var(--b-row);vertical-align:top;color:#1a1a1a;}
 .items-tbl td:last-child{border-right:none;}
-.items-tbl tbody tr:last-child td{border-bottom:1px solid var(--ln);}
-/* column widths */
+.items-tbl tbody tr:last-child td{border-bottom:1px solid var(--b-sect);}
+
+/* Column widths */
 .items-tbl .c-sr{width:36px;text-align:center;}
 .items-tbl .c-desc{text-align:left;}
-.items-tbl .c-hsn{width:72px;text-align:center;font-size:10px;}
-.items-tbl .c-qty{width:56px;text-align:center;}
-.items-tbl .c-uom{width:48px;text-align:center;}
-.items-tbl .c-rate{width:76px;text-align:right;}
-.items-tbl .c-disc{width:52px;text-align:center;}
+.items-tbl .c-hsn{width:70px;text-align:center;font-size:10px;}
+.items-tbl .c-qty{width:52px;text-align:center;}
+.items-tbl .c-uom{width:46px;text-align:center;}
+.items-tbl .c-rate{width:74px;text-align:right;}
+.items-tbl .c-disc{width:48px;text-align:center;}
 .items-tbl .c-amt{width:86px;text-align:right;font-weight:600;}
 
-/* Totals */
-.items-tbl .tot-row td{
-  border-bottom:1px solid var(--ln2);
-  padding:3.5px 5px;
-  font-size:10.5px;
-  background:#fff;
-}
-.items-tbl .tot-row.tot-bold td{font-weight:700;background:#f8f8f8;}
-.items-tbl .tot-row.tot-grand td{background:#eef3ff;font-weight:700;font-size:11px;border-top:1.5px solid var(--ln);border-bottom:1.5px solid var(--ln);}
-.items-tbl .tot-qty-row td{
-  padding:5px 5px;
-  font-size:10.5px;
-  border-top:1.5px solid var(--ln);
-  border-bottom:1.5px solid var(--ln);
-  font-weight:600;
-  background:#f8f8f8;
-}
+/* Total rows inside items tfoot */
+.items-tbl .tot-row td{border-bottom:1px solid var(--b-row);padding:3px 4px;font-size:10.5px;background:#fff;}
+.items-tbl .tot-row.tot-bold td{font-weight:700;background:#f7f7f7;}
+.items-tbl .tot-row.tot-grand td{background:#eef3ff;font-weight:700;font-size:11px;border-top:1px solid var(--b-sect);border-bottom:1px solid var(--b-sect);}
+.items-tbl .tot-qty-row td{padding:4px 4px;font-size:10.5px;font-weight:600;border-top:1px solid var(--b-sect);border-bottom:1px solid var(--b-sect);background:#f7f7f7;}
 
-/* Amount in words */
-.words-section{
-  border-bottom:1.5px solid var(--ln);
-  padding:6px 12px;
-  font-size:10px;
-  line-height:1.8;
-  background:#fafafa;
-}
-.words-section strong{font-weight:700;color:#333;}
-.words-section span{font-style:italic;color:#1a1a1a;font-weight:600;}
+/* Amount in words — two-column: words | E.&O.E */
+.words-section{border-bottom:1px solid var(--b-sect);background:#fafafa;}
+.words-tbl{width:100%;border-collapse:collapse;}
+.words-tbl td{padding:5px 12px;font-size:10px;line-height:1.75;vertical-align:middle;}
+.words-tbl .eoe-cell{width:86px;text-align:center;font-size:10px;font-weight:700;border-left:1px solid var(--b-row);color:#333;vertical-align:middle;white-space:nowrap;}
+.words-tbl .words-row2 td{border-top:1px solid var(--b-row);}
+.words-section strong{font-weight:700;color:#222;}
+.words-section .w-val{font-style:italic;color:#1a1a1a;font-weight:500;}
 
-/* Footer: PAN + Bank */
-.footer-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  border-bottom:1px solid var(--ln);
-  min-height:100px;
-}
-.footer-left{padding:9px 12px;border-right:1.5px solid var(--ln);}
+/* Footer: PAN+Declaration | Bank+Signature */
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b-sect);min-height:110px;}
+.footer-left{padding:9px 12px;border-right:1px solid var(--b-sect);}
 .footer-right{padding:0;display:flex;flex-direction:column;}
-.f-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#333;margin-bottom:3px;}
-.f-pan{font-size:12px;font-weight:700;font-family:monospace;color:#1a1a1a;}
+.f-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;margin-bottom:3px;}
+.f-pan{font-size:11.5px;font-weight:700;font-family:monospace;color:#1a1a1a;}
 .decl-text{font-size:9.5px;color:#444;line-height:1.6;margin-top:5px;}
-.seal-text{font-size:10px;color:#555;margin-top:12px;padding-top:4px;}
+.seal-text{font-size:10px;color:#555;margin-top:14px;}
 
-.bank-header{
-  font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#333;
-  padding:5px 12px;
-  border-bottom:1px solid var(--ln2);
-  background:#f8f8f8;
-}
+/* Bank details inside footer-right */
+.bank-header{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;padding:5px 12px;border-bottom:1px solid var(--b-col);background:var(--bg-head);}
 .bank-tbl{width:100%;border-collapse:collapse;}
-.bank-tbl td{padding:3.5px 12px;font-size:10px;border-bottom:1px solid var(--ln3);vertical-align:top;}
+.bank-tbl td{padding:3.5px 10px;font-size:10px;border-bottom:1px solid var(--b-row);vertical-align:top;}
 .bank-tbl tr:last-child td{border-bottom:none;}
-/* KEY FIX: right border on bank label */
-.bk-key{font-weight:600;color:#333;white-space:nowrap;width:120px;border-right:1px solid var(--ln3);}
-.bk-val{font-weight:600;color:#1a1a1a;padding-left:10px;}
+.bk-key{font-weight:600;color:#333;white-space:nowrap;width:115px;border-right:1px solid var(--b-row);}
+.bk-val{font-weight:600;color:#1a1a1a;padding-left:8px;}
 
-.sig-block{
-  padding:6px 12px 8px;
-  text-align:right;
-  border-top:1px solid var(--ln2);
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
+/* Signature block */
+.sig-block{padding:6px 12px 8px;text-align:right;border-top:1px solid var(--b-col);flex:1;display:flex;flex-direction:column;justify-content:space-between;}
 .sig-for{font-size:10.5px;font-weight:700;color:#1a1a1a;}
-.sig-line{border-top:1px solid #888;padding-top:4px;font-size:10px;color:#555;display:inline-block;min-width:160px;text-align:center;margin-top:28px;}
+.sig-line{border-top:1px solid #888;padding-top:4px;font-size:10px;color:#555;display:inline-block;min-width:160px;text-align:center;margin-top:30px;}
 
-/* Jurisdiction bar */
-.jurisdiction-bar{
-  text-align:center;
-  padding:7px 10px;
-  font-size:10.5px;
-  font-weight:700;
-  color:#222;
-  letter-spacing:0.08em;
-  border-top:2px solid var(--ln);
-  background:#f0f0f0;
-}
+/* Jurisdiction */
+.jurisdiction-bar{text-align:center;padding:6px 10px;font-size:10.5px;font-weight:700;color:#222;letter-spacing:0.06em;border-top:1px solid var(--b-sect);background:var(--bg-head);}
 </style>
 </head>
 <body>
@@ -433,8 +319,15 @@ body{animation:_pgIn 0.2s ease-out;}
 
   <!-- 5. Amount in Words -->
   <div class="words-section">
-    <div><strong>Amount in Words:</strong> <span id="amountWords">—</span></div>
-    <div><strong>Tax Amount in Words:</strong> <span id="taxAmtWords">—</span></div>
+    <table class="words-tbl">
+      <tr>
+        <td><strong>Amount in Words:</strong> <span class="w-val" id="amountWords">—</span></td>
+        <td class="eoe-cell">E. &amp; O.E</td>
+      </tr>
+      <tr class="words-row2">
+        <td colspan="2"><strong>Tax Amount in Words:</strong> <span class="w-val" id="taxAmtWords">—</span></td>
+      </tr>
+    </table>
   </div>
 
   <!-- 6. Footer: PAN / Declaration | Bank Details / Signature -->
@@ -701,12 +594,11 @@ function renderInvoice(idx){
 
   // Qty + Rounded Total row
   tfoot+=`<tr class="tot-qty-row">
-    <td colspan="4" style="border-right:1px solid #bbb">
+    <td colspan="4" style="border-right:1px solid var(--b-row)">
       <span style="font-weight:600;color:#444">Total Qty:</span>
       <span style="font-weight:700;color:#1a1a1a;margin-left:5px">${totalQty.toLocaleString('en-IN')}</span>
-      <span style="font-style:italic;font-size:9.5px;color:#888;margin-left:12px">E. & O.E</span>
     </td>
-    <td colspan="3" style="text-align:right;padding-right:10px;font-weight:700;font-size:11px;border-right:1px solid #bbb">Rounded Total</td>
+    <td colspan="3" style="text-align:right;padding-right:10px;font-weight:700;font-size:11px;border-right:1px solid var(--b-row)">Rounded Total</td>
     <td style="font-weight:700;font-size:11px;text-align:right;padding:4px 5px">₹ ${fmtN(rounded)}</td>
   </tr>`;
 
