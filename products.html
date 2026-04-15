@@ -271,6 +271,9 @@ document.addEventListener('click', e=>{
     <div><div class="page-title">Products & Services</div><div class="page-subtitle">Manage items, HSN codes & GST rates</div></div>
     <div class="topbar-right">
       <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search items..." id="searchInput" oninput="filterProducts()" /></div>
+      <button class="btn btn-ghost" onclick="exportProductsCSV()" title="Export CSV"><span class="material-icons-round">download</span>Export</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('importProductsFile').click()" title="Import CSV"><span class="material-icons-round">upload</span>Import</button>
+      <input type="file" id="importProductsFile" accept=".csv" style="display:none" onchange="importProductsFile(this)"/>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add_box</span>Add Item</button>
       <div class="avatar">A</div>
     </div>
@@ -364,7 +367,62 @@ function renderProducts(list){
     </tr>`}).join('');
 }
 
-function filterProducts(){const q=document.getElementById('searchInput').value.toLowerCase();renderProducts(products.filter(p=>(p.name+p.hsn+p.desc).toLowerCase().includes(q)));}
+function filterProducts(){const q=document.getElementById('searchInput').value.toLowerCase();renderProducts(products.filter(p=>(p.name+p.hsn+(p.desc||p.description||'')).toLowerCase().includes(q)));}
+
+// ── Export Products CSV ───────────────────────────────────
+function exportProductsCSV(){
+  if(!products.length){ alert('No products to export'); return; }
+  const rows = [
+    ['Name','Description','HSN/SAC','Price','GST %','UOM','Category'],
+    ...products.map(p=>[
+      p.name||'', p.description||p.desc||'', p.hsn||'',
+      p.price||0, p.gst||18, p.uom||'Nos', p.category||''
+    ])
+  ];
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'products-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+// ── Import Products CSV ───────────────────────────────────
+function importProductsFile(input){
+  const file = input.files[0]; if(!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.trim().split('\n');
+    const headers = lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim().toLowerCase());
+    const rows = lines.slice(1).map(line=>{
+      const vals = line.match(/"([^"]*)"|([^,]+)|(?<=,)(?=,)|^(?=,)/g)||[];
+      const obj = {};
+      headers.forEach((h,i)=>{ obj[h] = (vals[i]||'').replace(/^"|"$/g,'').trim(); });
+      return obj;
+    }).filter(r=>r['name']);
+    if(!rows.length){ alert('No valid rows found. CSV must have "Name" column.'); return; }
+    if(!confirm(`Import ${rows.length} products from CSV?\n\nDuplicates (same name) will be skipped.`)) return;
+    doImportProducts(rows);
+  };
+  reader.readAsText(file);
+}
+
+async function doImportProducts(rows){
+  const existing = new Set(products.map(p=>p.name.toLowerCase()));
+  let added = 0;
+  for(const r of rows){
+    if(existing.has((r['name']||'').toLowerCase())) continue;
+    const p = {
+      name: r['name']||'', description: r['description']||'',
+      hsn: r['hsn/sac']||r['hsn']||'',
+      price: parseFloat(r['price']||0), gst: parseFloat(r['gst %']||r['gst']||18),
+      uom: r['uom']||'Nos', category: r['category']||''
+    };
+    try { const id = await KIDV.add('products', p); products.push({...p,_id:id}); added++; } catch(e) {}
+  }
+  renderProducts(products);
+  alert(`Imported ${added} products successfully!`);
+}
 
 function openModal(idx=-1){
   editIdx=idx;
