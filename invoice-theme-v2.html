@@ -85,11 +85,11 @@ body{animation:_pgIn 0.2s ease-out;}
 
 /* All borders use same consistent gray — matches reference exactly */
 :root{
-  --b-outer: #666;   /* outer invoice border */
-  --b-sect:  #888;   /* section dividers (horizontal full-width lines) */
-  --b-col:   #aaa;   /* column separators inside sections */
-  --b-row:   #ccc;   /* row separators inside tables */
-  --bg-head: #f2f2f2;/* header row background */
+  --b-outer: #555;   /* outer invoice border */
+  --b-sect:  #777;   /* section dividers (horizontal full-width lines) */
+  --b-col:   #999;   /* column separators inside sections */
+  --b-row:   #bbb;   /* row separators inside tables */
+  --bg-head: #f0f0f0;/* header row background */
 }
 
 /* IRN bar */
@@ -170,27 +170,28 @@ body{animation:_pgIn 0.2s ease-out;}
 .words-section strong{font-weight:700;color:#222;}
 .words-section .w-val{font-style:italic;color:#1a1a1a;font-weight:500;}
 
-/* Footer: PAN+Declaration | Bank+Signature */
-.footer-grid{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b-sect);min-height:110px;}
-.footer-left{padding:9px 12px;border-right:1px solid var(--b-sect);}
-.footer-right{padding:0;display:flex;flex-direction:column;}
-.f-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;margin-bottom:3px;}
-.f-pan{font-size:11.5px;font-weight:700;font-family:monospace;color:#1a1a1a;}
-.decl-text{font-size:9.5px;color:#444;line-height:1.6;margin-top:5px;}
-.seal-text{font-size:10px;color:#555;margin-top:14px;}
-
-/* Bank details inside footer-right */
-.bank-header{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;padding:5px 12px;border-bottom:1px solid var(--b-col);background:var(--bg-head);}
+/* Footer table — 3-row × 2-col, matches reference exactly */
+.footer-tbl{width:100%;border-collapse:collapse;border-bottom:1px solid var(--b-sect);}
+/* Row 1: PAN header | Bank Details header (both get bg-head + border-bottom) */
+.ft-pan-hdr{width:50%;background:var(--bg-head);border-right:1px solid var(--b-sect);border-bottom:1px solid var(--b-sect);padding:5px 12px;vertical-align:middle;}
+.ft-bank-hdr{background:var(--bg-head);border-bottom:1px solid var(--b-sect);padding:5px 12px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;vertical-align:middle;}
+.f-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#333;}
+.f-pan{font-size:11px;font-weight:700;font-family:monospace;color:#1a1a1a;margin-left:5px;}
+/* Row 2: Declaration | Bank table */
+.ft-decl{border-right:1px solid var(--b-sect);border-bottom:1px solid var(--b-sect);vertical-align:top;padding:8px 12px;}
+.ft-bank-cell{border-bottom:1px solid var(--b-sect);vertical-align:top;padding:0;}
+.decl-text{font-size:9.5px;color:#444;line-height:1.65;margin-top:4px;}
+/* Bank inner table */
 .bank-tbl{width:100%;border-collapse:collapse;}
 .bank-tbl td{padding:3.5px 10px;font-size:10px;border-bottom:1px solid var(--b-row);vertical-align:top;}
 .bank-tbl tr:last-child td{border-bottom:none;}
 .bk-key{font-weight:600;color:#333;white-space:nowrap;width:115px;border-right:1px solid var(--b-row);}
 .bk-val{font-weight:600;color:#1a1a1a;padding-left:8px;}
-
-/* Signature block */
-.sig-block{padding:6px 12px 8px;text-align:right;border-top:1px solid var(--b-col);flex:1;display:flex;flex-direction:column;justify-content:space-between;}
-.sig-for{font-size:10.5px;font-weight:700;color:#1a1a1a;}
-.sig-line{border-top:1px solid #888;padding-top:4px;font-size:10px;color:#555;display:inline-block;min-width:160px;text-align:center;margin-top:30px;}
+/* Row 3: Customer seal | For Company + Authorised Signatory */
+.ft-seal-cell{border-right:1px solid var(--b-sect);padding:8px 12px;font-size:10px;color:#555;vertical-align:bottom;}
+.ft-sig-cell{padding:8px 12px;vertical-align:bottom;text-align:right;}
+.sig-for{font-size:10.5px;font-weight:700;color:#1a1a1a;text-align:right;}
+.sig-line{border-top:1px solid #888;padding-top:4px;font-size:10px;color:#555;display:inline-block;min-width:160px;text-align:center;margin-top:26px;}
 
 /* Jurisdiction */
 .jurisdiction-bar{text-align:center;padding:6px 10px;font-size:10.5px;font-weight:700;color:#222;letter-spacing:0.06em;border-top:1px solid var(--b-sect);background:var(--bg-head);}
@@ -331,29 +332,36 @@ body{animation:_pgIn 0.2s ease-out;}
   </div>
 
   <!-- 6. Footer: PAN / Declaration | Bank Details / Signature -->
-  <div class="footer-grid">
-    <div class="footer-left">
-      <div><span class="f-label">Company's PAN: </span><span class="f-pan" id="compPAN">—</span></div>
-      <div style="margin-top:8px">
+  <table class="footer-tbl">
+    <colgroup><col style="width:50%"/><col style="width:50%"/></colgroup>
+    <!-- Row 1: header — Company PAN | Company Bank Details -->
+    <tr>
+      <td class="ft-pan-hdr"><span class="f-label">Company's PAN:</span><span class="f-pan" id="compPAN">—</span></td>
+      <td class="ft-bank-hdr">Company's Bank Details:</td>
+    </tr>
+    <!-- Row 2: Declaration | Bank rows -->
+    <tr>
+      <td class="ft-decl">
         <div class="f-label">Declaration</div>
         <div class="decl-text" id="declText">We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</div>
-      </div>
-      <div class="seal-text">Customer's Seal and Signature</div>
-    </div>
-    <div class="footer-right" style="display:flex;flex-direction:column;">
-      <div class="bank-header">Company's Bank Details:</div>
-      <table class="bank-tbl">
-        <tr><td class="bk-key">Bank Name:</td><td class="bk-val" id="bkName">—</td></tr>
-        <tr><td class="bk-key">A/c No.:</td><td class="bk-val" id="bkAcc">—</td></tr>
-        <tr><td class="bk-key">Branch &amp; IFS Code:</td><td class="bk-val" id="bkBranch">—</td></tr>
-      </table>
-      <div class="sig-block" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:8px;">
+      </td>
+      <td class="ft-bank-cell">
+        <table class="bank-tbl">
+          <tr><td class="bk-key">Bank Name:</td><td class="bk-val" id="bkName">—</td></tr>
+          <tr><td class="bk-key">A/c No.:</td><td class="bk-val" id="bkAcc">—</td></tr>
+          <tr><td class="bk-key">Branch &amp; IFS Code:</td><td class="bk-val" id="bkBranch">—</td></tr>
+        </table>
+      </td>
+    </tr>
+    <!-- Row 3: Customer Seal | For Company + Authorised Signatory -->
+    <tr>
+      <td class="ft-seal-cell">Customer's Seal and Signature</td>
+      <td class="ft-sig-cell">
         <div class="sig-for">For, <span id="sigCoName">KIDV Tech</span></div>
-        <div class="sig-gap"></div>
         <div style="text-align:right"><span class="sig-line">Authorised Signatory</span></div>
-      </div>
-    </div>
-  </div>
+      </td>
+    </tr>
+  </table>
 
   <!-- 7. Jurisdiction -->
   <div class="jurisdiction-bar" id="jurisdictionBar">SUBJECT TO AHMEDABAD JURISDICTION</div>
