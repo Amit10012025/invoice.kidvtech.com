@@ -303,6 +303,14 @@ function _updateNavUser(user) {
     avatarBtn.onclick = onLogout;
   }
 
+  const avatarTop = document.getElementById('avatarTop');
+  if (avatarTop) {
+    avatarTop.textContent = initial;
+    avatarTop.title = name + ' — Logout';
+    avatarTop.style.cursor = 'pointer';
+    avatarTop.onclick = onLogout;
+  }
+
   if (window.KIDV.isAdmin) {
     const adminBtn = document.getElementById('adminBtn');
     if (adminBtn) adminBtn.style.display = '';
