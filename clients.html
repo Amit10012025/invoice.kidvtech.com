@@ -248,6 +248,9 @@ tr:hover td{background:#f8faff;}
     <div><div class="page-title">Clients</div><div class="page-subtitle">GSTIN auto-fill enabled · Manage customers</div></div>
     <div class="topbar-right">
       <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search clients..." id="searchInput" oninput="filterClients()"/></div>
+      <button class="btn btn-ghost" onclick="exportClientsCSV()" title="Export CSV"><span class="material-icons-round">download</span>Export</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('importClientsFile').click()" title="Import CSV"><span class="material-icons-round">upload</span>Import</button>
+      <input type="file" id="importClientsFile" accept=".csv" style="display:none" onchange="importClientsFile(this)"/>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">person_add</span>Add Customer</button>
       <div class="avatar">A</div>
     </div>
@@ -777,6 +780,68 @@ function showToast(msg){
   if(!t){t=document.createElement('div');t.id='__toast';t.style.cssText='position:fixed;bottom:28px;right:28px;background:#ffffff;border:1.5px solid #e2e8f0;color:var(--text);padding:12px 20px;border-radius:12px;font-size:14px;z-index:999;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3);transition:opacity .3s';document.body.appendChild(t);}
   t.innerHTML=`<span class="material-icons-round" style="color:#3fb950;font-size:18px">check_circle</span>${msg}`;
   t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2500);
+}
+
+// ── Export Clients CSV ────────────────────────────────────
+function exportClientsCSV(){
+  if(!clients.length){ alert('No clients to export'); return; }
+  const rows = [
+    ['Name','Contact','Email','Phone','Type','GSTIN','PAN','State','State Code','GST Category','Address','City','Pincode'],
+    ...clients.map(c=>[
+      c.name||'', c.contact||'', c.email||'', c.phone||'',
+      c.ctype||'', c.gstin||'', c.pan||'', c.state||'', c.stateCode||'',
+      c.gstcat||'', c.address||'', c.city||'', c.pin||''
+    ])
+  ];
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'clients-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+// ── Import Clients CSV ────────────────────────────────────
+let _importClientRows = [];
+function importClientsFile(input){
+  const file = input.files[0]; if(!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.trim().split('\n');
+    const headers = lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim().toLowerCase());
+    _importClientRows = lines.slice(1).map(line=>{
+      const vals = line.match(/"([^"]*)"|([^,]+)|(?<=,)(?=,)|^(?=,)/g)||[];
+      const obj = {};
+      headers.forEach((h,i)=>{ obj[h] = (vals[i]||'').replace(/^"|"$/g,'').trim(); });
+      return obj;
+    }).filter(r=>r['name']);
+    if(!_importClientRows.length){ alert('No valid rows found. CSV must have "Name" column.'); return; }
+    if(!confirm(`Import ${_importClientRows.length} clients from CSV?\n\nDuplicates (same name) will be skipped.`)) return;
+    doImportClients();
+  };
+  reader.readAsText(file);
+}
+
+async function doImportClients(){
+  const existing = new Set(clients.map(c=>c.name.toLowerCase()));
+  let added = 0;
+  for(const r of _importClientRows){
+    if(existing.has((r['name']||'').toLowerCase())) continue;
+    const c = {
+      name: r['name']||'', contact: r['contact']||'', email: r['email']||'',
+      phone: r['phone']||'', ctype: r['type']||'Company',
+      gstin: (r['gstin']||'').toUpperCase(), pan: (r['pan']||'').toUpperCase(),
+      state: r['state']||'', stateCode: r['state code']||r['statecode']||'',
+      gstcat: r['gst category']||r['gstcategory']||'Unregistered',
+      address: r['address']||'', city: r['city']||'', pin: r['pincode']||r['pin']||'',
+      addresses: [{type:'Billing',address:r['address']||'',city:r['city']||'',state:r['state']||'',pin:r['pincode']||'',gstin:'',primary:true}],
+      contacts: [{name:r['contact']||'',role:'Primary Contact',phone:r['phone']||'',email:r['email']||'',dept:'',primary:true}]
+    };
+    try { const id = await DB.add('clients', c); clients.push({...c,_id:id}); added++; } catch(e) {}
+  }
+  renderClients(clients);
+  showToast(`Imported ${added} clients! ✅`);
+  _importClientRows = [];
 }
 
 // Data loads via kidv:db-ready event → loadClients()

@@ -202,10 +202,8 @@ tr:hover td{background:#f8faff;}
       <div class="page-subtitle">Business insights · <span class="month-badge" id="currentPeriod">FY 2025-26</span></div>
     </div>
     <div class="topbar-right">
-      <select class="filter-select" id="yearFilter" onchange="buildAll()">
-        <option value="2026">2026</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
+      <select class="filter-select" id="fyFilter" onchange="buildAll()">
+        <!-- populated by JS -->
       </select>
       <button class="btn btn-ghost" onclick="exportReport()"><span class="material-icons-round">download</span>Export</button>
       <div class="avatar" id="navAvatar">A</div>
@@ -459,14 +457,41 @@ function destroyChart(id){
   if(charts[id]){ charts[id].destroy(); delete charts[id]; }
 }
 
+// ── Fiscal Year Helpers ───────────────────────────────────
+function fyLabel(startY){ return 'FY ' + startY + '-' + String(startY+1).slice(-2); }
+
+function populateFYFilter(){
+  const today = new Date();
+  // Current FY start year: if month >= April (3), it's this year; else last year
+  const curFYStart = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1;
+  const sel = document.getElementById('fyFilter');
+  sel.innerHTML = '';
+  for(let y = curFYStart + 1; y >= curFYStart - 4; y--){
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = fyLabel(y);
+    if(y === curFYStart) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
 // ── MAIN BUILD ────────────────────────────────────────────
 function buildAll(){
-  const year = parseInt(document.getElementById('yearFilter').value);
+  const startY = parseInt(document.getElementById('fyFilter').value);
+  // Indian FY: April 1 of startY → March 31 of startY+1
+  const fyStart = new Date(startY,  3, 1, 0, 0, 0);
+  const fyEnd   = new Date(startY+1, 2, 31, 23, 59, 59);
+
   const filtered = allInvoices.filter(inv => {
     if(!inv.date) return false;
-    return new Date(inv.date).getFullYear() === year;
+    const d = new Date(inv.date);
+    return d >= fyStart && d <= fyEnd;
   });
   allInvoices._filtered = filtered;
+
+  const periodEl = document.getElementById('currentPeriod');
+  if(periodEl) periodEl.textContent = fyLabel(startY);
+
   buildOverview(filtered);
   buildGST(filtered);
   buildClients(filtered);
@@ -809,7 +834,8 @@ function exportReport() {
   const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv,' + encodeURIComponent(csv);
-  a.download = 'kidv-report-' + new Date().toISOString().split('T')[0] + '.csv';
+  const fyVal = document.getElementById('fyFilter').value || new Date().getFullYear();
+  a.download = 'kidv-report-FY' + fyVal + '-' + (parseInt(fyVal)+1).toString().slice(-2) + '.csv';
   a.click();
 }
 
@@ -832,8 +858,7 @@ document.addEventListener('kidv:db-ready', async () => {
     allInvoices = []; allClients = []; allPayments = []; allProducts = [];
   }
 
-  // Set current year in filter
-  document.getElementById('yearFilter').value = new Date().getFullYear().toString();
+  populateFYFilter();
   buildAll();
 });
 </script>

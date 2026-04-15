@@ -196,6 +196,12 @@ tr:hover td{background:#f8faff;}
     <div><div class="page-title">Invoices</div><div class="page-subtitle">Create & manage GST tax invoices</div></div>
     <div class="topbar-right">
       <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search invoices..." id="searchInput" oninput="filterInvoices()"/></div>
+      <select id="invFyFilter" onchange="filterInvoices()" style="background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;">
+        <option value="">All FY</option>
+      </select>
+      <button class="btn btn-ghost" onclick="exportInvoicesCSV()" title="Export CSV"><span class="material-icons-round">download</span>Export</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('importInvFile').click()" title="Import CSV"><span class="material-icons-round">upload</span>Import</button>
+      <input type="file" id="importInvFile" accept=".csv,.json" style="display:none" onchange="importInvoicesFile(this)"/>
       <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add</span>New Invoice</button>
       <div class="avatar">A</div>
     </div>
@@ -208,6 +214,23 @@ tr:hover td{background:#f8faff;}
     </table>
   </div>
 </main>
+
+<!-- Import Preview Modal -->
+<div class="modal-bg" id="importModalBg">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <div class="modal-title">Import Invoices</div>
+      <button class="modal-close" onclick="document.getElementById('importModalBg').classList.remove('open')"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body">
+      <div id="importPreview" style="font-size:13px;color:var(--muted)">Parsing...</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('importModalBg').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary" id="importConfirmBtn" onclick="confirmImportInvoices()"><span class="material-icons-round">upload</span>Import</button>
+    </div>
+  </div>
+</div>
 
 <!-- Create Invoice Modal -->
 <div class="modal-bg" id="modalBg">
@@ -333,6 +356,7 @@ async function loadAll(){
     KIDV.list('invoices'), KIDV.list('clients'), KIDV.list('products')
   ]);
   comp = await KIDV.getSettings('company');
+  populateInvFY();
   renderInvoices();
 }
 document.addEventListener('kidv:db-ready', ()=>{ if(window.KIDV&&KIDV.isAdmin){ const b=document.getElementById('adminBtn'); if(b)b.style.display=''; } });
@@ -367,7 +391,115 @@ function renderInvoices(list){
   document.getElementById('invCount').textContent=list.length+' invoices';
 }
 
-function filterInvoices(){const q=document.getElementById('searchInput').value.toLowerCase();renderInvoices(invoices.filter(i=>(i.invoiceNo+i.clientName).toLowerCase().includes(q)));}
+// ── Fiscal Year helpers ───────────────────────────────────
+function fyStartEnd(startY){ return { start: new Date(startY,3,1), end: new Date(startY+1,2,31,23,59,59) }; }
+function populateInvFY(){
+  const sel = document.getElementById('invFyFilter');
+  const today = new Date();
+  const curFY = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear()-1;
+  sel.innerHTML = '<option value="">All FY</option>';
+  for(let y = curFY+1; y >= curFY-4; y--){
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = 'FY '+y+'-'+String(y+1).slice(-2);
+    if(y === curFY) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function filterInvoices(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const fyVal = document.getElementById('invFyFilter').value;
+  let list = invoices;
+  if(q) list = list.filter(i=>(i.invoiceNo+i.clientName).toLowerCase().includes(q));
+  if(fyVal){
+    const {start, end} = fyStartEnd(parseInt(fyVal));
+    list = list.filter(i=>{ if(!i.date) return false; const d=new Date(i.date); return d>=start && d<=end; });
+  }
+  renderInvoices(list);
+}
+
+// ── Export CSV ────────────────────────────────────────────
+function exportInvoicesCSV(){
+  const fyVal = document.getElementById('invFyFilter').value;
+  let list = invoices;
+  if(fyVal){
+    const {start, end} = fyStartEnd(parseInt(fyVal));
+    list = list.filter(i=>{ if(!i.date) return false; const d=new Date(i.date); return d>=start && d<=end; });
+  }
+  if(!list.length){ alert('No invoices to export'); return; }
+  const rows = [
+    ['Invoice No','Client','Date','Due Date','Taxable','Total GST','Total','Status','Supply Type','Notes'],
+    ...list.map(i=>[
+      i.invoiceNo||'', i.clientName||'', i.date||'', i.due||'',
+      i.sub||0, i.totalGST||0, i.total||0, i.status||'', i.supply||'', i.notes||''
+    ])
+  ];
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  const fy = fyVal ? 'FY'+fyVal+'-'+String(parseInt(fyVal)+1).slice(-2) : new Date().toISOString().split('T')[0];
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'invoices-'+fy+'.csv';
+  a.click();
+}
+
+// ── Import CSV ────────────────────────────────────────────
+let _importRows = [];
+function importInvoicesFile(input){
+  const file = input.files[0]; if(!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim().toLowerCase());
+    _importRows = lines.slice(1).map(line=>{
+      const vals = line.match(/"([^"]*)"|([^,]+)|(?<=,)(?=,)|^(?=,)/g)||[];
+      const obj = {};
+      headers.forEach((h,i)=>{ obj[h] = (vals[i]||'').replace(/^"|"$/g,'').trim(); });
+      return obj;
+    }).filter(r=>r['invoice no']||r['invoiceno']);
+    const preview = document.getElementById('importPreview');
+    if(!_importRows.length){ preview.innerHTML='<p style="color:#f85149">No valid rows found. Make sure CSV has "Invoice No" column.</p>'; }
+    else {
+      preview.innerHTML = `<p style="margin-bottom:12px"><strong>${_importRows.length} invoices</strong> found in file.</p>
+        <div style="max-height:200px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:8px">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="background:#f8faff"><th style="padding:8px 12px;font-size:11px;text-align:left">Invoice No</th><th style="padding:8px 12px;font-size:11px;text-align:left">Client</th><th style="padding:8px 12px;font-size:11px;text-align:left">Date</th><th style="padding:8px 12px;font-size:11px;text-align:right">Total</th></tr></thead>
+            <tbody>${_importRows.slice(0,20).map(r=>`<tr style="border-top:1px solid #f0f4f8"><td style="padding:6px 12px;font-size:12px">${r['invoice no']||r['invoiceno']||'—'}</td><td style="padding:6px 12px;font-size:12px">${r['client']||'—'}</td><td style="padding:6px 12px;font-size:12px">${r['date']||'—'}</td><td style="padding:6px 12px;font-size:12px;text-align:right">${r['total']||'—'}</td></tr>`).join('')}
+            ${_importRows.length>20?`<tr><td colspan="4" style="padding:6px 12px;font-size:11px;color:var(--muted);text-align:center">...and ${_importRows.length-20} more</td></tr>`:''}</tbody>
+          </table>
+        </div>
+        <p style="margin-top:10px;font-size:12px;color:var(--muted)">Note: Duplicate invoice numbers will be skipped.</p>`;
+    }
+    document.getElementById('importModalBg').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+
+async function confirmImportInvoices(){
+  if(!_importRows.length) return;
+  const btn = document.getElementById('importConfirmBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="material-icons-round">hourglass_top</span>Importing...';
+  const existing = new Set(invoices.map(i=>i.invoiceNo));
+  let added = 0;
+  for(const r of _importRows){
+    const no = r['invoice no']||r['invoiceno']||'';
+    if(existing.has(no)) continue;
+    const inv = {
+      invoiceNo: no, clientName: r['client']||'', date: r['date']||'', due: r['due date']||r['due']||'',
+      sub: parseFloat(r['taxable']||0), totalGST: parseFloat(r['total gst']||0),
+      total: parseFloat(r['total']||0), status: r['status']||'pending',
+      supply: r['supply type']||'intra', notes: r['notes']||'', lines: []
+    };
+    try { await KIDV.add('invoices', inv); invoices.push(inv); added++; } catch(e) {}
+  }
+  btn.disabled = false; btn.innerHTML = '<span class="material-icons-round">upload</span>Import';
+  document.getElementById('importModalBg').classList.remove('open');
+  renderInvoices();
+  alert(`Imported ${added} invoices successfully!`);
+  _importRows = [];
+}
 
 function openModal(idx=-1){
   editIdx=idx;
