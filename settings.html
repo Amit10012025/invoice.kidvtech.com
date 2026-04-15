@@ -160,6 +160,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
       <div class="snav-item admin-only" onclick="showPanel('firebase',this)" style="display:none"><span class="material-icons-round">local_fire_department</span>Firebase Config</div>
       <div class="snav-item" onclick="showPanel('invoice',this)"><span class="material-icons-round">palette</span>Invoice Settings</div>
       <div class="snav-item" onclick="showPanel('account',this)"><span class="material-icons-round">manage_accounts</span>My Account</div>
+      <div class="snav-item" onclick="showPanel('license',this)"><span class="material-icons-round">vpn_key</span>License & Activation</div>
       <div class="snav-item admin-only" onclick="showPanel('danger',this)" style="display:none"><span class="material-icons-round">warning_amber</span>Data & Reset</div>
     </div>
 
@@ -356,6 +357,34 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);disp
         </div>
       </div>
 
+      <!-- License & Activation -->
+      <div class="settings-panel" id="panel-license">
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">License &amp; Activation</div><div class="card-desc">Software activation and subscription status</div></div></div>
+          <div class="card-body">
+            <div id="licenseStatusBox" style="min-height:80px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:13px">Loading license info...</div>
+            <div id="licenseKeyForm" style="display:none;margin-top:16px;border-top:1px solid #e2e8f0;padding-top:16px">
+              <div class="form-row full">
+                <div class="form-group">
+                  <label>Enter License Key</label>
+                  <input type="text" id="licenseKeyInput" placeholder="KIDV-XXXX-XXXX-XXXX" maxlength="19"
+                    style="font-family:monospace;text-transform:uppercase;letter-spacing:1px;font-size:15px;font-weight:700"
+                    oninput="this.value=this.value.toUpperCase()"/>
+                  <div style="font-size:11.5px;color:#9ca3af;margin-top:5px">
+                    License key provided by your administrator (format: KIDV-XXXX-XXXX-XXXX)
+                  </div>
+                </div>
+              </div>
+              <div class="save-row">
+                <button class="btn btn-primary" onclick="activateLicense()">
+                  <span class="material-icons-round">vpn_key</span>Activate License
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -379,6 +408,7 @@ function showPanel(id, el){
   }
   if(el) el.classList.add('active');
   if(id === 'account' && window.KIDV && KIDV._ready) setTimeout(loadAccountInfo, 100);
+  if(id === 'license') { if(window.KIDV && KIDV._ready) setTimeout(loadLicense, 100); else document.addEventListener('kidv:db-ready', loadLicense, {once:true}); }
 }
 
 async function loadAll(){
@@ -565,6 +595,92 @@ document.addEventListener('kidv:db-ready', ()=>{
   }
 });
 document.addEventListener('kidv:db-ready', loadAll);
+
+// ── License & Activation ──────────────────────────────
+async function loadLicense() {
+  const statusBox = document.getElementById('licenseStatusBox');
+  if (!statusBox) return;
+  statusBox.innerHTML = '<span style="color:#9ca3af;font-size:13px">Loading...</span>';
+  try {
+    if (!KIDV._ready || !KIDV._uid) { statusBox.innerHTML = '<span style="color:#9ca3af;font-size:13px">Not logged in.</span>'; return; }
+    if (KIDV.isAdmin) {
+      statusBox.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:#7c3aed;font-weight:600;font-size:13.5px;padding:12px"><span class="material-icons-round" style="font-size:20px">admin_panel_settings</span>Admin account — full access, no license required.</div>';
+      return;
+    }
+    const userDoc = await KIDV._db.collection('users').doc(KIDV._uid).get();
+    const d = userDoc.exists ? userDoc.data() : {};
+    const status = d.subscriptionStatus;
+    const expiry = d.subscriptionExpiry ? new Date(d.subscriptionExpiry) : null;
+    const licenseKey = d.licenseKey || '';
+    const planMap = {'3month':'3 Months','6month':'6 Months','12month':'1 Year','lifetime':'Lifetime'};
+    const plan = planMap[d.subscriptionPlan] || (d.subscriptionPlan || 'Standard');
+    const now = new Date();
+    const daysLeft = expiry ? Math.max(0, Math.ceil((expiry - now)/(24*60*60*1000))) : 0;
+    const keyForm = document.getElementById('licenseKeyForm');
+
+    if (status === 'active' && expiry && expiry > now) {
+      const warnColor = daysLeft <= 30 ? '#d97706' : '#15803d';
+      statusBox.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:16px;width:100%">
+          <div><div style="font-size:10.5px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Status</div>
+            <div style="font-size:15px;font-weight:700;color:#15803d;display:flex;align-items:center;gap:5px"><span class="material-icons-round" style="font-size:17px">verified</span>Active</div></div>
+          <div><div style="font-size:10.5px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Valid Until</div>
+            <div style="font-size:15px;font-weight:700;color:#15803d">${expiry.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</div></div>
+          <div><div style="font-size:10.5px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Plan</div>
+            <div style="font-size:13px;font-weight:600;color:#374151">${plan}</div></div>
+          <div><div style="font-size:10.5px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Days Remaining</div>
+            <div style="font-size:15px;font-weight:700;color:${warnColor}">${daysLeft} days</div></div>
+          ${licenseKey ? `<div style="grid-column:span 2">
+            <div style="font-size:10.5px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">License Key</div>
+            <div style="font-size:13px;font-family:monospace;font-weight:700;color:#7c3aed;background:#faf5ff;border:1px solid #e9d5ff;border-radius:8px;padding:8px 12px;letter-spacing:1.5px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${licenseKey}');showToast('License key copied!')">${licenseKey}</div>
+          </div>` : ''}
+          ${daysLeft <= 30 ? `<div style="grid-column:span 2;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:12.5px;color:#92400e;display:flex;align-items:center;gap:8px">
+            <span class="material-icons-round" style="font-size:17px;color:#d97706">warning_amber</span>
+            Your license expires in <strong style="margin:0 4px">${daysLeft} days</strong>. Please renew to continue.
+          </div>` : ''}
+        </div>`;
+    } else if (status === 'suspended') {
+      statusBox.innerHTML = `<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px;color:#dc2626;display:flex;align-items:center;gap:10px;width:100%"><span class="material-icons-round">block</span><div><strong>Account Suspended</strong><br/>Contact support: <a href="tel:+917984486885" style="color:#dc2626">+91 79844 86885</a></div></div>`;
+    } else {
+      const trialEnd = d.createdAt ? new Date(new Date(d.createdAt).getTime() + 14*24*60*60*1000) : null;
+      const trialLeft = trialEnd ? Math.max(0, Math.ceil((trialEnd - now)/(24*60*60*1000))) : 0;
+      const expiredMsg = expiry ? `Expired on ${expiry.toLocaleDateString('en-IN')}. ` : '';
+      statusBox.innerHTML = `<div style="background:#fffbeb;border:1.5px solid #fcd34d;border-radius:12px;padding:14px 16px;color:#92400e;display:flex;align-items:flex-start;gap:10px;width:100%;margin-bottom:4px">
+        <span class="material-icons-round" style="font-size:20px;color:#d97706;flex-shrink:0;margin-top:1px">hourglass_top</span>
+        <div><strong>${trialLeft > 0 ? 'Trial Period: ' + trialLeft + ' days remaining' : expiredMsg + 'License not active'}</strong><br/>
+        <span style="font-size:12px">Enter your license key below to activate the full software.</span></div>
+      </div>`;
+      if (keyForm) keyForm.style.display = '';
+    }
+  } catch(e) {
+    console.error('[License]', e);
+    if (statusBox) statusBox.innerHTML = '<span style="color:#9ca3af;font-size:13px">Failed to load license info.</span>';
+  }
+}
+
+async function activateLicense() {
+  const input = document.getElementById('licenseKeyInput');
+  if (!input) return;
+  const key = input.value.trim().toUpperCase();
+  if (!key || !key.startsWith('KIDV-') || key.length < 14) {
+    showToast('Please enter a valid license key (format: KIDV-XXXX-XXXX-XXXX)', 'error');
+    return;
+  }
+  try {
+    const userDoc = await KIDV._db.collection('users').doc(KIDV._uid).get();
+    const d = userDoc.exists ? userDoc.data() : {};
+    if (!d.licenseKey) { showToast('No license key assigned to your account. Contact admin.', 'error'); return; }
+    if (d.licenseKey !== key) { showToast('Invalid license key. Please check and try again.', 'error'); return; }
+    if (d.subscriptionStatus !== 'active') { showToast('License key is correct but subscription is not active. Contact admin.', 'warning'); return; }
+    localStorage.setItem('kidv-license-verified', '1');
+    showToast('License activated successfully! ✅');
+    document.getElementById('licenseKeyForm').style.display = 'none';
+    await loadLicense();
+  } catch(e) {
+    console.error('[License] Activate error:', e);
+    showToast('Activation failed. Please try again.', 'error');
+  }
+}
 
 // Force show first panel on load
 window.addEventListener('DOMContentLoaded', ()=>{
