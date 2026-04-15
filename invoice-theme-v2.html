@@ -100,16 +100,16 @@ body{animation:_pgIn 0.2s ease-out;}
 .irn-key{font-weight:700;color:#333;}
 .irn-val{color:#111;}
 
-/* Company + Invoice-type header row */
-.inv-header-grid{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid var(--b-sect);}
-.company-cell{display:flex;gap:12px;padding:10px 14px;border-right:1px solid var(--b-sect);align-items:flex-start;}
+/* Outer table — Company+Parties (left) | TAX INVOICE meta (right, rowspan=2) */
+.inv-outer-tbl{width:100%;border-collapse:collapse;border-bottom:1px solid var(--b-sect);}
+.company-cell{display:flex;gap:12px;padding:10px 14px;align-items:flex-start;border-bottom:1px solid var(--b-sect);vertical-align:top;}
 .co-logo{width:64px;height:64px;object-fit:contain;flex-shrink:0;border:1px solid var(--b-row);border-radius:4px;background:#f8f9fa;}
 .co-logo-fallback{width:64px;height:64px;flex-shrink:0;background:linear-gradient(135deg,#2f81f7,#39d0d8);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;letter-spacing:-1px;}
 .co-name{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px;line-height:1.25;}
 .co-detail{font-size:9.5px;color:#333;line-height:1.65;}
 
-/* Invoice-type meta (right side of header) */
-.inv-type-cell{min-width:260px;display:flex;flex-direction:column;}
+/* Invoice-type meta (right col, spans company+parties rows) */
+.inv-type-cell{min-width:260px;border-left:1px solid var(--b-sect);vertical-align:top;}
 .inv-type-title{font-size:14px;font-weight:700;text-align:center;border-bottom:1px solid var(--b-sect);padding:8px 12px;letter-spacing:0.06em;color:#1a1a1a;}
 
 /* Meta table — Invoice No / Date / PO / Terms */
@@ -119,8 +119,9 @@ body{animation:_pgIn 0.2s ease-out;}
 .meta-key{font-weight:600;color:#333;white-space:nowrap;width:118px;border-right:1px solid var(--b-row);}
 .meta-val{color:#1a1a1a;font-weight:500;}
 
-/* Parties + Transport row */
-.parties-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b-sect);}
+/* Parties cell (left col, row 2 of outer table) */
+.parties-cell{vertical-align:top;padding:0;}
+.parties-grid{display:grid;grid-template-columns:1fr 1fr;height:100%;}
 .party-cell{padding:0;border-right:1px solid var(--b-col);}
 .party-cell:last-child{border-right:none;}
 .party-head{font-size:10px;font-weight:700;background:var(--bg-head);padding:4px 10px;border-bottom:1px solid var(--b-col);color:#222;}
@@ -244,55 +245,62 @@ body{animation:_pgIn 0.2s ease-out;}
     </div>
   </div>
 
-  <!-- 2. Company + Invoice Type header -->
-  <div class="inv-header-grid">
-    <div class="company-cell">
-      <img id="coLogoImg" class="co-logo" src="/logo.jpg" alt="Logo"
-           onerror="this.style.display='none';document.getElementById('coLogoFallback').style.display='flex'"/>
-      <div class="co-logo-fallback" id="coLogoFallback" style="display:none">KI</div>
-      <div class="co-info">
-        <div class="co-name" id="coName">KIDV Tech</div>
-        <div class="co-detail" id="coDetail">Ahmedabad, Gujarat</div>
-      </div>
-    </div>
-    <div class="inv-type-cell">
-      <div class="inv-type-title" id="invTypeTitle">TAX INVOICE</div>
-      <table class="meta-tbl">
-        <tr><td class="meta-key">Invoice No</td><td class="meta-val" id="invNo">—</td></tr>
-        <tr><td class="meta-key">Invoice Date</td><td class="meta-val" id="invDate">—</td></tr>
-        <tr><td class="meta-key">Customer PO No</td><td class="meta-val" id="invPoNo"></td></tr>
-        <tr><td class="meta-key">Customer PO Date</td><td class="meta-val" id="invPoDate"></td></tr>
-        <tr><td class="meta-key">Payment Terms</td><td class="meta-val" id="invTerms">—</td></tr>
-      </table>
-      <table class="transport-tbl">
-        <tr><td class="tr-key">Transporter Name</td><td class="tr-val" id="tTransporter"></td></tr>
-        <tr><td class="tr-key">Destination</td><td class="tr-val" id="tDestination"></td></tr>
-        <tr><td class="tr-key">LR No</td><td class="tr-val" id="tLrNo"></td></tr>
-        <tr><td class="tr-key">LR Date</td><td class="tr-val" id="tLrDate"></td></tr>
-        <tr><td class="tr-key">Vehicle No</td><td class="tr-val" id="tVehicleNo"></td></tr>
-      </table>
-    </div>
-  </div>
-
-  <!-- 3. Consignee | Buyer -->
-  <div class="parties-row">
-    <div class="party-cell">
-      <div class="party-head">Consignee (Ship to)</div>
-      <div class="party-body">
-        <div class="party-name-lg" id="consigneeName">—</div>
-        <div class="party-addr" id="consigneeAddr"></div>
-        <div class="party-gstin" id="consigneeGSTIN"></div>
-      </div>
-    </div>
-    <div class="party-cell" style="border-right:none">
-      <div class="party-head">Buyer (Bill To)</div>
-      <div class="party-body">
-        <div class="party-name-lg" id="buyerName">—</div>
-        <div class="party-addr" id="buyerAddr"></div>
-        <div class="party-gstin" id="buyerGSTIN"></div>
-      </div>
-    </div>
-  </div>
+  <!-- 2+3. Company (top-left) | TAX INVOICE meta (right, spans full height) | Parties (bottom-left) -->
+  <table class="inv-outer-tbl">
+    <colgroup><col style="width:60%"/><col style="width:40%"/></colgroup>
+    <!-- Row 1: Company header (left) | TAX INVOICE + meta + transport (right, rowspan=2) -->
+    <tr>
+      <td class="company-cell">
+        <img id="coLogoImg" class="co-logo" src="/logo.jpg" alt="Logo"
+             onerror="this.style.display='none';document.getElementById('coLogoFallback').style.display='flex'"/>
+        <div class="co-logo-fallback" id="coLogoFallback" style="display:none">KI</div>
+        <div class="co-info">
+          <div class="co-name" id="coName">KIDV Tech</div>
+          <div class="co-detail" id="coDetail">Ahmedabad, Gujarat</div>
+        </div>
+      </td>
+      <td class="inv-type-cell" rowspan="2">
+        <div class="inv-type-title" id="invTypeTitle">TAX INVOICE</div>
+        <table class="meta-tbl">
+          <tr><td class="meta-key">Invoice No</td><td class="meta-val" id="invNo">—</td></tr>
+          <tr><td class="meta-key">Invoice Date</td><td class="meta-val" id="invDate">—</td></tr>
+          <tr><td class="meta-key">Customer PO No</td><td class="meta-val" id="invPoNo"></td></tr>
+          <tr><td class="meta-key">Customer PO Date</td><td class="meta-val" id="invPoDate"></td></tr>
+          <tr><td class="meta-key">Payment Terms</td><td class="meta-val" id="invTerms">—</td></tr>
+        </table>
+        <table class="transport-tbl">
+          <tr><td class="tr-key">Transporter Name</td><td class="tr-val" id="tTransporter"></td></tr>
+          <tr><td class="tr-key">Destination</td><td class="tr-val" id="tDestination"></td></tr>
+          <tr><td class="tr-key">LR No</td><td class="tr-val" id="tLrNo"></td></tr>
+          <tr><td class="tr-key">LR Date</td><td class="tr-val" id="tLrDate"></td></tr>
+          <tr><td class="tr-key">Vehicle No</td><td class="tr-val" id="tVehicleNo"></td></tr>
+        </table>
+      </td>
+    </tr>
+    <!-- Row 2: Consignee | Buyer (left col only — right continues via rowspan) -->
+    <tr>
+      <td class="parties-cell">
+        <div class="parties-grid">
+          <div class="party-cell">
+            <div class="party-head">Consignee (Ship to)</div>
+            <div class="party-body">
+              <div class="party-name-lg" id="consigneeName">—</div>
+              <div class="party-addr" id="consigneeAddr"></div>
+              <div class="party-gstin" id="consigneeGSTIN"></div>
+            </div>
+          </div>
+          <div class="party-cell" style="border-right:none">
+            <div class="party-head">Buyer (Bill To)</div>
+            <div class="party-body">
+              <div class="party-name-lg" id="buyerName">—</div>
+              <div class="party-addr" id="buyerAddr"></div>
+              <div class="party-gstin" id="buyerGSTIN"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
 
   <!-- 4. Line Items + Totals (single table) -->
   <div class="items-section">
