@@ -120,7 +120,7 @@ body{animation:_pgIn 0.2s ease-out;}
 .meta-val{color:#1a1a1a;font-weight:500;}
 
 /* Parties + Transport row */
-.parties-row{display:grid;grid-template-columns:1fr 1fr 210px;border-bottom:1px solid var(--b-sect);}
+.parties-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--b-sect);}
 .party-cell{padding:0;border-right:1px solid var(--b-col);}
 .party-cell:last-child{border-right:none;}
 .party-head{font-size:10px;font-weight:700;background:var(--bg-head);padding:4px 10px;border-bottom:1px solid var(--b-col);color:#222;}
@@ -129,8 +129,8 @@ body{animation:_pgIn 0.2s ease-out;}
 .party-addr{font-size:9.5px;color:#333;line-height:1.65;}
 .party-gstin{font-size:9.5px;font-weight:700;color:#222;margin-top:4px;}
 
-/* Transport sub-table (rightmost party-cell) */
-.transport-tbl{width:100%;border-collapse:collapse;height:100%;}
+/* Transport sub-table — now inside inv-type-cell, below meta-tbl */
+.transport-tbl{width:100%;border-collapse:collapse;border-top:1px solid var(--b-col);}
 .transport-tbl td{padding:4px 7px;font-size:10px;border-bottom:1px solid var(--b-row);vertical-align:middle;}
 .transport-tbl tr:last-child td{border-bottom:none;}
 .tr-key{font-weight:600;color:#333;white-space:nowrap;width:88px;border-right:1px solid var(--b-row);}
@@ -264,10 +264,17 @@ body{animation:_pgIn 0.2s ease-out;}
         <tr><td class="meta-key">Customer PO Date</td><td class="meta-val" id="invPoDate"></td></tr>
         <tr><td class="meta-key">Payment Terms</td><td class="meta-val" id="invTerms">—</td></tr>
       </table>
+      <table class="transport-tbl">
+        <tr><td class="tr-key">Transporter Name</td><td class="tr-val" id="tTransporter"></td></tr>
+        <tr><td class="tr-key">Destination</td><td class="tr-val" id="tDestination"></td></tr>
+        <tr><td class="tr-key">LR No</td><td class="tr-val" id="tLrNo"></td></tr>
+        <tr><td class="tr-key">LR Date</td><td class="tr-val" id="tLrDate"></td></tr>
+        <tr><td class="tr-key">Vehicle No</td><td class="tr-val" id="tVehicleNo"></td></tr>
+      </table>
     </div>
   </div>
 
-  <!-- 3. Consignee | Buyer | Transport -->
+  <!-- 3. Consignee | Buyer -->
   <div class="parties-row">
     <div class="party-cell">
       <div class="party-head">Consignee (Ship to)</div>
@@ -277,22 +284,13 @@ body{animation:_pgIn 0.2s ease-out;}
         <div class="party-gstin" id="consigneeGSTIN"></div>
       </div>
     </div>
-    <div class="party-cell">
+    <div class="party-cell" style="border-right:none">
       <div class="party-head">Buyer (Bill To)</div>
       <div class="party-body">
         <div class="party-name-lg" id="buyerName">—</div>
         <div class="party-addr" id="buyerAddr"></div>
         <div class="party-gstin" id="buyerGSTIN"></div>
       </div>
-    </div>
-    <div class="party-cell">
-      <table class="transport-tbl">
-        <tr><td class="tr-key">Transporter Name</td><td class="tr-val" id="tTransporter"></td></tr>
-        <tr><td class="tr-key">Destination</td><td class="tr-val" id="tDestination"></td></tr>
-        <tr><td class="tr-key">LR No</td><td class="tr-val" id="tLrNo"></td></tr>
-        <tr><td class="tr-key">LR Date</td><td class="tr-val" id="tLrDate"></td></tr>
-        <tr><td class="tr-key">Vehicle No</td><td class="tr-val" id="tVehicleNo"></td></tr>
-      </table>
     </div>
   </div>
 
