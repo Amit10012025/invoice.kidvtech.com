@@ -299,7 +299,7 @@ function _updateNavUser(user) {
 
   const avatarBtn = document.getElementById('avatarBtn');
   if (avatarBtn) {
-    avatarBtn.innerHTML = initial + '<div class="rail-tooltip">Profile / Logout</div>';
+    avatarBtn.innerHTML = '<span style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">' + initial + '</span><span class="rail-label">Profile</span>';
     avatarBtn.onclick = onLogout;
   }
 
