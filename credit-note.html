@@ -1,1 +1,560 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KIDV Invoice – Credit / Debit Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="/logo.jpg">
+<style>
+:root{--rail-w:190px;--flyout-w:240px;--bg:#f0f4f8;--surface:#fff;--border:rgba(0,0,0,0.08);--text:#1a2332;--muted:#6b7a90;--gradient:linear-gradient(135deg,#2f81f7,#39d0d8);--c-cn:#f0883e;--c-dn:#f85149;--c-invoice:#39d0d8;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail-w);background:#1e293b;display:flex;flex-direction:column;align-items:stretch;padding:10px 8px;z-index:200;gap:1px;overflow-y:auto;overflow-x:hidden;box-shadow:2px 0 12px rgba(0,0,0,0.12);}
+.rail-logo{width:100%;height:46px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 10px;font-weight:700;color:#fff;margin-bottom:10px;box-shadow:0 0 18px rgba(47,129,247,0.35);cursor:pointer;}
+.rail-logo-name{font-size:13px;font-weight:700;letter-spacing:0.02em;white-space:nowrap;}
+.rail-item{width:100%;height:38px;border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 10px;cursor:pointer;color:rgba(255,255,255,0.55);transition:background .18s,color .18s;border:1.5px solid transparent;}
+.rail-item .material-icons-round{font-size:20px;flex-shrink:0;}
+.rail-label{font-size:12px;font-weight:500;white-space:nowrap;flex:1;}
+.rail-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.rail-item.active{background:rgba(37,99,235,.2);color:#93c5fd;border-color:rgba(37,99,235,.35);}
+.rail-tooltip{display:none;}
+.rail-spacer{flex:1;min-height:8px;}
+.main{margin-left:var(--rail-w);flex:1;padding:28px 30px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:700;}.page-subtitle{font-size:13px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .18s;}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 14px rgba(47,129,247,0.3);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-ghost{background:#fff;color:#1a2332;border:1.5px solid #e2e8f0;}
+.btn-ghost:hover{background:#f0f4f8;}
+.btn .material-icons-round{font-size:16px;}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;}
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;width:240px;}
+.search-bar .material-icons-round{color:var(--muted);font-size:20px;}
+.search-bar input{background:none;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:13.5px;padding:10px 0;width:100%;color:var(--text);}
+.stats-row{display:flex;gap:16px;margin-bottom:24px;}
+.mini-stat{background:#fff;border:1px solid #e8edf5;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;flex:1;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
+.ms-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.ms-val{font-size:20px;font-weight:700;}.ms-label{font-size:12px;color:var(--muted);}
+.filter-bar{display:flex;gap:6px;margin-bottom:16px;}
+.ftab{padding:6px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);border:1.5px solid #e2e8f0;background:#fff;font-family:'Outfit',sans-serif;transition:all .18s;}
+.ftab.active{background:var(--gradient);color:#fff;border-color:transparent;}
+.card{background:#fff;border:1px solid #e8edf5;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.card-title{font-size:14px;font-weight:600;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 20px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;background:#f8faff;border-bottom:2px solid #e2e8f0;}
+td{padding:13px 20px;font-size:13.5px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f8faff;}
+.note-no{font-weight:600;}
+.cn-no{color:var(--c-cn);}
+.dn-no{color:var(--c-dn);}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;}
+.badge-cn{background:rgba(240,136,62,0.12);color:var(--c-cn);}
+.badge-dn{background:rgba(248,81,73,0.12);color:var(--c-dn);}
+.badge-issued{background:rgba(63,185,80,0.12);color:#3fb950;}
+.badge-draft{background:rgba(125,133,144,0.12);color:#7d8590;}
+.action-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;transition:color .15s,background .15s;}
+.action-btn:hover{color:var(--text);background:#f5f7fa;}
+.action-btn .material-icons-round{font-size:18px;}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(6px);z-index:500;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,0.15);width:680px;max-width:98vw;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--muted);}
+.modal-close .material-icons-round{font-size:20px;}
+.modal-body{padding:24px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
+.form-row.full{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.form-group input,.form-group select,.form-group textarea{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .18s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--c-cn);}
+.section-label{font-size:11px;font-weight:600;color:var(--c-cn);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.li-tbl{width:100%;border-collapse:collapse;margin-bottom:10px;}
+.li-tbl th{padding:7px 8px;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;background:#f8faff;border-bottom:2px solid #e2e8f0;text-align:left;}
+.li-tbl td{padding:5px 5px;border-bottom:1px solid var(--border);}
+.li-inp{background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 9px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;width:100%;color:var(--text);transition:border-color .18s;}
+.li-inp:focus{border-color:var(--c-cn);}
+.li-del{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:6px;}
+.li-del:hover{color:#f85149;}
+.totals-box{background:#f8faff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-top:12px;}
+.total-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13.5px;}
+.total-row.grand{font-size:15px;font-weight:700;border-top:1px solid #e2e8f0;margin-top:6px;padding-top:10px;color:var(--c-cn);}
+/* Type toggle */
+.type-toggle{display:flex;gap:8px;margin-bottom:16px;}
+.type-btn{flex:1;padding:10px;border-radius:10px;border:2px solid #e2e8f0;background:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .18s;}
+.type-btn.cn.sel{border-color:var(--c-cn);background:rgba(240,136,62,0.08);color:var(--c-cn);}
+.type-btn.dn.sel{border-color:var(--c-dn);background:rgba(248,81,73,0.08);color:var(--c-dn);}
+/* Footer */
+.footer-bar{position:fixed;bottom:0;left:var(--rail-w);right:0;height:38px;background:#fff;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:150;box-shadow:0 -1px 8px rgba(0,0,0,0.05);}
+.footer-bar .fb-left{display:flex;align-items:center;gap:14px;}
+.footer-bar a{font-size:12px;color:#6b7a90;text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-family:'Outfit',sans-serif;transition:color .15s;}
+.footer-bar a:hover{color:#2f81f7;}
+.footer-bar a .material-icons-round{font-size:13px;}
+.footer-bar .fb-sep{color:#e2e8f0;}
+.footer-bar .fb-right{font-size:11px;color:#9ca3af;}
+.main{padding-bottom:52px!important;}
+@keyframes _pgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+body{animation:_pgIn 0.2s ease-out;}
+@media(max-width:900px){:root{--rail-w:0px!important;}.rail{display:none!important;}.main{margin-left:0!important;padding:16px;}.footer-bar{left:0!important;}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="/firebase-config.js"></script>
+<script src="/subscription.js"></script>
+</head>
+<body>
 
+<!-- Sidebar -->
+<nav class="rail">
+  <div class="rail-logo" onclick="location.href='/'">
+    <img src="/logo.jpg" style="width:28px;height:28px;border-radius:6px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block'" onerror="this.style.display='none'"/>
+    <span class="logo-init" style="display:none;font-size:13px;font-weight:800;color:#fff;">KI</span>
+    <span class="rail-logo-name">KIDV Invoice</span>
+  </div>
+  <div class="rail-item" onclick="location.href='/'"><span class="material-icons-round">dashboard</span><span class="rail-label">Dashboard</span></div>
+  <div class="rail-item" onclick="location.href='/clients/'"><span class="material-icons-round">people_alt</span><span class="rail-label">Customers</span></div>
+  <div class="rail-item" onclick="location.href='/suppliers/'"><span class="material-icons-round">local_shipping</span><span class="rail-label">Suppliers</span></div>
+  <div class="rail-item" onclick="location.href='/products/'"><span class="material-icons-round">inventory_2</span><span class="rail-label">Products</span></div>
+  <div class="rail-item" onclick="location.href='/invoices/'"><span class="material-icons-round">receipt_long</span><span class="rail-label">Invoices</span></div>
+  <div class="rail-item active" onclick="location.href='/credit-note/'"><span class="material-icons-round">swap_horiz</span><span class="rail-label">Credit Notes</span></div>
+  <div class="rail-item" onclick="location.href='/quotations/'"><span class="material-icons-round">request_quote</span><span class="rail-label">Quotations</span></div>
+  <div class="rail-item" onclick="location.href='/payments/'"><span class="material-icons-round">payments</span><span class="rail-label">Payments</span></div>
+  <div class="rail-item" onclick="location.href='/gst-returns/'"><span class="material-icons-round">receipt</span><span class="rail-label">GST Returns</span></div>
+  <div class="rail-item" onclick="location.href='/reports/'"><span class="material-icons-round">bar_chart</span><span class="rail-label">Reports</span></div>
+  <div class="rail-item" onclick="location.href='/ledger/'"><span class="material-icons-round">account_balance_wallet</span><span class="rail-label">Ledger</span></div>
+  <div class="rail-spacer"></div>
+  <div class="rail-item" onclick="location.href='/admin/'" id="adminBtn" style="display:none"><span class="material-icons-round">admin_panel_settings</span><span class="rail-label">Admin Panel</span></div>
+  <div class="rail-item" onclick="location.href='/settings/'"><span class="material-icons-round">settings</span><span class="rail-label">Settings</span></div>
+  <div class="rail-item avatar" id="avatarBtn"><span class="material-icons-round" style="font-size:20px;flex-shrink:0">account_circle</span><span class="rail-label">Profile</span></div>
+</nav>
+
+<main class="main" id="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">Credit / Debit Notes</div>
+      <div class="page-subtitle">Manage adjustments against original invoices</div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-bar"><span class="material-icons-round">search</span><input type="text" placeholder="Search notes..." id="searchInput" oninput="filterNotes()"/></div>
+      <button class="btn btn-ghost" onclick="exportCSV()"><span class="material-icons-round">download</span>Export</button>
+      <button class="btn btn-primary" onclick="openModal()"><span class="material-icons-round">add</span>New Note</button>
+      <div class="avatar" id="navAvatar">A</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="mini-stat">
+      <div class="ms-icon" style="background:rgba(240,136,62,0.12);color:var(--c-cn)"><span class="material-icons-round">remove_circle_outline</span></div>
+      <div><div class="ms-val" id="s-cn">0</div><div class="ms-label">Credit Notes</div></div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-icon" style="background:rgba(248,81,73,0.12);color:var(--c-dn)"><span class="material-icons-round">add_circle_outline</span></div>
+      <div><div class="ms-val" id="s-dn">0</div><div class="ms-label">Debit Notes</div></div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-icon" style="background:rgba(57,208,216,0.12);color:var(--c-invoice)"><span class="material-icons-round">currency_rupee</span></div>
+      <div><div class="ms-val" id="s-total-cn">₹0</div><div class="ms-label">Total Credit</div></div>
+    </div>
+    <div class="mini-stat">
+      <div class="ms-icon" style="background:rgba(47,129,247,0.12);color:#2f81f7"><span class="material-icons-round">currency_rupee</span></div>
+      <div><div class="ms-val" id="s-total-dn">₹0</div><div class="ms-label">Total Debit</div></div>
+    </div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="filter-bar">
+    <button class="ftab active" id="ftab-all" onclick="setTab('all')">All</button>
+    <button class="ftab" id="ftab-credit" onclick="setTab('credit')">Credit Notes</button>
+    <button class="ftab" id="ftab-debit" onclick="setTab('debit')">Debit Notes</button>
+    <button class="ftab" id="ftab-draft" onclick="setTab('draft')">Drafts</button>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Notes</div>
+      <span id="noteCount" style="font-size:13px;color:var(--muted)">0 notes</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Note No</th>
+          <th>Type</th>
+          <th>Client</th>
+          <th>Ref. Invoice</th>
+          <th>Date</th>
+          <th>Reason</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="notesBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- Create / Edit Modal -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">New Credit / Debit Note</div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body">
+      <!-- Type selector -->
+      <div class="type-toggle">
+        <button class="type-btn cn sel" id="btnCN" onclick="setNoteType('credit')">
+          <span class="material-icons-round">remove_circle_outline</span>Credit Note
+        </button>
+        <button class="type-btn dn" id="btnDN" onclick="setNoteType('debit')">
+          <span class="material-icons-round">add_circle_outline</span>Debit Note
+        </button>
+      </div>
+
+      <div class="form-row three">
+        <div class="form-group">
+          <label>Note No *</label>
+          <input type="text" id="f-noteno" placeholder="CN-001"/>
+        </div>
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" id="f-date"/>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="f-status">
+            <option value="issued">Issued</option>
+            <option value="draft">Draft</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client *</label>
+          <select id="f-client" onchange="onClientChange()">
+            <option value="">Select Client</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Reference Invoice No</label>
+          <select id="f-refinv">
+            <option value="">Select Invoice (optional)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Reason / Narration *</label>
+          <textarea id="f-reason" rows="2" placeholder="e.g. Goods returned, price correction, damaged items..."></textarea>
+        </div>
+      </div>
+
+      <div class="section-label" id="itemsLabel">Items / Adjustments</div>
+      <table class="li-tbl">
+        <thead><tr><th style="width:40%">Description</th><th>HSN</th><th>Qty</th><th>Rate</th><th>GST%</th><th>Amount</th><th></th></tr></thead>
+        <tbody id="lineItems"></tbody>
+      </table>
+      <button class="btn btn-ghost" style="font-size:12.5px;padding:6px 14px" onclick="addLine()">
+        <span class="material-icons-round" style="font-size:15px">add</span>Add Line
+      </button>
+
+      <div class="totals-box" style="margin-top:14px">
+        <div class="total-row"><span>Subtotal</span><span id="t-sub">₹0.00</span></div>
+        <div class="total-row" id="t-cgst-row"><span>CGST</span><span id="t-cgst">₹0.00</span></div>
+        <div class="total-row" id="t-sgst-row"><span>SGST</span><span id="t-sgst">₹0.00</span></div>
+        <div class="total-row" id="t-igst-row" style="display:none"><span>IGST</span><span id="t-igst">₹0.00</span></div>
+        <div class="total-row grand"><span id="grandLabel">Credit Amount</span><span id="t-total">₹0.00</span></div>
+      </div>
+
+      <div class="form-row full" style="margin-top:14px">
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="f-notes" rows="2" placeholder="Additional remarks..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-ghost" onclick="saveNote('draft')"><span class="material-icons-round">save</span>Save Draft</button>
+      <button class="btn btn-primary" onclick="saveNote('issued')"><span class="material-icons-round">check_circle</span>Issue Note</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let notes = [], invoices = [], clients = [];
+let editIdx = -1, noteType = 'credit';
+
+// ── Load ─────────────────────────────────────────────────
+async function loadAll() {
+  [notes, invoices, clients] = await Promise.all([
+    KIDV.list('credit-notes'),
+    KIDV.list('invoices'),
+    KIDV.list('clients'),
+  ]);
+  renderNotes();
+  updateStats();
+}
+document.addEventListener('kidv:db-ready', () => {
+  if (window.KIDV && KIDV.isAdmin) { const b = document.getElementById('adminBtn'); if(b) b.style.display=''; }
+  loadAll();
+});
+
+// ── Tab filter ────────────────────────────────────────────
+let activeTab = 'all';
+function setTab(t) {
+  activeTab = t;
+  document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+  document.getElementById('ftab-' + t).classList.add('active');
+  filterNotes();
+}
+
+function filterNotes() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = notes;
+  if (activeTab === 'credit') list = list.filter(n => n.noteType === 'credit');
+  else if (activeTab === 'debit')  list = list.filter(n => n.noteType === 'debit');
+  else if (activeTab === 'draft')  list = list.filter(n => n.status === 'draft');
+  if (q) list = list.filter(n => (n.noteNo+n.clientName+n.refInvoice+n.reason).toLowerCase().includes(q));
+  renderNotes(list);
+}
+
+// ── Render ────────────────────────────────────────────────
+function fmt(n) { return '₹' + parseFloat(n||0).toLocaleString('en-IN', {minimumFractionDigits:2}); }
+
+function renderNotes(list) {
+  if (!list) list = notes;
+  const tbody = document.getElementById('notesBody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:40px">No notes yet. <a href="#" onclick="openModal()" style="color:var(--c-cn)">Create first note →</a></td></tr>`;
+    document.getElementById('noteCount').textContent = '0 notes';
+    return;
+  }
+  tbody.innerHTML = list.map((n, i) => `
+    <tr>
+      <td><span class="note-no ${n.noteType==='credit'?'cn-no':'dn-no'}">${n.noteNo||'—'}</span></td>
+      <td><span class="badge ${n.noteType==='credit'?'badge-cn':'badge-dn'}">${n.noteType==='credit'?'Credit Note':'Debit Note'}</span></td>
+      <td>${n.clientName||'—'}</td>
+      <td style="font-size:12px;color:var(--muted)">${n.refInvoice||'—'}</td>
+      <td>${n.date||'—'}</td>
+      <td style="font-size:12.5px;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.reason||'—'}</td>
+      <td style="font-weight:600">${fmt(n.total)}</td>
+      <td><span class="badge ${n.status==='issued'?'badge-issued':'badge-draft'}">${n.status==='issued'?'Issued':'Draft'}</span></td>
+      <td>
+        <button class="action-btn" onclick="editNote(${notes.indexOf(n)})" title="Edit"><span class="material-icons-round">edit</span></button>
+        <button class="action-btn" onclick="deleteNote(${notes.indexOf(n)})" title="Delete"><span class="material-icons-round">delete</span></button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('noteCount').textContent = list.length + ' notes';
+}
+
+function updateStats() {
+  const cn = notes.filter(n => n.noteType === 'credit');
+  const dn = notes.filter(n => n.noteType === 'debit');
+  document.getElementById('s-cn').textContent = cn.length;
+  document.getElementById('s-dn').textContent = dn.length;
+  document.getElementById('s-total-cn').textContent = fmt(cn.reduce((s,n)=>s+parseFloat(n.total||0),0));
+  document.getElementById('s-total-dn').textContent = fmt(dn.reduce((s,n)=>s+parseFloat(n.total||0),0));
+}
+
+// ── Modal ─────────────────────────────────────────────────
+function setNoteType(t) {
+  noteType = t;
+  document.getElementById('btnCN').className = 'type-btn cn' + (t==='credit'?' sel':'');
+  document.getElementById('btnDN').className = 'type-btn dn' + (t==='debit'?' sel':'');
+  document.getElementById('grandLabel').textContent = t==='credit' ? 'Credit Amount' : 'Debit Amount';
+  const no = document.getElementById('f-noteno');
+  if (!no.value || no.value.startsWith('CN-') || no.value.startsWith('DN-')) {
+    const prefix = t==='credit' ? 'CN-' : 'DN-';
+    const count = notes.filter(n=>n.noteType===t).length + 1;
+    no.value = prefix + String(count).padStart(3,'0');
+  }
+}
+
+function openModal(idx = -1) {
+  editIdx = idx;
+  const sel = document.getElementById('f-client');
+  sel.innerHTML = '<option value="">Select Client</option>' + clients.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('');
+  const ri = document.getElementById('f-refinv');
+  ri.innerHTML = '<option value="">None</option>' + invoices.map(inv=>`<option value="${inv.invoiceNo||''}">${inv.invoiceNo||'?'} — ${inv.clientName||''}</option>`).join('');
+
+  if (idx < 0) {
+    document.getElementById('modalTitle').textContent = 'New Credit / Debit Note';
+    setNoteType('credit');
+    document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('f-status').value = 'issued';
+    document.getElementById('f-reason').value = '';
+    document.getElementById('f-notes').value = '';
+    document.getElementById('lineItems').innerHTML = '';
+    addLine();
+  } else {
+    const n = notes[idx];
+    document.getElementById('modalTitle').textContent = 'Edit Note';
+    setNoteType(n.noteType || 'credit');
+    document.getElementById('f-noteno').value = n.noteNo || '';
+    document.getElementById('f-date').value = n.date || '';
+    document.getElementById('f-status').value = n.status || 'issued';
+    document.getElementById('f-reason').value = n.reason || '';
+    document.getElementById('f-notes').value = n.notes || '';
+    document.getElementById('f-refinv').value = n.refInvoice || '';
+    const ci = clients.findIndex(c=>c.name===n.clientName);
+    if (ci>=0) document.getElementById('f-client').value = ci;
+    document.getElementById('lineItems').innerHTML = '';
+    (n.lines||[]).forEach(l => addLine(l));
+  }
+  calcTotals();
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
+function onClientChange() {
+  const i = document.getElementById('f-client').value;
+  if (i === '') return;
+  const ri = document.getElementById('f-refinv');
+  const c = clients[parseInt(i)];
+  ri.innerHTML = '<option value="">None</option>' +
+    invoices.filter(inv=>inv.clientName===c.name).map(inv=>
+      `<option value="${inv.invoiceNo||''}">${inv.invoiceNo||'?'} — ${inv.date||''} — ${fmt(inv.total)}</option>`
+    ).join('');
+}
+
+function addLine(data) {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input class="li-inp" placeholder="Description" value="${data?data.desc||'':''}" data-f="desc"/></td>
+    <td><input class="li-inp" placeholder="HSN" value="${data?data.hsn||'':''}" data-f="hsn" style="width:70px"/></td>
+    <td><input class="li-inp" type="number" value="${data?data.qty||1:1}" min="1" data-f="qty" oninput="calcTotals()" style="width:60px"/></td>
+    <td><input class="li-inp" type="number" value="${data?data.rate||'':''}" placeholder="0.00" data-f="rate" oninput="calcTotals()" style="width:80px"/></td>
+    <td><select class="li-inp" data-f="gst" onchange="calcTotals()" style="width:64px">
+      <option ${data&&data.gst=='0'?'selected':''}>0</option>
+      <option ${data&&data.gst=='5'?'selected':''}>5</option>
+      <option ${data&&data.gst=='12'?'selected':''}>12</option>
+      <option ${(!data||data.gst=='18')?'selected':''}>18</option>
+      <option ${data&&data.gst=='28'?'selected':''}>28</option>
+    </select></td>
+    <td><input class="li-inp" readonly data-f="amt" value="${data?data.amt||'0.00':'0.00'}" style="width:80px"/></td>
+    <td><button class="li-del" onclick="this.closest('tr').remove();calcTotals()"><span class="material-icons-round" style="font-size:16px">close</span></button></td>`;
+  document.getElementById('lineItems').appendChild(tr);
+}
+
+function calcTotals() {
+  let sub = 0, gstTotal = 0;
+  document.querySelectorAll('#lineItems tr').forEach(tr => {
+    const qty  = parseFloat(tr.querySelector('[data-f="qty"]')?.value||1);
+    const rate = parseFloat(tr.querySelector('[data-f="rate"]')?.value||0);
+    const gp   = parseFloat(tr.querySelector('[data-f="gst"]')?.value||18);
+    const amt  = qty * rate;
+    tr.querySelector('[data-f="amt"]').value = amt.toFixed(2);
+    sub += amt; gstTotal += amt * gp / 100;
+  });
+  const half = gstTotal / 2;
+  document.getElementById('t-sub').textContent   = fmt(sub);
+  document.getElementById('t-cgst').textContent  = fmt(half);
+  document.getElementById('t-sgst').textContent  = fmt(half);
+  document.getElementById('t-igst').textContent  = fmt(gstTotal);
+  document.getElementById('t-total').textContent = fmt(sub + gstTotal);
+}
+
+function getLines() {
+  return Array.from(document.querySelectorAll('#lineItems tr')).map(tr => ({
+    desc: tr.querySelector('[data-f="desc"]')?.value||'',
+    hsn:  tr.querySelector('[data-f="hsn"]')?.value||'',
+    qty:  tr.querySelector('[data-f="qty"]')?.value||1,
+    rate: tr.querySelector('[data-f="rate"]')?.value||0,
+    gst:  tr.querySelector('[data-f="gst"]')?.value||18,
+    amt:  tr.querySelector('[data-f="amt"]')?.value||0,
+  }));
+}
+
+async function saveNote(status) {
+  const clientIdx = document.getElementById('f-client').value;
+  const clientName = clientIdx !== '' ? clients[parseInt(clientIdx)]?.name||'' : '';
+  const lines = getLines();
+  const sub = lines.reduce((s,l)=>s+parseFloat(l.qty)*parseFloat(l.rate),0);
+  const gst = lines.reduce((s,l)=>s+parseFloat(l.qty)*parseFloat(l.rate)*parseFloat(l.gst)/100,0);
+  const note = {
+    noteNo:     document.getElementById('f-noteno').value.trim(),
+    noteType:   noteType,
+    date:       document.getElementById('f-date').value,
+    status:     status,
+    clientName: clientName,
+    refInvoice: document.getElementById('f-refinv').value,
+    reason:     document.getElementById('f-reason').value.trim(),
+    notes:      document.getElementById('f-notes').value,
+    lines,
+    sub: sub.toFixed(2),
+    totalGST: gst.toFixed(2),
+    total: (sub + gst).toFixed(2),
+  };
+  if (!note.noteNo) { alert('Note number is required'); return; }
+  if (!note.clientName) { alert('Please select a client'); return; }
+  if (!note.reason) { alert('Reason is required'); return; }
+
+  if (editIdx >= 0) {
+    const id = notes[editIdx]._id;
+    await KIDV.set('credit-notes', id, note);
+    notes[editIdx] = { ...note, _id: id };
+  } else {
+    const res = await KIDV.add('credit-notes', note);
+    notes.push({ ...note, _id: res._id || res });
+  }
+  closeModal();
+  renderNotes();
+  updateStats();
+}
+
+function editNote(i) { openModal(i); }
+
+async function deleteNote(i) {
+  if (!confirm('Delete this note?')) return;
+  await KIDV.delete('credit-notes', notes[i]._id);
+  notes.splice(i, 1);
+  renderNotes(); updateStats();
+}
+
+// ── Export CSV ────────────────────────────────────────────
+function exportCSV() {
+  if (!notes.length) { alert('No notes to export'); return; }
+  const rows = [
+    ['Note No','Type','Client','Ref Invoice','Date','Reason','Subtotal','GST','Total','Status'],
+    ...notes.map(n=>[n.noteNo||'',n.noteType||'',n.clientName||'',n.refInvoice||'',n.date||'',n.reason||'',n.sub||0,n.totalGST||0,n.total||0,n.status||''])
+  ];
+  const csv = rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'credit-debit-notes-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+</script>
+<script src="/kidv-common.js"></script>
+
+<div class="footer-bar">
+  <div class="fb-left">
+    <a href="/about/"><span class="material-icons-round">info</span>About</a>
+    <span class="fb-sep">|</span>
+    <a href="/privacy/"><span class="material-icons-round">privacy_tip</span>Privacy</a>
+    <span class="fb-sep">|</span>
+    <a href="/terms/"><span class="material-icons-round">gavel</span>Terms</a>
+  </div>
+  <div class="fb-right">© 2025 KIDV Tech · <a href="https://www.kidvtech.com" target="_blank">KIDVTech</a></div>
+</div>
+</body>
+</html>
