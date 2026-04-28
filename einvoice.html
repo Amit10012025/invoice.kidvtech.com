@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>KIDV Invoice – E-Invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
 <link rel="icon" type="image/png" href="/logo.jpg">
@@ -159,7 +161,7 @@ tr:hover td{background:#f8faff;}
 </head>
 <body>
 <nav class="rail">
-  <div class="rail-logo" onclick="location.href='/'"><img src="/logo.jpg" style="width:28px;height:28px;border-radius:6px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block'" onerror="this.style.display='none'"/><span class="logo-init" style="display:none;font-size:13px;font-weight:800;color:#fff;">KI</span><span class="rail-logo-name">KIDV Invoice</span></div>
+  <div class="rail-logo" onclick="location.href='/'" title="KIDV Invoice"><img src="/logo.jpg" style="width:28px;height:28px;border-radius:6px;object-fit:cover;display:none;" id="railLogoImg" onload="this.style.display='block';document.getElementById('logoInit').style.display='none'" onerror="this.style.display='none';document.getElementById('logoInit').style.display='flex'"/><span id="logoInit" style="font-size:13px;font-weight:800;color:#fff;">KI</span></div>
   <div class="rail-item" onclick="location.href='/'" title="Dashboard"><span class="material-icons-round">dashboard</span><span class="rail-label">Dashboard</span></div>
   <div class="rail-item" onclick="location.href='/clients/'" title="Customers"><span class="material-icons-round">people_alt</span><span class="rail-label">Customers</span></div>
   <div class="rail-item" onclick="location.href='/suppliers/'" title="Suppliers"><span class="material-icons-round">local_shipping</span><span class="rail-label">Suppliers</span></div>
